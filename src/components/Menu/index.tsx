@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
   Drawer,
@@ -20,18 +22,27 @@ import {
   MdMenu,
   MdChevronLeft,
   MdChevronRight,
-  MdInbox,
-  MdMail,
-  MdPerson,
+  MdPeople,
 } from 'react-icons/md';
 import Dashboard from '../../pages/Dashboard';
 
 import { useStyles, BlueGrey } from './styles';
-import Login from '../../pages/Login';
+import Users from '../../pages/Users';
 
-export default function Header() {
+interface PageTitle {
+  pageTitle: {
+    title?: string;
+  };
+}
+
+interface Title {
+  title?: string;
+}
+
+const Header: React.FC<Title> = ({ title }) => {
   const classes = useStyles();
   const theme = useTheme();
+
   const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
@@ -66,7 +77,7 @@ export default function Header() {
               <MdMenu color="#fff" />
             </IconButton>
             <Typography variant="h6" noWrap>
-              Painel de Controle
+              {title}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -113,23 +124,33 @@ export default function Header() {
             </List>
           </Link>
 
-          <Divider />
-
-          <Link to="/login" className={classes.link}>
+          <Link to="/users" className={classes.link}>
             <List>
               <ListItem button>
                 <ListItemIcon>
-                  <MdPerson color="#fff" size={20} />
+                  <MdPeople color="#fff" size={20} />
                 </ListItemIcon>
-                <ListItemText primary="Login" />
+                <ListItemText primary="Usuários" />
               </ListItem>
             </List>
           </Link>
         </Drawer>
 
         <Route exact path="/" component={Dashboard} />
-        <Route path="/login" component={Login} />
+        <Route path="/users" component={Users} />
       </BrowserRouter>
     </div>
   );
-}
+};
+
+Header.propTypes = {
+  title: PropTypes.string,
+};
+
+Header.defaultProps = {
+  title: '',
+};
+
+export default connect((state: PageTitle) => ({
+  title: state.pageTitle.title,
+}))(Header);

@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import { Typography } from '@material-ui/core';
+import * as PageTitleActions from '../../store/actions/pageTitle';
 import useStyles from './styles';
 
-export default function Dashboard() {
+interface PageTitle {
+  pageTitle: {
+    title?: string;
+  };
+}
+
+const Dashboard: React.FC = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const title = 'Painel de Controle';
+
+  useEffect(() => {
+    dispatch(PageTitleActions.default(title));
+  }, [dispatch]);
+
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
@@ -37,4 +52,8 @@ export default function Dashboard() {
       </Typography>
     </main>
   );
-}
+};
+
+export default connect((state: PageTitle) => ({
+  title: state.pageTitle.title,
+}))(Dashboard);

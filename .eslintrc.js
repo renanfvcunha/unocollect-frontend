@@ -3,7 +3,13 @@ module.exports = {
     browser: true,
     es2020: true,
   },
-  extends: ['plugin:react/recommended', 'airbnb', 'plugin:prettierx/default'],
+  extends: [
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'airbnb',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettierx/default',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -12,7 +18,7 @@ module.exports = {
     ecmaVersion: 11,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'prettierx'],
+  plugins: ['react', '@typescript-eslint', 'react-hooks', 'prettierx'],
   settings: {
     'import/resolver': {
       typescript: {},
