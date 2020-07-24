@@ -18,12 +18,12 @@ import {
 } from '@material-ui/core';
 import { useTheme, ThemeProvider } from '@material-ui/core/styles';
 import {
-  MdDashboard,
-  MdMenu,
-  MdChevronLeft,
-  MdChevronRight,
-  MdPeople,
-} from 'react-icons/md';
+  Dashboard as MdDashboard,
+  Menu,
+  ChevronLeft,
+  ChevronRight,
+  Group,
+} from '@material-ui/icons';
 import Dashboard from '../../pages/Dashboard';
 
 import { useStyles, BlueGrey } from './styles';
@@ -74,7 +74,7 @@ const Header: React.FC<Title> = ({ title }) => {
                 [classes.hide]: open,
               })}
             >
-              <MdMenu color="#fff" />
+              <Menu />
             </IconButton>
             <Typography variant="h6" noWrap>
               {title}
@@ -102,11 +102,7 @@ const Header: React.FC<Title> = ({ title }) => {
             <div className={classes.toolbar}>
               <span className={classes.welcome}>Olá, Renan.</span>
               <IconButton onClick={handleDrawerClose}>
-                {theme.direction === 'rtl' ? (
-                  <MdChevronRight color="#fff" />
-                ) : (
-                  <MdChevronLeft color="#fff" />
-                )}
+                {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
               </IconButton>
             </div>
           </div>
@@ -117,7 +113,7 @@ const Header: React.FC<Title> = ({ title }) => {
             <List>
               <ListItem button>
                 <ListItemIcon>
-                  <MdDashboard color="#fff" size={20} />
+                  <MdDashboard />
                 </ListItemIcon>
                 <ListItemText primary="Painel de Controle" />
               </ListItem>
@@ -128,7 +124,7 @@ const Header: React.FC<Title> = ({ title }) => {
             <List>
               <ListItem button>
                 <ListItemIcon>
-                  <MdPeople color="#fff" size={20} />
+                  <Group />
                 </ListItemIcon>
                 <ListItemText primary="Usuários" />
               </ListItem>

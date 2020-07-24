@@ -5,7 +5,7 @@ import Menu from './components/Menu';
 import Login from './pages/Login';
 
 const App: React.FC = () => {
-  const [logged, setLogged] = useState(false);
+  const [logged, setLogged] = useState(true);
 
   if (!logged) {
     return <Login />;

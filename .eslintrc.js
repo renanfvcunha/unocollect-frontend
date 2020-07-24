@@ -1,3 +1,5 @@
+const { off } = require("process");
+
 module.exports = {
   env: {
     browser: true,
@@ -31,6 +33,7 @@ module.exports = {
   },
   rules: {
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
+    'react/jsx-props-no-spreading': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',
