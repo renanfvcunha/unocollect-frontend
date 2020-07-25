@@ -6,9 +6,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  ThemeProvider,
 } from '@material-ui/core';
 import Paper, { PaperProps } from '@material-ui/core/Paper';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { red } from '@material-ui/core/colors';
 import Draggable from 'react-draggable';
+import PropTypes from 'prop-types';
 
 interface IModal {
   open: boolean;
@@ -28,6 +32,14 @@ function PaperComponent(props: PaperProps) {
     </Draggable>
   );
 }
+
+const Red = createMuiTheme({
+  palette: {
+    secondary: {
+      main: red[800],
+    },
+  },
+});
 
 const Modal: React.FC<IModal> = ({ open, close, name, cancel, del }) => {
   return (
@@ -50,13 +62,27 @@ const Modal: React.FC<IModal> = ({ open, close, name, cancel, del }) => {
           <Button autoFocus onClick={close} color="primary">
             {cancel}
           </Button>
-          <Button onClick={close} color="primary">
-            {del}
-          </Button>
+          <ThemeProvider theme={Red}>
+            <Button onClick={close} color="secondary">
+              {del}
+            </Button>
+          </ThemeProvider>
         </DialogActions>
       </Dialog>
     </div>
   );
+};
+
+Modal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  close: PropTypes.func.isRequired,
+  name: PropTypes.string,
+  cancel: PropTypes.string.isRequired,
+  del: PropTypes.string.isRequired,
+};
+
+Modal.defaultProps = {
+  name: '',
 };
 
 export default Modal;

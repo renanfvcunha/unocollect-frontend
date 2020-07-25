@@ -1,5 +1,6 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Button, ThemeProvider } from '@material-ui/core';
 import {
   PersonAdd,
@@ -67,10 +68,12 @@ const Users: React.FC = () => {
 
       <div className="button">
         <ThemeProvider theme={Blue}>
-          <Button variant="contained" color="primary">
-            <PersonAdd className={classes.iconAdd} />
-            Novo Usuário
-          </Button>
+          <Link to="/newuser">
+            <Button variant="contained" color="primary">
+              <PersonAdd className={classes.iconAdd} />
+              Novo Usuário
+            </Button>
+          </Link>
         </ThemeProvider>
       </div>
 
