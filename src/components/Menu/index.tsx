@@ -102,7 +102,11 @@ const Header: React.FC<Title> = ({ title }) => {
             <div className={classes.toolbar}>
               <span className={classes.welcome}>Olá, Renan.</span>
               <IconButton onClick={handleDrawerClose}>
-                {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
+                {theme.direction === 'rtl' ? (
+                  <ChevronRight className={classes.icon} />
+                ) : (
+                  <ChevronLeft className={classes.icon} />
+                )}
               </IconButton>
             </div>
           </div>
@@ -113,7 +117,7 @@ const Header: React.FC<Title> = ({ title }) => {
             <List>
               <ListItem button>
                 <ListItemIcon>
-                  <MdDashboard />
+                  <MdDashboard className={classes.icon} />
                 </ListItemIcon>
                 <ListItemText primary="Painel de Controle" />
               </ListItem>
@@ -124,7 +128,7 @@ const Header: React.FC<Title> = ({ title }) => {
             <List>
               <ListItem button>
                 <ListItemIcon>
-                  <Group />
+                  <Group className={classes.icon} />
                 </ListItemIcon>
                 <ListItemText primary="Usuários" />
               </ListItem>

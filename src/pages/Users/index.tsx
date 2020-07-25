@@ -1,6 +1,6 @@
-import React, { useEffect, forwardRef } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Button } from '@material-ui/core';
+import { Button, ThemeProvider } from '@material-ui/core';
 import {
   PersonAdd,
   Clear,
@@ -11,10 +11,12 @@ import {
   Search,
   ArrowDownward,
   Edit,
+  Delete,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
 import * as PageTitleActions from '../../store/actions/pageTitle';
-import useStyles from './styles';
+import Modal from '../../components/Modal';
+import { useStyles, Blue } from './styles';
 
 interface PageTitle {
   pageTitle: {
@@ -22,10 +24,24 @@ interface PageTitle {
   };
 }
 
+interface IRowData {
+  id: number;
+  name: string;
+  username: string;
+  admin: string;
+}
+
 const Users: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const title = 'Usuários';
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [name, setName] = useState('');
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     dispatch(PageTitleActions.default(title));
@@ -45,26 +61,27 @@ const Users: React.FC = () => {
     )),
   };
 
-  // const actions
-  const edit = <Edit />;
-
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
+
       <div className="button">
-        <Button variant="contained" color="primary">
-          <PersonAdd className={classes.iconAdd} />
-          Novo Usuário
-        </Button>
+        <ThemeProvider theme={Blue}>
+          <Button variant="contained" color="primary">
+            <PersonAdd className={classes.iconAdd} />
+            Novo Usuário
+          </Button>
+        </ThemeProvider>
       </div>
+
       <div className={classes.table}>
         <MaterialTable
+          title="Lista de Usuários"
           columns={[
             { title: 'Id', field: 'id', type: 'numeric' },
             { title: 'Nome', field: 'name', type: 'string' },
             { title: 'Nome de Usuário', field: 'username', type: 'string' },
             { title: 'Administrador', field: 'admin', type: 'string' },
-            { title: 'Ações', field: 'actions' },
           ]}
           data={[
             {
@@ -88,12 +105,32 @@ const Users: React.FC = () => {
               admin: 'Não',
             },
           ]}
-          title="Lista de Usuários"
+          actions={[
+            {
+              icon: () => <Edit className={classes.iconEdit} />,
+              tooltip: 'Editar Usuário',
+              iconProps: { style: { float: 'right' } },
+              onClick: (event, rowData: IRowData) =>
+                // eslint-disable-next-line no-alert
+                alert(`You saved ${rowData.name}`),
+            },
+            {
+              icon: () => <Delete className={classes.iconDelete} />,
+              tooltip: 'Remover Usuário',
+              onClick: (event, rowData: IRowData) => {
+                setModalOpen(true);
+                setName(rowData.name);
+              },
+            },
+          ]}
           icons={tableIcons}
           localization={{
             toolbar: {
               searchPlaceholder: 'Procurar',
               searchTooltip: 'Procurar',
+            },
+            header: {
+              actions: 'Ações',
             },
             pagination: {
               firstTooltip: 'Primeira Página',
@@ -104,8 +141,20 @@ const Users: React.FC = () => {
               labelRowsSelect: 'linhas',
             },
           }}
+          options={{
+            actionsColumnIndex: -1,
+            actionsCellStyle: { paddingRight: 25 },
+          }}
         />
       </div>
+
+      <Modal
+        open={modalOpen}
+        close={handleModalClose}
+        name={name}
+        cancel="Cancelar"
+        del="Remover"
+      />
     </main>
   );
 };

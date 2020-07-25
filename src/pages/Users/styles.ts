@@ -1,6 +1,7 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import { blue } from '@material-ui/core/colors';
 
-const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles(theme => ({
   toolbar: {
     display: 'flex',
     alignItems: 'center',
@@ -23,6 +24,18 @@ const useStyles = makeStyles(theme => ({
     marginTop: 24,
     marginBottom: 36,
   },
+  iconEdit: {
+    color: '#f9a825',
+  },
+  iconDelete: {
+    color: '#c62828',
+  },
 }));
 
-export default useStyles;
+export const Blue = createMuiTheme({
+  palette: {
+    primary: {
+      main: blue[800],
+    },
+  },
+});

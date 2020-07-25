@@ -64,6 +64,9 @@ export const useStyles = makeStyles(theme => ({
     textDecoration: 'none',
     color: '#fff',
   },
+  icon: {
+    color: '#fff',
+  },
   toolbar: {
     display: 'flex',
     alignItems: 'center',
