@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -23,12 +23,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Group,
+  PostAdd,
 } from '@material-ui/icons';
-import Dashboard from '../../pages/Dashboard';
-
 import { useStyles, BlueGrey } from './styles';
-import Users from '../../pages/Users';
-import NewUser from '../../pages/Users/NewUser';
+import Routes from '../../routes';
 
 interface PageTitle {
   pageTitle: {
@@ -84,7 +82,7 @@ const Header: React.FC<Title> = ({ title }) => {
         </AppBar>
       </ThemeProvider>
 
-      {/** App Routes And Navigation */}
+      {/** App Navigation */}
       <BrowserRouter>
         <Drawer
           variant="permanent"
@@ -125,6 +123,17 @@ const Header: React.FC<Title> = ({ title }) => {
             </List>
           </Link>
 
+          <Link to="/forms" className={classes.link}>
+            <List>
+              <ListItem button>
+                <ListItemIcon>
+                  <PostAdd className={classes.icon} />
+                </ListItemIcon>
+                <ListItemText primary="Formulários" />
+              </ListItem>
+            </List>
+          </Link>
+
           <Link to="/users" className={classes.link}>
             <List>
               <ListItem button>
@@ -137,9 +146,8 @@ const Header: React.FC<Title> = ({ title }) => {
           </Link>
         </Drawer>
 
-        <Route exact path="/" component={Dashboard} />
-        <Route path="/users" component={Users} />
-        <Route path="/newuser" component={NewUser} />
+        {/** App Routes */}
+        <Routes />
       </BrowserRouter>
     </div>
   );

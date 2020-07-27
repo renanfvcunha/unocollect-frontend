@@ -27,6 +27,7 @@ interface PageTitle {
 
 interface IRowData {
   id: number;
+  registration: number;
   name: string;
   username: string;
   admin: string;
@@ -81,28 +82,80 @@ const Users: React.FC = () => {
         <MaterialTable
           title="Lista de Usuários"
           columns={[
-            { title: 'Id', field: 'id', type: 'numeric' },
-            { title: 'Nome', field: 'name', type: 'string' },
-            { title: 'Nome de Usuário', field: 'username', type: 'string' },
-            { title: 'Administrador', field: 'admin', type: 'string' },
+            {
+              title: 'Id',
+              field: 'id',
+              type: 'numeric',
+              align: 'left',
+              headerStyle: {
+                width: 'calc(5% + 0px)',
+                maxWidth: 'calc(5% + 0px)',
+              },
+              cellStyle: {
+                width: 'calc(5% + 0px)',
+                maxWidth: 'calc(5% + 0px)',
+              },
+            },
+            {
+              title: 'Matrícula',
+              field: 'registration',
+              type: 'numeric',
+              align: 'left',
+              headerStyle: {
+                width: 'calc(10% + 0px)',
+                maxWidth: 'calc(10% + 0px)',
+              },
+              cellStyle: {
+                width: 'calc(10% + 0px)',
+                maxWidth: 'calc(10% + 0px)',
+              },
+            },
+            {
+              title: 'Nome',
+              field: 'name',
+              type: 'string',
+              align: 'left',
+            },
+            {
+              title: 'Nome de Usuário',
+              field: 'username',
+              type: 'string',
+              align: 'left',
+              headerStyle: {
+                width: 'calc(15% + 0px)',
+                maxWidth: 'calc(15% + 0px)',
+              },
+              cellStyle: {
+                width: 'calc(15% + 0px)',
+                maxWidth: 'calc(15% + 0px)',
+              },
+            },
+            {
+              title: 'Administrador',
+              field: 'admin',
+              type: 'string',
+              align: 'left',
+              headerStyle: {
+                width: 'calc(15% + 0px)',
+                maxWidth: 'calc(15% + 0px)',
+              },
+              cellStyle: {
+                width: 'calc(15% + 0px)',
+                maxWidth: 'calc(15% + 0px)',
+              },
+            },
           ]}
           data={[
             {
               id: 1,
-              name: 'Renan Cunha',
+              registration: 2549,
+              name: 'Renan Fabrício Vieira da Cunha',
               username: 'rcunha',
               admin: 'Sim',
             },
-            { id: 2, name: 'Reginaldo Souza', username: 'regis', admin: 'Não' },
-            { id: 3, name: 'Renan Cunha', username: 'rcunha', admin: 'Sim' },
-            { id: 4, name: 'Reginaldo Souza', username: 'regis', admin: 'Não' },
-            { id: 5, name: 'Renan Cunha', username: 'rcunha', admin: 'Sim' },
-            { id: 6, name: 'Reginaldo Souza', username: 'regis', admin: 'Não' },
-            { id: 7, name: 'Renan Cunha', username: 'rcunha', admin: 'Sim' },
-            { id: 8, name: 'Reginaldo Souza', username: 'regis', admin: 'Não' },
-            { id: 9, name: 'Renan Cunha', username: 'rcunha', admin: 'Sim' },
             {
-              id: 10,
+              id: 2,
+              registration: 2560,
               name: 'Reginaldo Souza',
               username: 'regis',
               admin: 'Não',
@@ -112,7 +165,6 @@ const Users: React.FC = () => {
             {
               icon: () => <Edit className={classes.iconEdit} />,
               tooltip: 'Editar Usuário',
-              iconProps: { style: { float: 'right' } },
               onClick: (event, rowData: IRowData) =>
                 // eslint-disable-next-line no-alert
                 alert(`You saved ${rowData.name}`),
@@ -146,7 +198,7 @@ const Users: React.FC = () => {
           }}
           options={{
             actionsColumnIndex: -1,
-            actionsCellStyle: { paddingRight: 25 },
+            actionsCellStyle: { width: 'calc(5% + 0px)' },
           }}
         />
       </div>
