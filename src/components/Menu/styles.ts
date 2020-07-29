@@ -32,6 +32,7 @@ export const useStyles = makeStyles(theme => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
+    minHeight: '100vh',
   },
   drawerOpen: {
     width: drawerWidth,

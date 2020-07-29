@@ -4,14 +4,18 @@ import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
 import NewUser from './pages/Users/NewUser';
 import Forms from './pages/Forms';
+import NewForm from './pages/Forms/NewForm';
 
 const Routes: React.FC = () => {
   return (
     <>
       <Route exact path="/" component={Dashboard} />
+
       <Route path="/users" component={Users} />
       <Route path="/newuser" component={NewUser} />
+
       <Route path="/forms" component={Forms} />
+      <Route path="/newform" component={NewForm} />
     </>
   );
 };

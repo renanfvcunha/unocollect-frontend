@@ -5,6 +5,7 @@ import Menu from './components/Menu';
 import Login from './pages/Login';
 
 const App: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [logged, setLogged] = useState(true);
 
   if (!logged) {

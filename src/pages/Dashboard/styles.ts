@@ -8,7 +8,6 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     padding: theme.spacing(3),
     backgroundColor: '#e7e7e7',
-    height: '100vh',
   },
 }));
 
