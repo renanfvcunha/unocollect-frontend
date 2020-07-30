@@ -84,76 +84,94 @@ const NewForm: React.FC = () => {
       description: '',
     });
     fieldsForm.push(
-      <div key={i} className={classes.fieldsForm}>
-        {i === fieldsLength - 1 ? (
-          <ThemeProvider theme={Tooltips}>
-            <Tooltip
-              title="Adicionar Campo"
-              aria-label="add"
-              style={{ marginRight: '2.5%' }}
-              onClick={handleAddField}
-            >
-              <Fab color="primary" size="small">
-                <Add />
-              </Fab>
-            </Tooltip>
-          </ThemeProvider>
-        ) : (
-          <ThemeProvider theme={Tooltips}>
-            <Tooltip
-              title="Adicionar Campo"
-              aria-label="add"
-              style={{ marginRight: '2.5%', visibility: 'hidden' }}
-              onClick={handleAddField}
-            >
-              <Fab color="primary" size="small">
-                <Add />
-              </Fab>
-            </Tooltip>
-          </ThemeProvider>
-        )}
+      <div key={i}>
+        <div className={classes.fieldsForm}>
+          {i === fieldsLength - 1 ? (
+            <ThemeProvider theme={Tooltips}>
+              <Tooltip
+                title="Adicionar Campo"
+                aria-label="add"
+                style={{ marginRight: '2.5%' }}
+                onClick={handleAddField}
+              >
+                <Fab color="primary" size="small">
+                  <Add />
+                </Fab>
+              </Tooltip>
+            </ThemeProvider>
+          ) : (
+            <ThemeProvider theme={Tooltips}>
+              <Tooltip
+                title="Adicionar Campo"
+                aria-label="add"
+                style={{ marginRight: '2.5%', visibility: 'hidden' }}
+                onClick={handleAddField}
+              >
+                <Fab color="primary" size="small">
+                  <Add />
+                </Fab>
+              </Tooltip>
+            </ThemeProvider>
+          )}
 
-        <div className={classes.fieldsFormFields}>
-          <TextField
-            type="text"
-            name="name"
-            label={`Campo ${i + 1}`}
-            required
-            className={classes.margin}
-            fullWidth
-            size="small"
-            value={fields[i].name}
-            onChange={e => handleChangeFieldName(i, e)}
-          />
+          <div className={classes.fieldsFormFields}>
+            <TextField
+              type="text"
+              name="name"
+              label={`Campo ${i + 1}`}
+              required
+              className={classes.margin}
+              fullWidth
+              size="small"
+              value={fields[i].name}
+              onChange={e => handleChangeFieldName(i, e)}
+            />
 
-          <TextField
-            type="text"
-            name="name"
-            label="Descrição (Opcional)"
-            multiline
-            className={classes.margin}
-            fullWidth
-            size="small"
-            value={fields[i].description}
-            onChange={e => handleChangeFieldDesc(i, e)}
-          />
+            <TextField
+              type="text"
+              name="name"
+              label="Descrição (Opcional)"
+              multiline
+              className={classes.margin}
+              fullWidth
+              size="small"
+              value={fields[i].description}
+              onChange={e => handleChangeFieldDesc(i, e)}
+            />
+          </div>
+
+          {i === 0 && fieldsLength === 1 ? (
+            <ThemeProvider theme={Tooltips}>
+              <Tooltip
+                title="Remover Campo"
+                aria-label="remove"
+                style={{ marginLeft: '2.5%', visibility: 'hidden' }}
+                onClick={() => handleRemoveField(i, fields)}
+              >
+                <Fab color="secondary" size="small">
+                  <Remove />
+                </Fab>
+              </Tooltip>
+            </ThemeProvider>
+          ) : (
+            <ThemeProvider theme={Tooltips}>
+              <Tooltip
+                title="Remover Campo"
+                aria-label="remove"
+                style={{ marginLeft: '2.5%' }}
+                onClick={() => handleRemoveField(i, fields)}
+              >
+                <Fab color="secondary" size="small">
+                  <Remove />
+                </Fab>
+              </Tooltip>
+            </ThemeProvider>
+          )}
         </div>
 
-        <ThemeProvider theme={Tooltips}>
-          <Tooltip
-            title="Remover Campo"
-            aria-label="remove"
-            style={{ marginLeft: '2.5%' }}
-            onClick={() => handleRemoveField(i, fields)}
-          >
-            <Fab color="secondary" size="small">
-              <Remove />
-            </Fab>
-          </Tooltip>
-        </ThemeProvider>
-      </div>,
-      <div className={classes.fieldsDivider}>
-        <Divider style={{ width: '75%' }} />,
+        <div className={classes.fieldsDivider}>
+          <Divider style={{ width: '75%' }} />,
+        </div>
       </div>,
     );
     fields.splice(fieldsLength);
