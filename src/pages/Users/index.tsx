@@ -69,7 +69,7 @@ const Users: React.FC = () => {
 
       <div className="button">
         <ThemeProvider theme={Blue}>
-          <Link to="/newuser">
+          <Link to="/users/new">
             <Button variant="contained" color="primary">
               <PersonAdd className={classes.iconAdd} />
               Novo Usuário

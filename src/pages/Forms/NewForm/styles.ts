@@ -24,7 +24,7 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   formBox: {
     backgroundColor: '#fff',

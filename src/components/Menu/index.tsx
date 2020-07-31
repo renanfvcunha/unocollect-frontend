@@ -23,7 +23,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Group,
-  PostAdd,
+  Assignment,
 } from '@material-ui/icons';
 import { useStyles, BlueGrey } from './styles';
 import Routes from '../../routes';
@@ -127,7 +127,7 @@ const Header: React.FC<Title> = ({ title }) => {
             <List>
               <ListItem button>
                 <ListItemIcon>
-                  <PostAdd className={classes.icon} />
+                  <Assignment className={classes.icon} />
                 </ListItemIcon>
                 <ListItemText primary="Formulários" />
               </ListItem>
