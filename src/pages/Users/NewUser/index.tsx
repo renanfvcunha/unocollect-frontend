@@ -4,11 +4,10 @@ import {
   Button,
   ThemeProvider,
   Typography,
-  TextField,
   FormControl,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
-import { useStyles, Colors } from './styles';
+import { useStyles, BtnStyle, GreenTextField } from './styles';
 
 const NewUser: React.FC = () => {
   const classes = useStyles();
@@ -16,8 +15,8 @@ const NewUser: React.FC = () => {
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
-      <Link to="/users">
-        <ThemeProvider theme={Colors}>
+      <Link to="/users" style={{ position: 'absolute' }}>
+        <ThemeProvider theme={BtnStyle}>
           <Button variant="contained" color="primary">
             <ArrowBack className={classes.iconBack} />
             Voltar
@@ -25,64 +24,54 @@ const NewUser: React.FC = () => {
         </ThemeProvider>
       </Link>
 
-      <form className={classes.formBox}>
-        <Typography variant="h5" className={classes.title} align="center">
-          Novo Usuário
-        </Typography>
+      <div className={classes.form}>
+        <form className={classes.formBox}>
+          <div className={classes.formRoot}>
+            <Typography variant="h5" className={classes.title} align="center">
+              Novo Usuário
+            </Typography>
+            <GreenTextField
+              label="Matrícula"
+              required
+              className={classes.field}
+            />
 
-        <div className={classes.formRoot}>
-          <TextField
-            label="Matrícula"
-            fullWidth
-            required
-            className={classes.margin}
-            type="number"
-          />
+            <GreenTextField
+              label="Nome Completo"
+              required
+              className={classes.field}
+            />
 
-          <TextField
-            label="Nome Completo"
-            fullWidth
-            required
-            className={classes.margin}
-          />
+            <GreenTextField
+              label="Nome de Usuário"
+              required
+              className={classes.field}
+            />
 
-          <TextField
-            label="Nome de Usuário"
-            fullWidth
-            required
-            className={classes.margin}
-          />
+            <GreenTextField
+              label="Senha"
+              required
+              className={classes.field}
+              type="password"
+            />
 
-          <TextField
-            label="Senha"
-            fullWidth
-            required
-            className={classes.margin}
-            type="password"
-          />
+            <GreenTextField
+              label="Confirmar Senha"
+              required
+              className={classes.field}
+              type="password"
+            />
 
-          <TextField
-            label="Confirmar Senha"
-            fullWidth
-            required
-            className={classes.margin}
-            type="password"
-          />
-
-          <FormControl fullWidth className={classes.subButton}>
-            <ThemeProvider theme={Colors}>
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.margin}
-                type="submit"
-              >
-                Cadastrar
-              </Button>
-            </ThemeProvider>
-          </FormControl>
-        </div>
-      </form>
+            <FormControl className={classes.subButton}>
+              <ThemeProvider theme={BtnStyle}>
+                <Button variant="contained" color="primary" type="submit">
+                  Cadastrar
+                </Button>
+              </ThemeProvider>
+            </FormControl>
+          </div>
+        </form>
+      </div>
     </main>
   );
 };

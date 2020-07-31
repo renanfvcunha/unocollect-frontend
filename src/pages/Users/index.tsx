@@ -17,7 +17,7 @@ import {
 import MaterialTable, { Icons } from 'material-table';
 import * as PageTitleActions from '../../store/actions/pageTitle';
 import ModalConfirmation from '../../components/ModalConfirmation';
-import { useStyles, Blue } from './styles';
+import { useStyles, BtnStyle, TRow } from './styles';
 
 interface PageTitle {
   pageTitle: {
@@ -68,7 +68,7 @@ const Users: React.FC = () => {
       <div className={classes.toolbar} />
 
       <div className="button">
-        <ThemeProvider theme={Blue}>
+        <ThemeProvider theme={BtnStyle}>
           <Link to="/users/new">
             <Button variant="contained" color="primary">
               <PersonAdd className={classes.iconAdd} />
@@ -79,131 +79,137 @@ const Users: React.FC = () => {
       </div>
 
       <div className={classes.table}>
-        <MaterialTable
-          title="Lista de Usuários"
-          columns={[
-            {
-              title: 'Id',
-              field: 'id',
-              type: 'numeric',
-              align: 'left',
+        <ThemeProvider theme={TRow}>
+          <MaterialTable
+            title="Lista de Usuários"
+            columns={[
+              {
+                title: 'Id',
+                field: 'id',
+                type: 'numeric',
+                align: 'left',
+                headerStyle: {
+                  width: 'calc(5% + 0px)',
+                  maxWidth: 'calc(5% + 0px)',
+                },
+                cellStyle: {
+                  width: 'calc(5% + 0px)',
+                  maxWidth: 'calc(5% + 0px)',
+                },
+              },
+              {
+                title: 'Matrícula',
+                field: 'registration',
+                type: 'numeric',
+                align: 'left',
+                headerStyle: {
+                  width: 'calc(10% + 0px)',
+                  maxWidth: 'calc(10% + 0px)',
+                },
+                cellStyle: {
+                  width: 'calc(10% + 0px)',
+                  maxWidth: 'calc(10% + 0px)',
+                },
+              },
+              {
+                title: 'Nome',
+                field: 'name',
+                type: 'string',
+                align: 'left',
+              },
+              {
+                title: 'Nome de Usuário',
+                field: 'username',
+                type: 'string',
+                align: 'left',
+                headerStyle: {
+                  width: 'calc(15% + 0px)',
+                  maxWidth: 'calc(15% + 0px)',
+                },
+                cellStyle: {
+                  width: 'calc(15% + 0px)',
+                  maxWidth: 'calc(15% + 0px)',
+                },
+              },
+              {
+                title: 'Administrador',
+                field: 'admin',
+                type: 'string',
+                align: 'left',
+                headerStyle: {
+                  width: 'calc(15% + 0px)',
+                  maxWidth: 'calc(15% + 0px)',
+                },
+                cellStyle: {
+                  width: 'calc(15% + 0px)',
+                  maxWidth: 'calc(15% + 0px)',
+                },
+              },
+            ]}
+            data={[
+              {
+                id: 1,
+                registration: 2549,
+                name: 'Renan Fabrício Vieira da Cunha',
+                username: 'rcunha',
+                admin: 'Sim',
+              },
+              {
+                id: 2,
+                registration: 2560,
+                name: 'Reginaldo Souza',
+                username: 'regis',
+                admin: 'Não',
+              },
+            ]}
+            actions={[
+              {
+                icon: () => <Edit />,
+                tooltip: 'Editar Usuário',
+                onClick: (event, rowData: IRowData) =>
+                  // eslint-disable-next-line no-alert
+                  alert(`You saved ${rowData.name}`),
+              },
+              {
+                icon: () => <Delete />,
+                tooltip: 'Remover Usuário',
+                onClick: (event, rowData: IRowData) => {
+                  setModalOpen(true);
+                  setName(rowData.name);
+                },
+              },
+            ]}
+            icons={tableIcons}
+            localization={{
+              toolbar: {
+                searchPlaceholder: 'Procurar',
+                searchTooltip: 'Procurar',
+              },
+              header: {
+                actions: 'Ações',
+              },
+              body: {
+                emptyDataSourceMessage: 'Busca não obteve resultados',
+              },
+              pagination: {
+                firstTooltip: 'Primeira Página',
+                lastTooltip: 'Última Página',
+                previousTooltip: 'Página Anterior',
+                nextTooltip: 'Próxima Página',
+                labelDisplayedRows: '{from}-{to} de {count}',
+                labelRowsSelect: 'linhas',
+              },
+            }}
+            options={{
+              actionsColumnIndex: -1,
+              actionsCellStyle: { width: 'calc(5% + 0px)' },
               headerStyle: {
-                width: 'calc(5% + 0px)',
-                maxWidth: 'calc(5% + 0px)',
+                backgroundColor: '#66bb6a',
+                color: '#fff',
               },
-              cellStyle: {
-                width: 'calc(5% + 0px)',
-                maxWidth: 'calc(5% + 0px)',
-              },
-            },
-            {
-              title: 'Matrícula',
-              field: 'registration',
-              type: 'numeric',
-              align: 'left',
-              headerStyle: {
-                width: 'calc(10% + 0px)',
-                maxWidth: 'calc(10% + 0px)',
-              },
-              cellStyle: {
-                width: 'calc(10% + 0px)',
-                maxWidth: 'calc(10% + 0px)',
-              },
-            },
-            {
-              title: 'Nome',
-              field: 'name',
-              type: 'string',
-              align: 'left',
-            },
-            {
-              title: 'Nome de Usuário',
-              field: 'username',
-              type: 'string',
-              align: 'left',
-              headerStyle: {
-                width: 'calc(15% + 0px)',
-                maxWidth: 'calc(15% + 0px)',
-              },
-              cellStyle: {
-                width: 'calc(15% + 0px)',
-                maxWidth: 'calc(15% + 0px)',
-              },
-            },
-            {
-              title: 'Administrador',
-              field: 'admin',
-              type: 'string',
-              align: 'left',
-              headerStyle: {
-                width: 'calc(15% + 0px)',
-                maxWidth: 'calc(15% + 0px)',
-              },
-              cellStyle: {
-                width: 'calc(15% + 0px)',
-                maxWidth: 'calc(15% + 0px)',
-              },
-            },
-          ]}
-          data={[
-            {
-              id: 1,
-              registration: 2549,
-              name: 'Renan Fabrício Vieira da Cunha',
-              username: 'rcunha',
-              admin: 'Sim',
-            },
-            {
-              id: 2,
-              registration: 2560,
-              name: 'Reginaldo Souza',
-              username: 'regis',
-              admin: 'Não',
-            },
-          ]}
-          actions={[
-            {
-              icon: () => <Edit className={classes.iconEdit} />,
-              tooltip: 'Editar Usuário',
-              onClick: (event, rowData: IRowData) =>
-                // eslint-disable-next-line no-alert
-                alert(`You saved ${rowData.name}`),
-            },
-            {
-              icon: () => <Delete className={classes.iconDelete} />,
-              tooltip: 'Remover Usuário',
-              onClick: (event, rowData: IRowData) => {
-                setModalOpen(true);
-                setName(rowData.name);
-              },
-            },
-          ]}
-          icons={tableIcons}
-          localization={{
-            toolbar: {
-              searchPlaceholder: 'Procurar',
-              searchTooltip: 'Procurar',
-            },
-            header: {
-              actions: 'Ações',
-            },
-            body: {
-              emptyDataSourceMessage: 'Busca não obteve resultados',
-            },
-            pagination: {
-              firstTooltip: 'Primeira Página',
-              lastTooltip: 'Última Página',
-              previousTooltip: 'Página Anterior',
-              nextTooltip: 'Próxima Página',
-              labelDisplayedRows: '{from}-{to} de {count}',
-              labelRowsSelect: 'linhas',
-            },
-          }}
-          options={{
-            actionsColumnIndex: -1,
-            actionsCellStyle: { width: 'calc(5% + 0px)' },
-          }}
-        />
+            }}
+          />
+        </ThemeProvider>
       </div>
 
       <ModalConfirmation

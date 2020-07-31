@@ -18,7 +18,7 @@ import {
 import MaterialTable, { Icons } from 'material-table';
 import * as PageTitleActions from '../../store/actions/pageTitle';
 import ModalConfirmation from '../../components/ModalConfirmation';
-import { useStyles, Blue, TRow } from './styles';
+import { useStyles, BtnStyle, TRow } from './styles';
 
 interface PageTitle {
   pageTitle: {
@@ -70,7 +70,7 @@ const Dashboard: React.FC = () => {
       <div className={classes.toolbar} />
 
       <div className="button">
-        <ThemeProvider theme={Blue}>
+        <ThemeProvider theme={BtnStyle}>
           <Link to="/forms/new">
             <Button variant="contained" color="primary">
               <Assignment className={classes.iconAdd} />
@@ -169,7 +169,7 @@ const Dashboard: React.FC = () => {
                     history.push(`/forms/${rowData.id}`),
                 },
                 {
-                  icon: () => <Delete style={{ color: '#c62828' }} />,
+                  icon: () => <Delete />,
                   tooltip: 'Remover Formulário',
                   onClick: (event, rowData: IRowData) => {
                     setModalOpen(true);
@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
                   },
                 },
                 {
-                  icon: () => <PostAdd style={{ color: '#2e7d32' }} />,
+                  icon: () => <PostAdd />,
                   tooltip: 'Adicionar Preenchimento',
                   onClick: (event, rowData: IRowData) =>
                     history.push(`/fills/add/${rowData.id}`),

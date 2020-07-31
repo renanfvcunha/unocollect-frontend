@@ -1,5 +1,10 @@
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { blue, green } from '@material-ui/core/colors';
+import {
+  makeStyles,
+  createMuiTheme,
+  withStyles,
+} from '@material-ui/core/styles';
+import { TextField } from '@material-ui/core';
+import { green } from '@material-ui/core/colors';
 
 export const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -14,36 +19,64 @@ export const useStyles = makeStyles(theme => ({
     marginRight: 8,
   },
   title: {
-    fontWeight: 500,
+    fontWeight: 'bold',
     margin: theme.spacing(1),
+    color: '#66bb6a',
+  },
+  form: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
   },
   formBox: {
-    marginTop: 36,
     backgroundColor: '#fff',
     border: '1px solid #ccc',
     borderRadius: 12,
-    width: '50%',
-    marginLeft: '25%',
+    width: '60%',
   },
   formRoot: {
     display: 'flex',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  field: {
+    margin: theme.spacing(1),
+    width: '40%',
   },
   margin: {
     margin: theme.spacing(1),
   },
   subButton: {
+    margin: theme.spacing(1),
     marginTop: 8,
+    width: '40%',
   },
 }));
 
-export const Colors = createMuiTheme({
+export const BtnStyle = createMuiTheme({
+  overrides: {
+    MuiButton: {
+      containedPrimary: {
+        color: '#fff',
+      },
+    },
+  },
   palette: {
     primary: {
-      main: blue[800],
-    },
-    secondary: {
-      main: green[800],
+      main: green[400],
     },
   },
 });
+
+export const GreenTextField = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: '#66bb6a',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#66bb6a',
+    },
+  },
+})(TextField);

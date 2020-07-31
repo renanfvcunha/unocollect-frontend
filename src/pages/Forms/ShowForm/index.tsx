@@ -12,7 +12,7 @@ import {
   ArrowDownward,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
-import { useStyles, Buttons } from './styles';
+import { useStyles, BtnStyle, TRow } from './styles';
 
 const ShowForm: React.FC = () => {
   const { id } = useParams();
@@ -37,7 +37,7 @@ const ShowForm: React.FC = () => {
     <main className={classes.content}>
       <div className={classes.toolbar} />
       <Link to="/forms">
-        <ThemeProvider theme={Buttons}>
+        <ThemeProvider theme={BtnStyle}>
           <Button variant="contained" color="primary">
             <ArrowBack className={classes.iconBack} />
             Voltar
@@ -46,91 +46,93 @@ const ShowForm: React.FC = () => {
       </Link>
 
       <div className={classes.table}>
-        <MaterialTable
-          title="Visita na estação de energia da Zona Sul"
-          columns={[
-            {
-              title: 'Id',
-              field: 'id',
-              type: 'numeric',
-              align: 'left',
-            },
-            {
-              title: 'Campo 1',
-              field: 'field1',
-              type: 'string',
-              align: 'left',
-            },
-            {
-              title: 'Campo 2',
-              field: 'field2',
-              type: 'string',
-              align: 'left',
-            },
-            {
-              title: 'Campo 3',
-              field: 'field3',
-              type: 'string',
-              align: 'left',
-            },
-            {
-              title: 'Campo 4',
-              field: 'field4',
-              type: 'string',
-              align: 'left',
-            },
-            {
-              title: 'Criado Por',
-              field: 'created_by',
-              type: 'string',
-              align: 'left',
-            },
-            {
-              title: 'Criado Em',
-              field: 'created_at',
-              type: 'date',
-              align: 'left',
-            },
-          ]}
-          data={[
-            {
-              id: 1,
-              field1: 'Resposta do campo 1',
-              field2: 'Resposta do campo 2',
-              field3: 'Resposta do campo 3',
-              field4: 'Resposta do campo 4',
-              created_by: 'Renan Cunha',
-              created_at: '31/07/2020 17:11:35',
-            },
-          ]}
-          icons={tableIcons}
-          localization={{
-            toolbar: {
-              searchPlaceholder: 'Procurar',
-              searchTooltip: 'Procurar',
-            },
-            header: {
-              actions: 'Ações',
-            },
-            body: {
-              emptyDataSourceMessage: 'Busca não obteve resultados',
-            },
-            pagination: {
-              firstTooltip: 'Primeira Página',
-              lastTooltip: 'Última Página',
-              previousTooltip: 'Página Anterior',
-              nextTooltip: 'Próxima Página',
-              labelDisplayedRows: '{from}-{to} de {count}',
-              labelRowsSelect: 'linhas',
-            },
-          }}
-          options={{
-            headerStyle: {
-              backgroundColor: '#ab47bc',
-              color: '#fff',
-            },
-          }}
-        />
+        <ThemeProvider theme={TRow}>
+          <MaterialTable
+            title="Visita na estação de energia da Zona Sul"
+            columns={[
+              {
+                title: 'Id',
+                field: 'id',
+                type: 'numeric',
+                align: 'left',
+              },
+              {
+                title: 'Campo 1',
+                field: 'field1',
+                type: 'string',
+                align: 'left',
+              },
+              {
+                title: 'Campo 2',
+                field: 'field2',
+                type: 'string',
+                align: 'left',
+              },
+              {
+                title: 'Campo 3',
+                field: 'field3',
+                type: 'string',
+                align: 'left',
+              },
+              {
+                title: 'Campo 4',
+                field: 'field4',
+                type: 'string',
+                align: 'left',
+              },
+              {
+                title: 'Criado Por',
+                field: 'created_by',
+                type: 'string',
+                align: 'left',
+              },
+              {
+                title: 'Criado Em',
+                field: 'created_at',
+                type: 'date',
+                align: 'left',
+              },
+            ]}
+            data={[
+              {
+                id: 1,
+                field1: 'Resposta do campo 1',
+                field2: 'Resposta do campo 2',
+                field3: 'Resposta do campo 3',
+                field4: 'Resposta do campo 4',
+                created_by: 'Renan Cunha',
+                created_at: '31/07/2020 17:11:35',
+              },
+            ]}
+            icons={tableIcons}
+            localization={{
+              toolbar: {
+                searchPlaceholder: 'Procurar',
+                searchTooltip: 'Procurar',
+              },
+              header: {
+                actions: 'Ações',
+              },
+              body: {
+                emptyDataSourceMessage: 'Busca não obteve resultados',
+              },
+              pagination: {
+                firstTooltip: 'Primeira Página',
+                lastTooltip: 'Última Página',
+                previousTooltip: 'Página Anterior',
+                nextTooltip: 'Próxima Página',
+                labelDisplayedRows: '{from}-{to} de {count}',
+                labelRowsSelect: 'linhas',
+              },
+            }}
+            options={{
+              headerStyle: {
+                backgroundColor: '#ab47bc',
+                color: '#fff',
+              },
+            }}
+          />
+        </ThemeProvider>
       </div>
     </main>
   );

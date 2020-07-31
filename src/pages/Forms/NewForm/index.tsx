@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   ThemeProvider,
   Button,
-  TextField,
   FormControl,
   InputLabel,
   Select,
@@ -14,7 +13,7 @@ import {
   Fab,
 } from '@material-ui/core';
 import { ArrowBack, Add, Remove } from '@material-ui/icons';
-import { useStyles, Buttons, Tooltips } from './styles';
+import { useStyles, BtnStyle, Tooltips, BlueTextField } from './styles';
 
 interface Fields {
   name: string;
@@ -115,7 +114,7 @@ const NewForm: React.FC = () => {
           )}
 
           <div className={classes.fieldsFormFields}>
-            <TextField
+            <BlueTextField
               type="text"
               name="name"
               label={`Campo ${i + 1}`}
@@ -127,7 +126,7 @@ const NewForm: React.FC = () => {
               onChange={e => handleChangeFieldName(i, e)}
             />
 
-            <TextField
+            <BlueTextField
               type="text"
               name="name"
               label="Descrição (Opcional)"
@@ -190,7 +189,7 @@ const NewForm: React.FC = () => {
     <main className={classes.content}>
       <div className={classes.toolbar} />
       <Link to="/forms" style={{ position: 'absolute' }}>
-        <ThemeProvider theme={Buttons}>
+        <ThemeProvider theme={BtnStyle}>
           <Button variant="contained" color="primary">
             <ArrowBack className={classes.iconBack} />
             Voltar
@@ -205,7 +204,7 @@ const NewForm: React.FC = () => {
           </Typography>
 
           <div className={classes.mainForm}>
-            <TextField
+            <BlueTextField
               type="text"
               name="name"
               label="Nome do Formulário"
@@ -229,7 +228,7 @@ const NewForm: React.FC = () => {
               </Select>
             </FormControl>
 
-            <TextField
+            <BlueTextField
               type="text"
               name="description"
               label="Descrição (opcional)"
@@ -251,10 +250,10 @@ const NewForm: React.FC = () => {
 
           <div className={classes.subButton}>
             <FormControl style={{ width: '50%' }}>
-              <ThemeProvider theme={Buttons}>
+              <ThemeProvider theme={BtnStyle}>
                 <Button
                   variant="contained"
-                  color="secondary"
+                  color="primary"
                   className={classes.margin}
                   type="submit"
                 >

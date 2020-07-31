@@ -20,10 +20,17 @@ export const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const Blue = createMuiTheme({
+export const BtnStyle = createMuiTheme({
+  overrides: {
+    MuiButton: {
+      containedPrimary: {
+        color: '#fff',
+      },
+    },
+  },
   palette: {
     primary: {
-      main: blue[800],
+      main: blue[400],
     },
   },
 });

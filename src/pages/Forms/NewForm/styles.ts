@@ -1,5 +1,10 @@
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { blue, green, red } from '@material-ui/core/colors';
+import {
+  makeStyles,
+  createMuiTheme,
+  withStyles,
+} from '@material-ui/core/styles';
+import { TextField } from '@material-ui/core';
+import { blue, red } from '@material-ui/core/colors';
 
 export const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -72,16 +77,31 @@ export const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const Buttons = createMuiTheme({
+export const BtnStyle = createMuiTheme({
+  overrides: {
+    MuiButton: {
+      containedPrimary: {
+        color: '#fff',
+      },
+    },
+  },
   palette: {
     primary: {
-      main: blue[800],
-    },
-    secondary: {
-      main: green[800],
+      main: blue[400],
     },
   },
 });
+
+export const BlueTextField = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: '#42a5f5',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#42a5f5',
+    },
+  },
+})(TextField);
 
 export const Tooltips = createMuiTheme({
   palette: {

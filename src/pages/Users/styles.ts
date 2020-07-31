@@ -1,5 +1,5 @@
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { blue } from '@material-ui/core/colors';
+import { green } from '@material-ui/core/colors';
 
 export const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -18,18 +18,39 @@ export const useStyles = makeStyles(theme => ({
     marginTop: 24,
     marginBottom: 36,
   },
-  iconEdit: {
-    color: '#f9a825',
-  },
-  iconDelete: {
-    color: '#c62828',
-  },
 }));
 
-export const Blue = createMuiTheme({
+export const BtnStyle = createMuiTheme({
+  overrides: {
+    MuiButton: {
+      containedPrimary: {
+        color: '#fff',
+      },
+    },
+  },
   palette: {
     primary: {
-      main: blue[800],
+      main: green[400],
+    },
+  },
+});
+
+export const TRow = createMuiTheme({
+  overrides: {
+    MuiTableSortLabel: {
+      root: {
+        '&:hover': {
+          color: 'rgba(255, 255, 255, 0.75)',
+        },
+      },
+    },
+    MuiTableRow: {
+      root: {
+        '&:hover': {
+          backgroundColor: '#f0f0f0 !important',
+          cursor: 'default',
+        },
+      },
     },
   },
 });
