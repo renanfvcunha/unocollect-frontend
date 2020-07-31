@@ -26,7 +26,7 @@ const NewForm: React.FC = () => {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<number>(0);
+  const [category, setCategory] = useState(0);
 
   const [fields, setFields] = useState<Fields[]>([]);
   const [fieldsLength, setFieldsLength] = useState(1);

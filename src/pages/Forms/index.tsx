@@ -1,4 +1,4 @@
-import React, { useEffect, forwardRef } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { ThemeProvider, Button } from '@material-ui/core';
@@ -12,11 +12,12 @@ import {
   ChevronLeft,
   Search,
   ArrowDownward,
-  Edit,
+  Visibility,
   Delete,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
 import * as PageTitleActions from '../../store/actions/pageTitle';
+import ModalConfirmation from '../../components/ModalConfirmation';
 import { useStyles, Blue, TRow } from './styles';
 
 interface PageTitle {
@@ -34,6 +35,13 @@ interface IRowData {
 
 const Dashboard: React.FC = () => {
   const history = useHistory();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [name, setName] = useState('');
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -141,6 +149,9 @@ const Dashboard: React.FC = () => {
                 header: {
                   actions: 'Ações',
                 },
+                body: {
+                  emptyDataSourceMessage: 'Busca não obteve resultados',
+                },
                 pagination: {
                   firstTooltip: 'Primeira Página',
                   lastTooltip: 'Última Página',
@@ -152,17 +163,18 @@ const Dashboard: React.FC = () => {
               }}
               actions={[
                 {
-                  icon: () => <Edit style={{ color: '#f9a825' }} />,
-                  tooltip: 'Editar Formulário',
+                  icon: () => <Visibility />,
+                  tooltip: 'Visualizar Formulário',
                   onClick: (event, rowData: IRowData) =>
                     history.push(`/forms/${rowData.id}`),
                 },
                 {
                   icon: () => <Delete style={{ color: '#c62828' }} />,
                   tooltip: 'Remover Formulário',
-                  onClick: (event, rowData: IRowData) =>
-                    // eslint-disable-next-line no-alert
-                    alert(`Você deletou ${rowData.title}`),
+                  onClick: (event, rowData: IRowData) => {
+                    setModalOpen(true);
+                    setName(rowData.title);
+                  },
                 },
                 {
                   icon: () => <PostAdd style={{ color: '#2e7d32' }} />,
@@ -182,6 +194,14 @@ const Dashboard: React.FC = () => {
           </ThemeProvider>
         </div>
       </div>
+
+      <ModalConfirmation
+        open={modalOpen}
+        close={handleModalClose}
+        name={`o formulário "${name}"`}
+        cancel="Cancelar"
+        del="Remover"
+      />
     </main>
   );
 };

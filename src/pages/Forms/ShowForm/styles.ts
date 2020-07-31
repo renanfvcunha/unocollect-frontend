@@ -1,6 +1,7 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import { blue, green } from '@material-ui/core/colors';
 
-const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles(theme => ({
   toolbar: {
     ...theme.mixins.toolbar,
   },
@@ -9,6 +10,23 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
     backgroundColor: '#e7e7e7',
   },
+  iconBack: {
+    marginRight: 8,
+  },
+  table: {
+    width: '100%',
+    marginTop: 24,
+    marginBottom: 36,
+  },
 }));
 
-export default useStyles;
+export const Buttons = createMuiTheme({
+  palette: {
+    primary: {
+      main: blue[800],
+    },
+    secondary: {
+      main: green[800],
+    },
+  },
+});

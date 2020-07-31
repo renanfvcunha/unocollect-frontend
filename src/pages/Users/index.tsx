@@ -16,7 +16,7 @@ import {
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
 import * as PageTitleActions from '../../store/actions/pageTitle';
-import Modal from '../../components/Modal';
+import ModalConfirmation from '../../components/ModalConfirmation';
 import { useStyles, Blue } from './styles';
 
 interface PageTitle {
@@ -187,6 +187,9 @@ const Users: React.FC = () => {
             header: {
               actions: 'Ações',
             },
+            body: {
+              emptyDataSourceMessage: 'Busca não obteve resultados',
+            },
             pagination: {
               firstTooltip: 'Primeira Página',
               lastTooltip: 'Última Página',
@@ -203,7 +206,7 @@ const Users: React.FC = () => {
         />
       </div>
 
-      <Modal
+      <ModalConfirmation
         open={modalOpen}
         close={handleModalClose}
         name={name}

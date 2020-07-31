@@ -41,7 +41,13 @@ const Red = createMuiTheme({
   },
 });
 
-const Modal: React.FC<IModal> = ({ open, close, name, cancel, del }) => {
+const ModalConfirmation: React.FC<IModal> = ({
+  open,
+  close,
+  name,
+  cancel,
+  del,
+}) => {
   return (
     <div>
       <Dialog
@@ -73,7 +79,7 @@ const Modal: React.FC<IModal> = ({ open, close, name, cancel, del }) => {
   );
 };
 
-Modal.propTypes = {
+ModalConfirmation.propTypes = {
   open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   name: PropTypes.string,
@@ -81,8 +87,8 @@ Modal.propTypes = {
   del: PropTypes.string.isRequired,
 };
 
-Modal.defaultProps = {
+ModalConfirmation.defaultProps = {
   name: '',
 };
 
-export default Modal;
+export default ModalConfirmation;
