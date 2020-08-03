@@ -1,14 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Typography } from '@material-ui/core';
-import * as PageTitleActions from '../../store/actions/pageTitle';
+import { ApplicationState } from '../../store';
+import * as PageTitleActions from '../../store/modules/pageTitle/actions';
 import useStyles from './styles';
-
-interface PageTitle {
-  pageTitle: {
-    title?: string;
-  };
-}
 
 const Dashboard: React.FC = () => {
   const classes = useStyles();
@@ -54,6 +49,6 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default connect((state: PageTitle) => ({
+export default connect((state: ApplicationState) => ({
   title: state.pageTitle.title,
 }))(Dashboard);

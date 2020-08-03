@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import {
   ThemeProvider,
   Button,
@@ -9,11 +10,19 @@ import {
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import { Link, useParams } from 'react-router-dom';
+import { ApplicationState } from '../../../store';
+import * as PageTitleActions from '../../../store/modules/pageTitle/actions';
 import { useStyles, Buttons } from './styles';
 
 const NewFill: React.FC = () => {
   const { formId } = useParams();
   const classes = useStyles();
+  const pageTitle = 'Formulários > Novo Preenchimento';
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(PageTitleActions.default(pageTitle));
+  }, [dispatch]);
 
   return (
     <main className={classes.content}>
@@ -85,4 +94,6 @@ const NewFill: React.FC = () => {
   );
 };
 
-export default NewFill;
+export default connect((state: ApplicationState) => ({
+  title: state.pageTitle.title
+}))(NewFill);

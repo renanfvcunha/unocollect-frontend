@@ -25,17 +25,12 @@ import {
   Group,
   Assignment,
 } from '@material-ui/icons';
+import { ApplicationState } from '../../store';
 import { useStyles, BlueGrey } from './styles';
 import Routes from '../../routes';
 
-interface PageTitle {
-  pageTitle: {
-    title?: string;
-  };
-}
-
 interface Title {
-  title?: string;
+  title: string;
 }
 
 const Header: React.FC<Title> = ({ title }) => {
@@ -154,13 +149,9 @@ const Header: React.FC<Title> = ({ title }) => {
 };
 
 Header.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.string.isRequired,
 };
 
-Header.defaultProps = {
-  title: '',
-};
-
-export default connect((state: PageTitle) => ({
+export default connect((state: ApplicationState) => ({
   title: state.pageTitle.title,
 }))(Header);

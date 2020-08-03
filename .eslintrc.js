@@ -35,6 +35,8 @@ module.exports = {
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
     'react/jsx-props-no-spreading': 'off',
     'react/jsx-one-expression-per-line': 'off',
+    'no-console': ['warn', { allow: ['tron'] }],
+    '@typescript-eslint/no-non-null-assertion': ['warn', { allow: ['tron'] }],
     'import/extensions': [
       'error',
       'ignorePackages',

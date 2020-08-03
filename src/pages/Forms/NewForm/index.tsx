@@ -1,5 +1,6 @@
-import React, { useState, FormEvent, ChangeEvent } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { connect, useDispatch } from 'react-redux';
 import {
   ThemeProvider,
   Button,
@@ -13,6 +14,8 @@ import {
   Fab,
 } from '@material-ui/core';
 import { ArrowBack, Add, Remove } from '@material-ui/icons';
+import { ApplicationState } from '../../../store';
+import * as PageTitleActions from '../../../store/modules/pageTitle/actions';
 import { useStyles, BtnStyle, Tooltips, BlueTextField } from './styles';
 
 interface Fields {
@@ -22,6 +25,8 @@ interface Fields {
 
 const NewForm: React.FC = () => {
   const classes = useStyles();
+  const pageTitle = 'Formulários > Novo Formulário';
+  const dispatch = useDispatch();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -29,6 +34,10 @@ const NewForm: React.FC = () => {
 
   const [fields, setFields] = useState<Fields[]>([]);
   const [fieldsLength, setFieldsLength] = useState(1);
+
+  useEffect(() => {
+    dispatch(PageTitleActions.default(pageTitle));
+  }, [dispatch]);
 
   function handleAddField() {
     setFieldsLength(fieldsLength + 1);
@@ -129,7 +138,7 @@ const NewForm: React.FC = () => {
             <BlueTextField
               type="text"
               name="name"
-              label="Descrição (Opcional)"
+              label="Descrição (opcional)"
               multiline
               className={classes.margin}
               fullWidth
@@ -268,4 +277,6 @@ const NewForm: React.FC = () => {
   );
 };
 
-export default NewForm;
+export default connect((state: ApplicationState) => ({
+  title: state.pageTitle.title
+}))(NewForm);

@@ -16,15 +16,10 @@ import {
   Delete,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
-import * as PageTitleActions from '../../store/actions/pageTitle';
+import { ApplicationState } from '../../store';
+import * as PageTitleActions from '../../store/modules/pageTitle/actions';
 import ModalConfirmation from '../../components/ModalConfirmation';
 import { useStyles, BtnStyle, TRow } from './styles';
-
-interface PageTitle {
-  pageTitle: {
-    title?: string;
-  };
-}
 
 interface IRowData {
   id: number;
@@ -45,10 +40,10 @@ const Dashboard: React.FC = () => {
 
   const classes = useStyles();
   const dispatch = useDispatch();
-  const title = 'Formulários';
+  const pageTitle = 'Formulários';
 
   useEffect(() => {
-    dispatch(PageTitleActions.default(title));
+    dispatch(PageTitleActions.default(pageTitle));
   }, [dispatch]);
 
   const tableIcons: Icons = {
@@ -206,6 +201,6 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default connect((state: PageTitle) => ({
+export default connect((state: ApplicationState) => ({
   title: state.pageTitle.title,
 }))(Dashboard);

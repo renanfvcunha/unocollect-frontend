@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react';
+import React, { useEffect, forwardRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { connect, useDispatch } from 'react-redux';
 import { ThemeProvider, Button } from '@material-ui/core';
 import {
   ArrowBack,
@@ -12,12 +13,19 @@ import {
   ArrowDownward,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
+import { ApplicationState } from '../../../store';
+import * as PageTitleActions from '../../../store/modules/pageTitle/actions';
 import { useStyles, BtnStyle, TRow } from './styles';
 
 const ShowForm: React.FC = () => {
   const { id } = useParams();
-
   const classes = useStyles();
+  const pageTitle = 'Formulários > Visualizar Formulário';
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(PageTitleActions.default(pageTitle));
+  }, [dispatch]);
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -138,4 +146,6 @@ const ShowForm: React.FC = () => {
   );
 };
 
-export default ShowForm;
+export default connect((state: ApplicationState) => ({
+  title: state.pageTitle.title
+}))(ShowForm);

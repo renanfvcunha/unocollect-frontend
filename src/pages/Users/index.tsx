@@ -15,15 +15,10 @@ import {
   Delete,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
-import * as PageTitleActions from '../../store/actions/pageTitle';
+import { ApplicationState } from '../../store';
+import * as PageTitleActions from '../../store/modules/pageTitle/actions';
 import ModalConfirmation from '../../components/ModalConfirmation';
 import { useStyles, BtnStyle, TRow } from './styles';
-
-interface PageTitle {
-  pageTitle: {
-    title?: string;
-  };
-}
 
 interface IRowData {
   id: number;
@@ -36,7 +31,7 @@ interface IRowData {
 const Users: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const title = 'Usuários';
+  const pageTitle = 'Usuários';
 
   const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState('');
@@ -46,7 +41,7 @@ const Users: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(PageTitleActions.default(title));
+    dispatch(PageTitleActions.default(pageTitle));
   }, [dispatch]);
 
   const tableIcons: Icons = {
@@ -223,6 +218,6 @@ const Users: React.FC = () => {
   );
 };
 
-export default connect((state: PageTitle) => ({
+export default connect((state: ApplicationState) => ({
   title: state.pageTitle.title,
 }))(Users);

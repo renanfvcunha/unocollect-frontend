@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { connect, useDispatch } from 'react-redux';
 import {
   Button,
   ThemeProvider,
@@ -7,10 +8,18 @@ import {
   FormControl,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
+import { ApplicationState } from '../../../store';
+import * as PageTitleActions from '../../../store/modules/pageTitle/actions';
 import { useStyles, BtnStyle, GreenTextField } from './styles';
 
 const NewUser: React.FC = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const pageTitle = 'Usuários > Novo Usuário';
+
+  useEffect(() => {
+    dispatch(PageTitleActions.default(pageTitle));
+  }, [dispatch]);
 
   return (
     <main className={classes.content}>
@@ -76,4 +85,6 @@ const NewUser: React.FC = () => {
   );
 };
 
-export default NewUser;
+export default connect((state: ApplicationState) => ({
+  title: state.pageTitle.title,
+}))(NewUser);
