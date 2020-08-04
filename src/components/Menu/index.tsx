@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Link } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
   Drawer,
@@ -31,11 +30,13 @@ import { logout } from '../../store/modules/auth/actions';
 import { useStyles, BlueGrey } from './styles';
 import Routes from '../../routes';
 
-interface Title {
+interface StateProps {
   title: string;
+  name: string;
+  admin: boolean;
 }
 
-const Header: React.FC<Title> = ({ title }) => {
+const Header: React.FC<StateProps> = ({ title, name, admin }) => {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -101,7 +102,7 @@ const Header: React.FC<Title> = ({ title }) => {
         >
           <div>
             <div className={classes.toolbar}>
-              <span className={classes.welcome}>Olá, Renan.</span>
+              <span className={classes.welcome}>Olá, {name.split(' ')[0]}.</span>
               <IconButton onClick={handleDrawerClose}>
                 {theme.direction === 'rtl' ? (
                   <ChevronRight className={classes.icon} />
@@ -114,6 +115,7 @@ const Header: React.FC<Title> = ({ title }) => {
 
           <Divider />
 
+          { admin ?
           <Link to="/" className={classes.link}>
             <List>
               <ListItem button>
@@ -124,6 +126,8 @@ const Header: React.FC<Title> = ({ title }) => {
               </ListItem>
             </List>
           </Link>
+          : ''
+          }
 
           <Link to="/forms" className={classes.link}>
             <List>
@@ -136,6 +140,7 @@ const Header: React.FC<Title> = ({ title }) => {
             </List>
           </Link>
 
+          { admin ?
           <Link to="/users" className={classes.link}>
             <List>
               <ListItem button>
@@ -146,6 +151,8 @@ const Header: React.FC<Title> = ({ title }) => {
               </ListItem>
             </List>
           </Link>
+          : ''
+          }
           
           <Divider />
 
@@ -166,10 +173,8 @@ const Header: React.FC<Title> = ({ title }) => {
   );
 };
 
-Header.propTypes = {
-  title: PropTypes.string.isRequired,
-};
-
 export default connect((state: ApplicationState) => ({
   title: state.pageTitle.title,
+  name: state.auth.user.name,
+  admin: state.auth.user.admin,
 }))(Header);

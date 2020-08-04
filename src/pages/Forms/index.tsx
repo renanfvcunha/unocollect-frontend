@@ -16,10 +16,15 @@ import {
   Delete,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
+
 import { ApplicationState } from '../../store';
-import * as PageTitleActions from '../../store/modules/pageTitle/actions';
+import setPageTitle from '../../store/modules/pageTitle/actions';
 import ModalConfirmation from '../../components/ModalConfirmation';
 import { useStyles, BtnStyle, TRow } from './styles';
+
+interface StateProps {
+  admin: boolean;
+}
 
 interface IRowData {
   id: number;
@@ -28,7 +33,7 @@ interface IRowData {
   fills: number;
 }
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<StateProps> = ({ admin }) => {
   const history = useHistory();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,7 +48,7 @@ const Dashboard: React.FC = () => {
   const pageTitle = 'Formulários';
 
   useEffect(() => {
-    dispatch(PageTitleActions.default(pageTitle));
+    dispatch(setPageTitle(pageTitle));
   }, [dispatch]);
 
   const tableIcons: Icons = {
@@ -65,14 +70,17 @@ const Dashboard: React.FC = () => {
       <div className={classes.toolbar} />
 
       <div className="button">
+        { admin ?
         <ThemeProvider theme={BtnStyle}>
           <Link to="/forms/new">
-            <Button variant="contained" color="primary">
-              <Assignment className={classes.iconAdd} />
+            <Button variant="contained" color="primary" style={{ marginBottom: 24 }}>
+              <Assignment style={{ marginRight: 8 }} />
               Novo Formulário
             </Button>
           </Link>
         </ThemeProvider>
+        : ''
+        }
 
         <div className={classes.table}>
           <ThemeProvider theme={TRow}>
@@ -156,7 +164,7 @@ const Dashboard: React.FC = () => {
                   labelRowsSelect: 'linhas',
                 },
               }}
-              actions={[
+              actions={ admin ? [
                 {
                   icon: () => <Visibility />,
                   tooltip: 'Visualizar Formulário',
@@ -171,6 +179,13 @@ const Dashboard: React.FC = () => {
                     setName(rowData.title);
                   },
                 },
+                {
+                  icon: () => <PostAdd />,
+                  tooltip: 'Adicionar Preenchimento',
+                  onClick: (event, rowData: IRowData) =>
+                    history.push(`/fills/add/${rowData.id}`),
+                },
+              ] : [
                 {
                   icon: () => <PostAdd />,
                   tooltip: 'Adicionar Preenchimento',
@@ -202,5 +217,5 @@ const Dashboard: React.FC = () => {
 };
 
 export default connect((state: ApplicationState) => ({
-  title: state.pageTitle.title,
+  admin: state.auth.user.admin,
 }))(Dashboard);

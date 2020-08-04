@@ -1,5 +1,6 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { AnyAction } from 'redux';
+import { createBrowserHistory } from 'history';
 import api from '../../../services/api';
 import { AuthTypes } from './types';
 import { loginSuccess, loginFailure } from './actions';
@@ -10,6 +11,8 @@ interface Payload extends AnyAction {
     password: string;
   }
 }
+
+const history = createBrowserHistory();
 
 export function* login({ payload }: Payload) {
   try {
@@ -22,8 +25,12 @@ export function* login({ payload }: Payload) {
   
     const { token, user } = response.data;
   
-    api.defaults.headers.Authorization = `Bearer ${token}`
-  
+    // api.defaults.headers.Authorization = `Bearer ${token}`;
+
+    if (!user.admin) {
+      yield history.push('/forms');
+    }
+
     yield put(loginSuccess(token, user));
   } catch (err) {
     alert(err.response.data.msg);
@@ -31,6 +38,11 @@ export function* login({ payload }: Payload) {
   }
 }
 
+export function* logout() {
+  yield history.push('/');
+}
+
 export default all([
-  takeLatest(AuthTypes.LOGIN_REQUEST, login)
+  takeLatest(AuthTypes.LOGIN_REQUEST, login),
+  takeLatest(AuthTypes.LOGOUT, logout)
 ]);

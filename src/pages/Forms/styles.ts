@@ -10,12 +10,8 @@ export const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
     backgroundColor: '#e7e7e7',
   },
-  iconAdd: {
-    marginRight: 8,
-  },
   table: {
     width: '100%',
-    marginTop: 24,
     marginBottom: 36,
   },
 }));

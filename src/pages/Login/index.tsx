@@ -1,23 +1,26 @@
 import React, { useState, FormEvent } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Avatar,
   Button,
   CssBaseline,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Typography,
   Container,
+  CircularProgress,
 } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
+
+import { ApplicationState } from '../../store';
 import { loginRequest } from '../../store/modules/auth/actions';
-import tron from '../../config/ReactotronConfig';
 import useStyles from './styles';
 
 const Login: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const loading = useSelector(
+    (state: ApplicationState) => state.auth.loading
+  );
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -52,6 +55,7 @@ const Login: React.FC = () => {
               value={username}
               onChange={e => setUsername(e.target.value)}
             />
+
             <TextField
               variant="outlined"
               margin="normal"
@@ -65,6 +69,14 @@ const Login: React.FC = () => {
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
+
+            { loading ?
+            <div className={classes.progress}>
+              <CircularProgress />
+            </div>
+            : ''
+            }
+
             <Button
               type="submit"
               fullWidth
