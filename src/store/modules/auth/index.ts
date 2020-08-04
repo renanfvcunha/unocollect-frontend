@@ -3,7 +3,7 @@ import { AuthState, AuthTypes } from './types';
 
 const INITIAL_STATE: AuthState = {
   token: '',
-  logged: true,
+  logged: false,
   loading: false,
   error: false,
 }

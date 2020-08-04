@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, FormEvent } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Avatar,
   Button,
@@ -10,10 +11,22 @@ import {
   Container,
 } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
+import { loginRequest } from '../../store/modules/auth/actions';
+import tron from '../../config/ReactotronConfig';
 import useStyles from './styles';
 
 const Login: React.FC = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    dispatch(loginRequest(username, password));
+  }
 
   return (
     <main className={classes.content}>
@@ -26,7 +39,7 @@ const Login: React.FC = () => {
           <Typography component="h1" variant="h5">
             Data Collector - Login
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -36,6 +49,8 @@ const Login: React.FC = () => {
               label="Usuário"
               name="username"
               autoFocus
+              value={username}
+              onChange={e => setUsername(e.target.value)}
             />
             <TextField
               variant="outlined"
@@ -47,6 +62,8 @@ const Login: React.FC = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

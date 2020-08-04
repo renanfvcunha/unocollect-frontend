@@ -7,5 +7,5 @@ export const loginRequest = (username: string, password: string) =>
 export const loginSuccess = (token: string, user: User) =>
   action(AuthTypes.LOGIN_SUCCESS, { token, user });
 
-export const loginFailure = (msg: string) =>
-  action(AuthTypes.LOGIN_FAILURE, { msg });
+export const loginFailure = () =>
+  action(AuthTypes.LOGIN_FAILURE);
