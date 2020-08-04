@@ -6,6 +6,7 @@ export enum AuthTypes {
   LOGIN_REQUEST = '@auth/LOGIN_REQUEST',
   LOGIN_SUCCESS = '@auth/LOGIN_SUCCESS',
   LOGIN_FAILURE = '@auth/LOGIN_FAILURE',
+  LOGOUT = '@auth/LOGOUT',
 }
 
 /**
@@ -18,12 +19,13 @@ export interface Auth {
 }
 
 export interface User {
-  id: number;
-  name: string;
-  admin: boolean;
+  id?: number;
+  name?: string;
+  admin?: boolean;
 }
 
 export interface AuthState {
+  readonly user: User;
   readonly token: string;
   readonly logged: boolean;
   readonly loading: boolean;

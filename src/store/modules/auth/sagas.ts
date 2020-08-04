@@ -1,6 +1,5 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { AnyAction } from 'redux';
-import tron from '../../../config/ReactotronConfig';
 import api from '../../../services/api';
 import { AuthTypes } from './types';
 import { loginSuccess, loginFailure } from './actions';

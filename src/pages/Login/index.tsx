@@ -65,10 +65,6 @@ const Login: React.FC = () => {
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Lembrar"
-            />
             <Button
               type="submit"
               fullWidth

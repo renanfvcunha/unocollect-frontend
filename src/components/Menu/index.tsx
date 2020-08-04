@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
@@ -24,8 +24,10 @@ import {
   ChevronRight,
   Group,
   Assignment,
+  ExitToApp
 } from '@material-ui/icons';
 import { ApplicationState } from '../../store';
+import { logout } from '../../store/modules/auth/actions';
 import { useStyles, BlueGrey } from './styles';
 import Routes from '../../routes';
 
@@ -36,16 +38,21 @@ interface Title {
 const Header: React.FC<Title> = ({ title }) => {
   const classes = useStyles();
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
 
-  const handleDrawerOpen = () => {
+  function handleDrawerOpen() {
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
+  function handleDrawerClose() {
     setOpen(false);
   };
+
+  function handleLogout() {
+    dispatch(logout());
+  }
 
   return (
     <div className={classes.root}>
@@ -139,6 +146,17 @@ const Header: React.FC<Title> = ({ title }) => {
               </ListItem>
             </List>
           </Link>
+          
+          <Divider />
+
+          <List>
+            <ListItem button>
+              <ListItemIcon onClick={handleLogout}>
+                <ExitToApp className={classes.icon} />
+              </ListItemIcon>
+              <ListItemText primary="Sair" onClick={handleLogout} />
+            </ListItem>
+          </List>
         </Drawer>
 
         {/** App Routes */}

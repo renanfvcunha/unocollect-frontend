@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions';
-import { AuthTypes, Auth, User } from './types';
+import { AuthTypes, User } from './types';
 
 export const loginRequest = (username: string, password: string) =>
   action(AuthTypes.LOGIN_REQUEST, {username, password});
@@ -9,3 +9,6 @@ export const loginSuccess = (token: string, user: User) =>
 
 export const loginFailure = () =>
   action(AuthTypes.LOGIN_FAILURE);
+
+export const logout = () =>
+  action(AuthTypes.LOGOUT);
