@@ -61,7 +61,8 @@ const ModalConfirmation: React.FC<IModal> = ({
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Deseja remover permanentemente {name}?
+            Deseja remover permanentemente{' '}
+            <span style={{ fontWeight: 'bold' }}>{name}</span>?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

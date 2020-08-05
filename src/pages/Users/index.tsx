@@ -143,12 +143,15 @@ const Users: React.FC = () => {
               },
             ]}
             data={query =>
-              new Promise((resolve, reject) => {
-                api.get('users').then(response => {
+              new Promise(resolve => {
+                const url = `users?per_page=${
+                  query.pageSize
+                }&page=${query.page + 1}&search=${query.search}`;
+                api.get(url).then(response => {
                   resolve({
-                    data: response.data,
-                    page: 0,
-                    totalCount: 1,
+                    data: response.data.users,
+                    page: response.data.page - 1,
+                    totalCount: response.data.total,
                   });
                 });
               })
