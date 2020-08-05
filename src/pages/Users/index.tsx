@@ -21,7 +21,7 @@ import { useStyles, BtnStyle, TRow } from './styles';
 import setPageTitle from '../../store/modules/pageTitle/actions';
 import api from '../../services/api';
 
-interface IRowData {
+interface RowData {
   id: number;
   registration: number;
   name: string;
@@ -157,14 +157,14 @@ const Users: React.FC = () => {
               {
                 icon: () => <Edit />,
                 tooltip: 'Editar Usuário',
-                onClick: (event, rowData: IRowData) =>
+                onClick: (event, rowData: RowData) =>
                   // eslint-disable-next-line no-alert
                   alert(`You saved ${rowData.name}`),
               },
               {
                 icon: () => <Delete />,
                 tooltip: 'Remover Usuário',
-                onClick: (event, rowData: IRowData) => {
+                onClick: (event, rowData: RowData) => {
                   setModalOpen(true);
                   setName(rowData.name);
                 },

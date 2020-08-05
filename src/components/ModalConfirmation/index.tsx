@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 
 interface IModal {
   open: boolean;
-  close: () => void;
+  close(): void;
   name?: string;
   cancel: string;
   del: string;

@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Avatar,
@@ -12,24 +12,44 @@ import {
 import { LockOutlined } from '@material-ui/icons';
 
 import { ApplicationState } from '../../store';
-import { loginRequest } from '../../store/modules/auth/actions';
+import { loginRequest, setErrorFalse } from '../../store/modules/auth/actions';
 import useStyles from './styles';
+import ModalAlert from '../../components/ModalAlert';
 
 const Login: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const loading = useSelector(
-    (state: ApplicationState) => state.auth.loading
+  const loading = useSelector((state: ApplicationState) => state.auth.loading);
+  const error = useSelector((state: ApplicationState) => state.auth.error);
+  const errorMsg = useSelector(
+    (state: ApplicationState) => state.auth.errorMsg,
+  );
+  const errorTitle = useSelector(
+    (state: ApplicationState) => state.auth.errorTitle,
   );
 
+  const [modalOpen, setModalOpen] = useState(false);
+  // const [errorMsg, setErrorMsg] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  function handleModalClose() {
+    setModalOpen(false);
+  }
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
     dispatch(loginRequest(username, password));
   }
+
+  useEffect(() => {
+    if (error) {
+      setModalOpen(true);
+
+      dispatch(setErrorFalse());
+    }
+  }, [error, dispatch]);
 
   return (
     <main className={classes.content}>
@@ -70,12 +90,13 @@ const Login: React.FC = () => {
               onChange={e => setPassword(e.target.value)}
             />
 
-            { loading ?
-            <div className={classes.progress}>
-              <CircularProgress />
-            </div>
-            : ''
-            }
+            {loading ? (
+              <div className={classes.progress}>
+                <CircularProgress />
+              </div>
+            ) : (
+              ''
+            )}
 
             <Button
               type="submit"
@@ -89,6 +110,12 @@ const Login: React.FC = () => {
           </form>
         </div>
       </Container>
+      <ModalAlert
+        open={modalOpen}
+        close={handleModalClose}
+        title={errorTitle}
+        msg={errorMsg}
+      />
     </main>
   );
 };
