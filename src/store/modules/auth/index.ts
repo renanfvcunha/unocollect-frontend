@@ -3,12 +3,12 @@ import { AuthState, AuthTypes } from './types';
 
 const INITIAL_STATE: AuthState = {
   user: {},
-  token: '',
+  token: undefined,
   logged: false,
   loading: false,
   error: false,
   errorTitle: 'Erro',
-  errorMsg: '',
+  errorMsg: undefined,
 };
 
 const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
@@ -18,12 +18,13 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
 
     case AuthTypes.LOGIN_SUCCESS:
       return {
-        ...state,
         loading: false,
         error: false,
         logged: true,
         user: action.payload.user,
         token: action.payload.token,
+        errorTitle: undefined,
+        errorMsg: undefined,
       };
 
     case AuthTypes.LOGIN_FAILURE:
@@ -31,6 +32,7 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
         ...state,
         loading: false,
         error: true,
+        errorTitle: 'Erro',
         errorMsg: action.payload.errorMsg,
       };
 

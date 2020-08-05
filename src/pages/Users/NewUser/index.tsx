@@ -1,15 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   ThemeProvider,
   Typography,
   FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
-import { ApplicationState } from '../../../store';
-import * as PageTitleActions from '../../../store/modules/pageTitle/actions';
+
+// import { ApplicationState } from '../../../store';
+import setPageTitle from '../../../store/modules/pageTitle/actions';
+import { addUserRequest } from '../../../store/modules/users/actions';
 import { useStyles, BtnStyle, GreenTextField } from './styles';
 
 const NewUser: React.FC = () => {
@@ -17,9 +22,35 @@ const NewUser: React.FC = () => {
   const dispatch = useDispatch();
   const pageTitle = 'Usuários > Novo Usuário';
 
+  const [registration, setRegistration] = useState('');
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
+  const [admin, setAdmin] = useState('0');
+  const [password, setPassword] = useState('');
+  const [passwordConf, setPasswordConf] = useState('');
+
   useEffect(() => {
-    dispatch(PageTitleActions.default(pageTitle));
+    dispatch(setPageTitle(pageTitle));
   }, [dispatch]);
+
+  function handleSelectAdmin(e: ChangeEvent<HTMLSelectElement>) {
+    setAdmin(e.target.value);
+  }
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    const data = {
+      registration: Number(registration),
+      name,
+      username,
+      admin: admin === '1',
+      password,
+      passwordConf,
+    };
+
+    dispatch(addUserRequest(data));
+  }
 
   return (
     <main className={classes.content}>
@@ -34,7 +65,7 @@ const NewUser: React.FC = () => {
       </Link>
 
       <div className={classes.form}>
-        <form className={classes.formBox}>
+        <form className={classes.formBox} onSubmit={handleSubmit}>
           <div className={classes.formRoot}>
             <Typography variant="h5" className={classes.title} align="center">
               Novo Usuário
@@ -43,25 +74,48 @@ const NewUser: React.FC = () => {
               label="Matrícula"
               required
               className={classes.field}
+              value={registration}
+              onChange={e => setRegistration(e.target.value)}
             />
 
             <GreenTextField
               label="Nome Completo"
               required
               className={classes.field}
+              value={name}
+              onChange={e => setName(e.target.value)}
             />
 
             <GreenTextField
               label="Nome de Usuário"
               required
               className={classes.field}
+              value={username}
+              onChange={e => setUsername(e.target.value)}
             />
+
+            <FormControl className={classes.field}>
+              <InputLabel id="demo-simple-select-helper-label">
+                Admin
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={admin}
+                onChange={handleSelectAdmin}
+              >
+                <MenuItem value="1">Sim</MenuItem>
+                <MenuItem value="0">Não</MenuItem>
+              </Select>
+            </FormControl>
 
             <GreenTextField
               label="Senha"
               required
               className={classes.field}
               type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
             />
 
             <GreenTextField
@@ -69,6 +123,8 @@ const NewUser: React.FC = () => {
               required
               className={classes.field}
               type="password"
+              value={passwordConf}
+              onChange={e => setPasswordConf(e.target.value)}
             />
 
             <FormControl className={classes.subButton}>
@@ -85,6 +141,4 @@ const NewUser: React.FC = () => {
   );
 };
 
-export default connect((state: ApplicationState) => ({
-  title: state.pageTitle.title,
-}))(NewUser);
+export default NewUser;

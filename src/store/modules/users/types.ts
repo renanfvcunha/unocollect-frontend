@@ -3,9 +3,9 @@
  */
 
 export enum UsersTypes {
-  GET_USERS_REQUEST = '@users/GET_USERS_REQUEST',
-  GET_USERS_SUCCESS = '@users/GET_USERS_SUCCESS',
-  GET_USERS_FAILURE = '@users/GET_USERS_FAILURE',
+  ADD_USER_REQUEST = '@users/ADD_USER_REQUEST',
+  ADD_USER_SUCCESS = '@users/ADD_USER_SUCCESS',
+  ADD_USER_FAILURE = '@users/ADD_USER_FAILURE',
 }
 
 /**
@@ -13,11 +13,13 @@ export enum UsersTypes {
  */
 
 export interface User {
-  id: number;
-  registration: number;
-  name: string;
-  username: string;
-  admin: boolean;
+  id?: number;
+  registration?: number;
+  name?: string;
+  username?: string;
+  admin?: boolean;
+  password?: string;
+  passwordConf?: string;
 }
 
 /**
@@ -25,6 +27,7 @@ export interface User {
  */
 export interface UsersState {
   readonly users?: User[];
+  readonly user?: User;
   readonly loading: boolean;
   readonly error: boolean;
 }

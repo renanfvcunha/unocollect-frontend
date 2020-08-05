@@ -20,7 +20,7 @@ const persistConfig = {
   key: 'datacollector',
   storage,
   whitelist: ['auth'],
-}
+};
 
 const sagaMonitor = tron.createSagaMonitor!();
 
@@ -30,10 +30,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store: Store<ApplicationState> = createStore(
   persistedReducer,
-  compose(
-    applyMiddleware(sagaMiddleware),
-    tron.createEnhancer!(),
-  ),
+  compose(applyMiddleware(sagaMiddleware), tron.createEnhancer!()),
 );
 
 const persistor = persistStore(store);

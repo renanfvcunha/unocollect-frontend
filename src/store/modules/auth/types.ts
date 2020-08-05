@@ -27,10 +27,10 @@ export interface User {
 
 export interface AuthState {
   readonly user: User;
-  readonly token: string;
+  readonly token?: string;
   readonly logged: boolean;
   readonly loading: boolean;
   readonly error: boolean;
-  readonly errorTitle: string;
-  readonly errorMsg: string;
+  readonly errorTitle?: string;
+  readonly errorMsg?: string;
 }

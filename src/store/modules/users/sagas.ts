@@ -1,19 +1,32 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { AnyAction } from 'redux';
+
 import api from '../../../services/api';
-import { UsersTypes } from './types';
-import { getUsersSuccess, getUsersFailure } from './actions';
+import { UsersTypes, User } from './types';
+import { addUserSuccess, adddUserFailure } from './actions';
 
-export function* getUsers() {
+interface Payload extends AnyAction {
+  payload: {
+    data: User;
+  };
+}
+
+interface Response {
+  data: {
+    msg: string;
+  };
+}
+
+export function* addUser({ payload }: Payload) {
   try {
-    const response = yield call(api.get, 'users');
+    const response: Response = yield call(api.post, 'users', payload.data);
 
-    yield put(getUsersSuccess(response.data));
+    alert(response.data.msg);
+    yield put(addUserSuccess(response.data.msg));
   } catch (err) {
     alert(err.response.data.msg);
-    yield put(getUsersFailure());
+    yield put(adddUserFailure(err.response.data.msg));
   }
 }
 
-export default all([
-  takeLatest(UsersTypes.GET_USERS_REQUEST, getUsers),
-]);
+export default all([takeLatest(UsersTypes.ADD_USER_REQUEST, addUser)]);

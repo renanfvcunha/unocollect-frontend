@@ -278,5 +278,5 @@ const NewForm: React.FC = () => {
 };
 
 export default connect((state: ApplicationState) => ({
-  title: state.pageTitle.title
+  title: state.pageTitle.title,
 }))(NewForm);
