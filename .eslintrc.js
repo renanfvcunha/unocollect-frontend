@@ -1,5 +1,3 @@
-const { off } = require("process");
-
 module.exports = {
   env: {
     browser: true,
@@ -36,7 +34,8 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'react/jsx-one-expression-per-line': 'off',
     'no-console': ['warn', { allow: ['tron'] }],
-    '@typescript-eslint/no-non-null-assertion': ['warn', { allow: ['tron'] }],
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    'react/jsx-curly-newline': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',

@@ -25,7 +25,7 @@ export function* login({ payload }: Payload) {
   
     const { token, user } = response.data;
   
-    // api.defaults.headers.Authorization = `Bearer ${token}`;
+    api.defaults.headers.Authorization = `Bearer ${token}`;
 
     if (!user.admin) {
       yield history.push('/forms');
@@ -42,7 +42,18 @@ export function* logout() {
   yield history.push('/');
 }
 
+export function setToken({ payload }: AnyAction) {
+  if (!payload) return;
+
+  const { token } = payload.auth;
+
+  if (token) {
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+  }
+}
+
 export default all([
+  takeLatest('persist/REHYDRATE', setToken),
   takeLatest(AuthTypes.LOGIN_REQUEST, login),
   takeLatest(AuthTypes.LOGOUT, logout)
 ]);

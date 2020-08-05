@@ -1,5 +1,5 @@
 import React, { useState, useEffect, forwardRef } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, ThemeProvider } from '@material-ui/core';
 import {
@@ -15,10 +15,11 @@ import {
   Delete,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
-import { ApplicationState } from '../../store';
-import * as PageTitleActions from '../../store/modules/pageTitle/actions';
+
 import ModalConfirmation from '../../components/ModalConfirmation';
 import { useStyles, BtnStyle, TRow } from './styles';
+import setPageTitle from '../../store/modules/pageTitle/actions';
+import api from '../../services/api';
 
 interface IRowData {
   id: number;
@@ -41,7 +42,7 @@ const Users: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(PageTitleActions.default(pageTitle));
+    dispatch(setPageTitle(pageTitle));
   }, [dispatch]);
 
   const tableIcons: Icons = {
@@ -141,22 +142,17 @@ const Users: React.FC = () => {
                 },
               },
             ]}
-            data={[
-              {
-                id: 1,
-                registration: 2549,
-                name: 'Renan Fabrício Vieira da Cunha',
-                username: 'rcunha',
-                admin: 'Sim',
-              },
-              {
-                id: 2,
-                registration: 2560,
-                name: 'Reginaldo Souza',
-                username: 'regis',
-                admin: 'Não',
-              },
-            ]}
+            data={query =>
+              new Promise((resolve, reject) => {
+                api.get('users').then(response => {
+                  resolve({
+                    data: response.data,
+                    page: 0,
+                    totalCount: 1,
+                  });
+                });
+              })
+            }
             actions={[
               {
                 icon: () => <Edit />,
@@ -218,6 +214,4 @@ const Users: React.FC = () => {
   );
 };
 
-export default connect((state: ApplicationState) => ({
-  title: state.pageTitle.title,
-}))(Users);
+export default Users;

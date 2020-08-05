@@ -1,5 +1,5 @@
 import React, { useEffect, forwardRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { /* useParams, */ Link } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import { ThemeProvider, Button } from '@material-ui/core';
 import {
@@ -18,7 +18,7 @@ import * as PageTitleActions from '../../../store/modules/pageTitle/actions';
 import { useStyles, BtnStyle, TRow } from './styles';
 
 const ShowForm: React.FC = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
   const classes = useStyles();
   const pageTitle = 'Formulários > Visualizar Formulário';
   const dispatch = useDispatch();
