@@ -14,7 +14,7 @@ import {
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
 import { ApplicationState } from '../../../store';
-import * as PageTitleActions from '../../../store/modules/pageTitle/actions';
+import setPageTitle from '../../../store/modules/pageTitle/actions';
 import { useStyles, BtnStyle, TRow } from './styles';
 
 const ShowForm: React.FC = () => {
@@ -24,7 +24,7 @@ const ShowForm: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(PageTitleActions.default(pageTitle));
+    dispatch(setPageTitle(pageTitle));
   }, [dispatch]);
 
   const tableIcons: Icons = {
@@ -146,6 +146,4 @@ const ShowForm: React.FC = () => {
   );
 };
 
-export default connect((state: ApplicationState) => ({
-  title: state.pageTitle.title
-}))(ShowForm);
+export default ShowForm;

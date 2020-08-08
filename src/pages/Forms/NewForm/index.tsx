@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   ThemeProvider,
   Button,
@@ -14,8 +14,8 @@ import {
   Fab,
 } from '@material-ui/core';
 import { ArrowBack, Add, Remove } from '@material-ui/icons';
-import { ApplicationState } from '../../../store';
-import * as PageTitleActions from '../../../store/modules/pageTitle/actions';
+
+import setPageTitle from '../../../store/modules/pageTitle/actions';
 import { useStyles, BtnStyle, Tooltips, BlueTextField } from './styles';
 
 interface Fields {
@@ -36,7 +36,7 @@ const NewForm: React.FC = () => {
   const [fieldsLength, setFieldsLength] = useState(1);
 
   useEffect(() => {
-    dispatch(PageTitleActions.default(pageTitle));
+    dispatch(setPageTitle(pageTitle));
   }, [dispatch]);
 
   function handleAddField() {
@@ -277,6 +277,4 @@ const NewForm: React.FC = () => {
   );
 };
 
-export default connect((state: ApplicationState) => ({
-  title: state.pageTitle.title,
-}))(NewForm);
+export default NewForm;

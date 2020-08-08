@@ -1,26 +1,17 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ApplicationState } from './store';
 import Menu from './components/Menu';
 import Login from './pages/Login';
 
-interface Logged {
-  logged: boolean;
-}
-
-const Auth: React.FC<Logged> = ({ logged }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const [logged, setLogged] = useState(false);
+const Auth: React.FC = () => {
+  const logged = useSelector((state: ApplicationState) => state.auth.logged);
 
   if (!logged) {
     return <Login />;
   }
 
-  return (
-    <Menu />
-  );
+  return <Menu />;
 };
 
-export default connect((state: ApplicationState) => ({
-  logged: state.auth.logged
-}))(Auth);
+export default Auth;

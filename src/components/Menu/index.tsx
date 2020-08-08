@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Link } from 'react-router-dom';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 import {
   Drawer,
@@ -23,33 +23,32 @@ import {
   ChevronRight,
   Group,
   Assignment,
-  ExitToApp
+  ExitToApp,
+  Edit,
 } from '@material-ui/icons';
+
 import { ApplicationState } from '../../store';
 import { logout } from '../../store/modules/auth/actions';
 import { useStyles, BlueGrey } from './styles';
 import Routes from '../../routes';
 
-interface StateProps {
-  title: string;
-  name: string;
-  admin: boolean;
-}
-
-const Header: React.FC<StateProps> = ({ title, name, admin }) => {
+const Header: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
+  const title = useSelector((state: ApplicationState) => state.pageTitle.title);
+  const name = useSelector((state: ApplicationState) => state.auth.user.name);
+  const admin = useSelector((state: ApplicationState) => state.auth.user.admin);
 
   const [open, setOpen] = useState(false);
 
   function handleDrawerOpen() {
     setOpen(true);
-  };
+  }
 
   function handleDrawerClose() {
     setOpen(false);
-  };
+  }
 
   function handleLogout() {
     dispatch(logout());
@@ -102,7 +101,9 @@ const Header: React.FC<StateProps> = ({ title, name, admin }) => {
         >
           <div>
             <div className={classes.toolbar}>
-              <span className={classes.welcome}>Olá, {name.split(' ')[0]}.</span>
+              <span className={classes.welcome}>
+                {name ? `Olá, ${name.split(' ')[0]}` : ''}
+              </span>
               <IconButton onClick={handleDrawerClose}>
                 {theme.direction === 'rtl' ? (
                   <ChevronRight className={classes.icon} />
@@ -115,45 +116,62 @@ const Header: React.FC<StateProps> = ({ title, name, admin }) => {
 
           <Divider />
 
-          { admin ?
-          <Link to="/" className={classes.link}>
-            <List>
-              <ListItem button>
-                <ListItemIcon>
-                  <MdDashboard className={classes.icon} />
-                </ListItemIcon>
-                <ListItemText primary="Painel de Controle" />
-              </ListItem>
-            </List>
-          </Link>
-          : ''
-          }
+          {admin ? (
+            <Link to="/" className={classes.link}>
+              <List>
+                <ListItem button>
+                  <ListItemIcon>
+                    <MdDashboard className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText primary="Painel de Controle" />
+                </ListItem>
+              </List>
+            </Link>
+          ) : (
+            ''
+          )}
 
-          <Link to="/forms" className={classes.link}>
+          {admin ? (
+            <Link to="/forms" className={classes.link}>
+              <List>
+                <ListItem button>
+                  <ListItemIcon>
+                    <Assignment className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText primary="Formulários" />
+                </ListItem>
+              </List>
+            </Link>
+          ) : (
+            ''
+          )}
+
+          <Link to="/fills" className={classes.link}>
             <List>
               <ListItem button>
                 <ListItemIcon>
-                  <Assignment className={classes.icon} />
+                  <Edit className={classes.icon} />
                 </ListItemIcon>
-                <ListItemText primary="Formulários" />
+                <ListItemText primary="Preenchimentos" />
               </ListItem>
             </List>
           </Link>
 
-          { admin ?
-          <Link to="/users" className={classes.link}>
-            <List>
-              <ListItem button>
-                <ListItemIcon>
-                  <Group className={classes.icon} />
-                </ListItemIcon>
-                <ListItemText primary="Usuários" />
-              </ListItem>
-            </List>
-          </Link>
-          : ''
-          }
-          
+          {admin ? (
+            <Link to="/users" className={classes.link}>
+              <List>
+                <ListItem button>
+                  <ListItemIcon>
+                    <Group className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText primary="Usuários" />
+                </ListItem>
+              </List>
+            </Link>
+          ) : (
+            ''
+          )}
+
           <Divider />
 
           <List>
@@ -173,8 +191,4 @@ const Header: React.FC<StateProps> = ({ title, name, admin }) => {
   );
 };
 
-export default connect((state: ApplicationState) => ({
-  title: state.pageTitle.title,
-  name: state.auth.user.name,
-  admin: state.auth.user.admin,
-}))(Header);
+export default Header;

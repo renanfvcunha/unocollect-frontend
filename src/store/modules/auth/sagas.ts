@@ -35,7 +35,7 @@ export function* login({ payload }: Payload) {
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
     if (!user.admin) {
-      history.push('/forms');
+      history.push('/fills');
     }
 
     yield put(loginSuccess(token, user));

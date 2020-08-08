@@ -1,5 +1,5 @@
 import React, { useState, useEffect, forwardRef } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { ThemeProvider, Button } from '@material-ui/core';
 import {
@@ -17,14 +17,11 @@ import {
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
 
+import api from '../../services/api';
 import { ApplicationState } from '../../store';
 import setPageTitle from '../../store/modules/pageTitle/actions';
 import ModalConfirmation from '../../components/ModalConfirmation';
 import { useStyles, BtnStyle, TRow } from './styles';
-
-interface StateProps {
-  admin: boolean;
-}
 
 interface IRowData {
   id: number;
@@ -33,8 +30,9 @@ interface IRowData {
   fills: number;
 }
 
-const Dashboard: React.FC<StateProps> = ({ admin }) => {
+const Dashboard: React.FC = () => {
   const history = useHistory();
+  const admin = useSelector((state: ApplicationState) => state.auth.user.admin);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState('');
@@ -70,17 +68,22 @@ const Dashboard: React.FC<StateProps> = ({ admin }) => {
       <div className={classes.toolbar} />
 
       <div className="button">
-        { admin ?
-        <ThemeProvider theme={BtnStyle}>
-          <Link to="/forms/new">
-            <Button variant="contained" color="primary" style={{ marginBottom: 24 }}>
-              <Assignment style={{ marginRight: 8 }} />
-              Novo Formulário
-            </Button>
-          </Link>
-        </ThemeProvider>
-        : ''
-        }
+        {admin ? (
+          <ThemeProvider theme={BtnStyle}>
+            <Link to="/forms/new">
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginBottom: 24 }}
+              >
+                <Assignment style={{ marginRight: 8 }} />
+                Novo Formulário
+              </Button>
+            </Link>
+          </ThemeProvider>
+        ) : (
+          ''
+        )}
 
         <div className={classes.table}>
           <ThemeProvider theme={TRow}>
@@ -92,28 +95,12 @@ const Dashboard: React.FC<StateProps> = ({ admin }) => {
                   field: 'id',
                   type: 'numeric',
                   align: 'left',
-                  headerStyle: {
-                    width: 'calc(5% + 0px)',
-                    maxWidth: 'calc(5% + 0px)',
-                  },
-                  cellStyle: {
-                    width: 'calc(5% + 0px)',
-                    maxWidth: 'calc(5% + 0px)',
-                  },
                 },
                 {
                   title: 'Título do Formulário',
                   field: 'title',
                   type: 'string',
                   align: 'left',
-                  headerStyle: {
-                    width: 'calc(45% + 0px)',
-                    maxWidth: 'calc(45% + 0px)',
-                  },
-                  cellStyle: {
-                    width: 'calc(45% + 0px)',
-                    maxWidth: 'calc(45% + 0px)',
-                  },
                 },
                 {
                   title: 'Categoria',
@@ -127,22 +114,27 @@ const Dashboard: React.FC<StateProps> = ({ admin }) => {
                   type: 'numeric',
                   align: 'left',
                 },
-              ]}
-              data={[
                 {
-                  id: 1,
-                  title: 'Visita na estação de energia da Zona Sul',
-                  category: 'Visitas',
-                  fills: 15,
-                },
-                {
-                  id: 2,
-                  title:
-                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure unde veritatis aut vitae voluptatibus quae asperiores odit laboriosam temporibus deserunt.',
-                  category: 'Sem Categoria',
-                  fills: 9,
+                  title: 'Criado Em',
+                  field: 'created_at',
+                  type: 'datetime',
+                  align: 'left',
                 },
               ]}
+              data={query =>
+                new Promise(resolve => {
+                  const url = `forms?per_page=${
+                    query.pageSize
+                  }&page=${query.page + 1}&search=${query.search}`;
+                  api.get(url).then(response => {
+                    resolve({
+                      data: response.data.forms,
+                      page: 0,
+                      totalCount: response.data.total,
+                    });
+                  });
+                })
+              }
               icons={tableIcons}
               localization={{
                 toolbar: {
@@ -164,7 +156,7 @@ const Dashboard: React.FC<StateProps> = ({ admin }) => {
                   labelRowsSelect: 'linhas',
                 },
               }}
-              actions={ admin ? [
+              actions={[
                 {
                   icon: () => <Visibility />,
                   tooltip: 'Visualizar Formulário',
@@ -178,19 +170,6 @@ const Dashboard: React.FC<StateProps> = ({ admin }) => {
                     setModalOpen(true);
                     setName(rowData.title);
                   },
-                },
-                {
-                  icon: () => <PostAdd />,
-                  tooltip: 'Adicionar Preenchimento',
-                  onClick: (event, rowData: IRowData) =>
-                    history.push(`/fills/add/${rowData.id}`),
-                },
-              ] : [
-                {
-                  icon: () => <PostAdd />,
-                  tooltip: 'Adicionar Preenchimento',
-                  onClick: (event, rowData: IRowData) =>
-                    history.push(`/fills/add/${rowData.id}`),
                 },
               ]}
               options={{
@@ -216,6 +195,4 @@ const Dashboard: React.FC<StateProps> = ({ admin }) => {
   );
 };
 
-export default connect((state: ApplicationState) => ({
-  admin: state.auth.user.admin,
-}))(Dashboard);
+export default Dashboard;
