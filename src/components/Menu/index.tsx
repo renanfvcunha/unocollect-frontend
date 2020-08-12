@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Link } from 'react-router-dom';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 import {
   Drawer,

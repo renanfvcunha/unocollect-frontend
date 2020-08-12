@@ -6,6 +6,8 @@ import createSagaMiddleware from 'redux-saga';
 import { AuthState } from './modules/auth/types';
 import { PageTitleState } from './modules/pageTitle/types';
 import { UsersState } from './modules/users/types';
+import { FormsState } from './modules/forms/types';
+import { CategoriesState } from './modules/categories/types';
 import tron from '../config/ReactotronConfig';
 import rootReducer from './modules/rootReducer';
 import rootSaga from './modules/rootSaga';
@@ -14,6 +16,8 @@ export interface ApplicationState {
   auth: AuthState;
   pageTitle: PageTitleState;
   users: UsersState;
+  forms: FormsState;
+  categories: CategoriesState;
 }
 
 const persistConfig = {

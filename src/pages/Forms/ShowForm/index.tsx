@@ -1,6 +1,6 @@
-import React, { useEffect, forwardRef } from 'react';
-import { /* useParams, */ Link } from 'react-router-dom';
-import { connect, useDispatch } from 'react-redux';
+import React, { useState, useEffect, forwardRef } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { ThemeProvider, Button } from '@material-ui/core';
 import {
   ArrowBack,
@@ -13,19 +13,61 @@ import {
   ArrowDownward,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
+
 import { ApplicationState } from '../../../store';
 import setPageTitle from '../../../store/modules/pageTitle/actions';
+import { getFormRequest } from '../../../store/modules/forms/actions';
 import { useStyles, BtnStyle, TRow } from './styles';
+import tron from '../../../config/ReactotronConfig';
+
+interface TableColumns {
+  title?: string;
+  field?: string;
+  align?: 'center' | 'inherit' | 'justify' | 'left' | 'right';
+}
 
 const ShowForm: React.FC = () => {
-  // const { id } = useParams();
+  const { id } = useParams();
   const classes = useStyles();
   const pageTitle = 'Formulários > Visualizar Formulário';
   const dispatch = useDispatch();
 
+  const formTitle = useSelector((state: ApplicationState) => state.forms.title);
+  const fields = useSelector((state: ApplicationState) => state.forms.fields);
+
+  const [tableColumns, setTableColumns] = useState<TableColumns[]>([
+    {
+      title: 'Criado por',
+      field: 'created_by',
+    },
+  ]);
+
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
-  }, [dispatch]);
+
+    dispatch(getFormRequest(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    const columns = fields.map(field => ({
+      title: field.name,
+      field: String(field.id),
+    }));
+
+    const finalColumns = [
+      ...columns,
+      {
+        title: 'Criado Por',
+        field: 'created_by',
+      },
+      {
+        title: 'Criado Em',
+        field: 'created_at',
+      },
+    ];
+
+    setTableColumns(finalColumns);
+  }, [fields]);
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -56,60 +98,14 @@ const ShowForm: React.FC = () => {
       <div className={classes.table}>
         <ThemeProvider theme={TRow}>
           <MaterialTable
-            title="Visita na estação de energia da Zona Sul"
-            columns={[
-              {
-                title: 'Id',
-                field: 'id',
-                type: 'numeric',
-                align: 'left',
-              },
-              {
-                title: 'Campo 1',
-                field: 'field1',
-                type: 'string',
-                align: 'left',
-              },
-              {
-                title: 'Campo 2',
-                field: 'field2',
-                type: 'string',
-                align: 'left',
-              },
-              {
-                title: 'Campo 3',
-                field: 'field3',
-                type: 'string',
-                align: 'left',
-              },
-              {
-                title: 'Campo 4',
-                field: 'field4',
-                type: 'string',
-                align: 'left',
-              },
-              {
-                title: 'Criado Por',
-                field: 'created_by',
-                type: 'string',
-                align: 'left',
-              },
-              {
-                title: 'Criado Em',
-                field: 'created_at',
-                type: 'date',
-                align: 'left',
-              },
-            ]}
+            title={formTitle}
+            columns={tableColumns}
             data={[
               {
-                id: 1,
-                field1: 'Resposta do campo 1',
-                field2: 'Resposta do campo 2',
-                field3: 'Resposta do campo 3',
-                field4: 'Resposta do campo 4',
+                '8': 'Teste',
+                '9': 'Teste',
                 created_by: 'Renan Cunha',
-                created_at: '31/07/2020 17:11:35',
+                created_at: `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`,
               },
             ]}
             icons={tableIcons}

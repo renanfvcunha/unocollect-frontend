@@ -4,7 +4,6 @@ import { Link, useHistory } from 'react-router-dom';
 import { ThemeProvider, Button } from '@material-ui/core';
 import {
   Assignment,
-  PostAdd,
   Clear,
   ChevronRight,
   FirstPage,
@@ -23,7 +22,7 @@ import setPageTitle from '../../store/modules/pageTitle/actions';
 import ModalConfirmation from '../../components/ModalConfirmation';
 import { useStyles, BtnStyle, TRow } from './styles';
 
-interface IRowData {
+interface RowData {
   id: number;
   title: string;
   category?: string;
@@ -160,13 +159,13 @@ const Dashboard: React.FC = () => {
                 {
                   icon: () => <Visibility />,
                   tooltip: 'Visualizar Formulário',
-                  onClick: (event, rowData: IRowData) =>
+                  onClick: (event, rowData: RowData) =>
                     history.push(`/forms/${rowData.id}`),
                 },
                 {
                   icon: () => <Delete />,
                   tooltip: 'Remover Formulário',
-                  onClick: (event, rowData: IRowData) => {
+                  onClick: (event, rowData: RowData) => {
                     setModalOpen(true);
                     setName(rowData.title);
                   },

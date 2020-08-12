@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ThemeProvider,
   Button,
@@ -15,7 +15,10 @@ import {
 } from '@material-ui/core';
 import { ArrowBack, Add, Remove } from '@material-ui/icons';
 
+import { ApplicationState } from '../../../store';
 import setPageTitle from '../../../store/modules/pageTitle/actions';
+import { getCategoriesRequest } from '../../../store/modules/categories/actions';
+import { addFormRequest } from '../../../store/modules/forms/actions';
 import { useStyles, BtnStyle, Tooltips, BlueTextField } from './styles';
 
 interface Fields {
@@ -31,12 +34,17 @@ const NewForm: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState(0);
+  const categories = useSelector(
+    (state: ApplicationState) => state.categories.categories,
+  );
 
   const [fields, setFields] = useState<Fields[]>([]);
   const [fieldsLength, setFieldsLength] = useState(1);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
+
+    dispatch(getCategoriesRequest());
   }, [dispatch]);
 
   function handleAddField() {
@@ -188,10 +196,14 @@ const NewForm: React.FC = () => {
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
-    const FormData = { title, description, category, fields };
+    const FormData = {
+      title,
+      description,
+      category: category === 0 ? null : category,
+      fields,
+    };
 
-    // eslint-disable-next-line no-console
-    console.log(FormData);
+    dispatch(addFormRequest(FormData));
   }
 
   return (
@@ -232,8 +244,11 @@ const NewForm: React.FC = () => {
                 onChange={handleChangeCategory}
               >
                 <MenuItem value={0}>Sem Categoria</MenuItem>
-                <MenuItem value={1}>Visitas</MenuItem>
-                <MenuItem value={2}>Outros</MenuItem>
+                {categories?.map(cat => (
+                  <MenuItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 

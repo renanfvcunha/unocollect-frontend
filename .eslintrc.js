@@ -30,6 +30,7 @@ module.exports = {
     },
   },
   rules: {
+    'camelcase': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
     'react/jsx-props-no-spreading': 'off',
     'react/jsx-one-expression-per-line': 'off',
