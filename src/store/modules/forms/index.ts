@@ -28,9 +28,17 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         title: action.payload.data.title,
+        description: action.payload.data.description,
         fields: action.payload.data.fields,
         loading: false,
         error: false,
+      };
+
+    case FormsTypes.GET_FORM_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: true,
       };
 
     default:

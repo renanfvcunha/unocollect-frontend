@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
                   api.get(url).then(response => {
                     resolve({
                       data: response.data.forms,
-                      page: 0,
+                      page: response.data.page - 1,
                       totalCount: response.data.total,
                     });
                   });

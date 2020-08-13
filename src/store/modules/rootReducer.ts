@@ -4,6 +4,7 @@ import auth from './auth';
 import users from './users';
 import forms from './forms';
 import categories from './categories';
+import fills from './fills';
 
 export default combineReducers({
   pageTitle,
@@ -11,4 +12,5 @@ export default combineReducers({
   users,
   forms,
   categories,
+  fills,
 });

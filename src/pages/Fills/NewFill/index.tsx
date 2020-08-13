@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
 import {
   ThemeProvider,
   Button,
@@ -9,25 +10,105 @@ import {
   FormControl,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
-import { Link, useParams } from 'react-router-dom';
+
 import { ApplicationState } from '../../../store';
-import * as PageTitleActions from '../../../store/modules/pageTitle/actions';
+import setPageTitle from '../../../store/modules/pageTitle/actions';
+import { getFormRequest } from '../../../store/modules/forms/actions';
+import { addFillRequest } from '../../../store/modules/fills/actions';
 import { useStyles, Buttons } from './styles';
+import tron from '../../../config/ReactotronConfig';
+
+interface Values {
+  fieldId?: number;
+  value: string;
+}
 
 const NewFill: React.FC = () => {
   const { formId } = useParams();
   const classes = useStyles();
-  const pageTitle = 'Formulários > Novo Preenchimento';
+  const pageTitle = 'Preenchimentos > Novo Preenchimento';
   const dispatch = useDispatch();
 
+  const formTitle = useSelector((state: ApplicationState) => state.forms.title);
+  const formDescription = useSelector(
+    (state: ApplicationState) => state.forms.description,
+  );
+  const formFields = useSelector(
+    (state: ApplicationState) => state.forms.fields,
+  );
+  const latitude = useSelector(
+    (state: ApplicationState) => state.fills.latitude,
+  );
+  const longitude = useSelector(
+    (state: ApplicationState) => state.fills.longitude,
+  );
+
+  const [formValues, setFormValues] = useState<Values[]>([]);
+
+  function handleChangeValue(
+    i: number,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    const newValue = [...formValues];
+
+    const value = {
+      ...newValue[i],
+      value: e.target.value,
+    };
+
+    newValue[i] = value;
+
+    setFormValues(newValue);
+  }
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    const fill = {
+      formId,
+      latitude,
+      longitude,
+      values: formValues,
+    };
+
+    dispatch(addFillRequest(fill));
+  }
+
+  const formInputs = [];
+  for (let i = 0; i < formFields.length; i += 1) {
+    formValues.push({
+      fieldId: formFields[i].id,
+      value: '',
+    });
+
+    formInputs.push(
+      <TextField
+        key={formFields[i].id}
+        type="text"
+        name={`field_${String(formFields[i].id)}`}
+        label={formFields[i].name}
+        helperText={formFields[i].description}
+        multiline
+        style={{ width: '50%', marginLeft: '25%' }}
+        className={classes.margin}
+        value={formValues[i].value}
+        onChange={e => handleChangeValue(i, e)}
+      />,
+    );
+
+    formValues.splice(formFields.length);
+  }
+
   useEffect(() => {
-    dispatch(PageTitleActions.default(pageTitle));
-  }, [dispatch]);
+    dispatch(setPageTitle(pageTitle));
+
+    dispatch(getFormRequest(formId));
+  }, [dispatch, formId]);
 
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
-      <Link to="/forms" style={{ position: 'absolute' }}>
+      <Link to="/fills" style={{ position: 'absolute' }}>
         <ThemeProvider theme={Buttons}>
           <Button variant="contained" color="primary">
             <ArrowBack className={classes.iconBack} />
@@ -37,44 +118,17 @@ const NewFill: React.FC = () => {
       </Link>
 
       <div className={classes.form}>
-        <form className={classes.formBox}>
+        <form className={classes.formBox} onSubmit={handleSubmit}>
           <Typography variant="h5" className={classes.title} align="center">
-            Formulário {formId}
+            {formTitle}
           </Typography>
           <Typography className={classes.subtitle} align="center">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt
-            at quis iusto pariatur tenetur.
+            {formDescription}
           </Typography>
 
           <Divider style={{ marginTop: 24 }} />
 
-          <TextField
-            type="text"
-            helperText="Descrição do campo 1"
-            name="field1"
-            label="Campo 1"
-            multiline
-            style={{ width: '50%', marginLeft: '25%' }}
-            className={classes.margin}
-          />
-          <TextField
-            type="text"
-            helperText="Descrição do campo 2"
-            name="field2"
-            label="Campo 2"
-            multiline
-            style={{ width: '50%', marginLeft: '25%' }}
-            className={classes.margin}
-          />
-          <TextField
-            type="text"
-            helperText="Descrição do campo 3"
-            name="field3"
-            label="Campo 3"
-            multiline
-            style={{ width: '50%', marginLeft: '25%' }}
-            className={classes.margin}
-          />
+          {formInputs}
 
           <FormControl className={classes.subButton}>
             <ThemeProvider theme={Buttons}>
@@ -94,6 +148,4 @@ const NewFill: React.FC = () => {
   );
 };
 
-export default connect((state: ApplicationState) => ({
-  title: state.pageTitle.title
-}))(NewFill);
+export default NewFill;

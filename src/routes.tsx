@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { ApplicationState } from './store';
 import Dashboard from './pages/Dashboard';
@@ -12,11 +12,9 @@ import ShowForm from './pages/Forms/ShowForm';
 import Fills from './pages/Fills';
 import NewFill from './pages/Fills/NewFill';
 
-interface StateProps {
-  admin: boolean;
-}
+const Routes: React.FC = () => {
+  const admin = useSelector((state: ApplicationState) => state.auth.user.admin);
 
-const Routes: React.FC<StateProps> = ({ admin }) => {
   return (
     <Switch>
       {admin ? <Route exact path="/" component={Dashboard} /> : ''}
@@ -34,6 +32,4 @@ const Routes: React.FC<StateProps> = ({ admin }) => {
   );
 };
 
-export default connect((state: ApplicationState) => ({
-  admin: state.auth.user.admin,
-}))(Routes);
+export default Routes;
