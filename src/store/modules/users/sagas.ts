@@ -3,7 +3,13 @@ import { AnyAction } from 'redux';
 
 import api from '../../../services/api';
 import { UsersTypes, User } from './types';
-import { addUserSuccess, adddUserFailure } from './actions';
+import {
+  addUserSuccess,
+  addUserFailure,
+  getUsersFormsSuccess,
+  getUsersFormsFailure,
+} from './actions';
+import tron from '../../../config/ReactotronConfig';
 
 interface Payload extends AnyAction {
   payload: {
@@ -24,9 +30,39 @@ export function* addUser({ payload }: Payload) {
     alert(response.data.msg);
     yield put(addUserSuccess(response.data.msg));
   } catch (err) {
-    alert(err.response.data.msg);
-    yield put(adddUserFailure(err.response.data.msg));
+    if (err.message === 'Network Error') {
+      alert('Erro ao conectar ao servidor.');
+      yield put(addUserFailure('Erro ao conectar ao servidor.'));
+    } else if (err.response) {
+      alert(err.response.data.msg);
+      yield put(addUserFailure(err.response.data.msg));
+    } else {
+      alert(err);
+      yield put(addUserFailure(err));
+    }
   }
 }
 
-export default all([takeLatest(UsersTypes.ADD_USER_REQUEST, addUser)]);
+export function* getUsersForms({ payload }: AnyAction) {
+  try {
+    const response = yield call(api.get, `userform/${payload.id}`);
+
+    yield put(getUsersFormsSuccess(response.data));
+  } catch (err) {
+    if (err.response.data.msg) {
+      alert(err.response.data.msg);
+      yield put(getUsersFormsFailure(err.response.data.msg));
+    } else if (err.message === 'Network Error') {
+      alert('Erro ao conectar ao servidor.');
+      yield put(getUsersFormsFailure('Erro ao conectar ao servidor.'));
+    } else {
+      alert(err);
+      yield put(getUsersFormsFailure(err));
+    }
+  }
+}
+
+export default all([
+  takeLatest(UsersTypes.ADD_USER_REQUEST, addUser),
+  takeLatest(UsersTypes.GET_USERS_FORMS_REQUEST, getUsersForms),
+]);

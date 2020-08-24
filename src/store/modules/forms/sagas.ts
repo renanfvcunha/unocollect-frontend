@@ -5,7 +5,9 @@ import api from '../../../services/api';
 import { FormsTypes, Form } from './types';
 import {
   addFormSuccess,
-  adddFormFailure,
+  addFormFailure,
+  getFormsSuccess,
+  getFormsFailure,
   getFormSuccess,
   getFormFailure,
 } from './actions';
@@ -29,8 +31,35 @@ export function* addForm({ payload }: Payload) {
     alert(response.data.msg);
     yield put(addFormSuccess(response.data.msg));
   } catch (err) {
-    alert(err.response.data.msg);
-    yield put(adddFormFailure(err.response.data.msg));
+    if (err.message === 'Network Error') {
+      alert('Erro ao conectar ao servidor.');
+      yield put(addFormFailure('Erro ao conectar ao servidor.'));
+    } else if (err.response) {
+      alert(err.response.data.msg);
+      yield put(addFormFailure(err.response.data.msg));
+    } else {
+      alert(err);
+      yield put(addFormFailure(err));
+    }
+  }
+}
+
+export function* getForms() {
+  try {
+    const response = yield call(api.get, 'forms?per_page=10&page=1');
+
+    yield put(getFormsSuccess(response.data.forms));
+  } catch (err) {
+    if (err.response.data.msg) {
+      alert(err.response.data.msg);
+      yield put(getFormsFailure(err.response.data.msg));
+    } else if (err.message === 'Network Error') {
+      alert('Erro ao conectar ao servidor.');
+      yield put(getFormsFailure('Erro ao conectar ao servidor.'));
+    } else {
+      alert(err);
+      yield put(getFormsFailure(err));
+    }
   }
 }
 
@@ -47,5 +76,6 @@ export function* getForm({ payload }: AnyAction) {
 
 export default all([
   takeLatest(FormsTypes.ADD_FORM_REQUEST, addForm),
+  takeLatest(FormsTypes.GET_FORMS_REQUEST, getForms),
   takeLatest(FormsTypes.GET_FORM_REQUEST, getForm),
 ]);

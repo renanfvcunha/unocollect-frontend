@@ -22,6 +22,14 @@ export const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
+  toolbarFlex: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  toolbarFlexLeft: {
+    position: 'absolute',
+    left: 16,
+  },
   menuButton: {
     marginRight: 36,
   },

@@ -23,7 +23,6 @@ const NewUser: React.FC = () => {
   const dispatch = useDispatch();
   const pageTitle = 'Usuários > Novo Usuário';
 
-  const [registration, setRegistration] = useState('');
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [admin, setAdmin] = useState('0');
@@ -42,7 +41,6 @@ const NewUser: React.FC = () => {
     e.preventDefault();
 
     const data = {
-      registration: Number(registration),
       name,
       username,
       admin: admin === '1',
@@ -73,13 +71,6 @@ const NewUser: React.FC = () => {
             <Typography variant="h5" className={classes.title} align="center">
               Novo Usuário
             </Typography>
-            <GreenTextField
-              label="Matrícula"
-              required
-              className={classes.field}
-              value={registration}
-              onChange={e => setRegistration(e.target.value)}
-            />
 
             <GreenTextField
               label="Nome Completo"

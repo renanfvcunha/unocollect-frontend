@@ -11,6 +11,7 @@ import NewForm from './pages/Forms/NewForm';
 import ShowForm from './pages/Forms/ShowForm';
 import Fills from './pages/Fills';
 import NewFill from './pages/Fills/NewFill';
+import Map from './components/Map';
 
 const Routes: React.FC = () => {
   const admin = useSelector((state: ApplicationState) => state.auth.user.admin);
@@ -25,6 +26,8 @@ const Routes: React.FC = () => {
       {admin ? <Route path="/forms/new" component={NewForm} /> : ''}
       {admin ? <Route path="/forms/:id" component={ShowForm} /> : ''}
       {admin ? <Route path="/forms" component={Forms} /> : ''}
+
+      {admin ? <Route path="/map" component={Map} /> : ''}
 
       <Route exact path="/fills" component={Fills} />
       <Route path="/fills/add/:formId" component={NewFill} />

@@ -23,7 +23,6 @@ import api from '../../services/api';
 
 interface RowData {
   id: number;
-  registration: number;
   name: string;
   username: string;
   admin: string;
@@ -91,20 +90,6 @@ const Users: React.FC = () => {
                 cellStyle: {
                   width: 'calc(5% + 0px)',
                   maxWidth: 'calc(5% + 0px)',
-                },
-              },
-              {
-                title: 'Matrícula',
-                field: 'registration',
-                type: 'numeric',
-                align: 'left',
-                headerStyle: {
-                  width: 'calc(10% + 0px)',
-                  maxWidth: 'calc(10% + 0px)',
-                },
-                cellStyle: {
-                  width: 'calc(10% + 0px)',
-                  maxWidth: 'calc(10% + 0px)',
                 },
               },
               {

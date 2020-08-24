@@ -1,7 +1,14 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:3333',
-});
+let api: AxiosInstance;
+if (process.env.NODE_ENV === 'development') {
+  api = axios.create({
+    baseURL: 'http://localhost:3333',
+  });
+} else {
+  api = axios.create({
+    baseURL: 'https://api.unocollect.com.br',
+  });
+}
 
 export default api;

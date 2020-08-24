@@ -16,7 +16,6 @@ import setPageTitle from '../../../store/modules/pageTitle/actions';
 import { getFormRequest } from '../../../store/modules/forms/actions';
 import { addFillRequest } from '../../../store/modules/fills/actions';
 import { useStyles, Buttons } from './styles';
-import tron from '../../../config/ReactotronConfig';
 
 interface Values {
   fieldId?: number;
@@ -29,18 +28,20 @@ const NewFill: React.FC = () => {
   const pageTitle = 'Preenchimentos > Novo Preenchimento';
   const dispatch = useDispatch();
 
-  const formTitle = useSelector((state: ApplicationState) => state.forms.title);
+  const formTitle = useSelector(
+    (state: ApplicationState) => state.forms.form.title,
+  );
   const formDescription = useSelector(
-    (state: ApplicationState) => state.forms.description,
+    (state: ApplicationState) => state.forms.form.description,
   );
   const formFields = useSelector(
-    (state: ApplicationState) => state.forms.fields,
+    (state: ApplicationState) => state.forms.form.fields,
   );
   const latitude = useSelector(
-    (state: ApplicationState) => state.fills.latitude,
+    (state: ApplicationState) => state.fills.fill.latitude,
   );
   const longitude = useSelector(
-    (state: ApplicationState) => state.fills.longitude,
+    (state: ApplicationState) => state.fills.fill.longitude,
   );
 
   const [formValues, setFormValues] = useState<Values[]>([]);
@@ -75,28 +76,30 @@ const NewFill: React.FC = () => {
   }
 
   const formInputs = [];
-  for (let i = 0; i < formFields.length; i += 1) {
-    formValues.push({
-      fieldId: formFields[i].id,
-      value: '',
-    });
+  if (formFields) {
+    for (let i = 0; i < formFields.length; i += 1) {
+      formValues.push({
+        fieldId: formFields[i].id,
+        value: '',
+      });
 
-    formInputs.push(
-      <TextField
-        key={formFields[i].id}
-        type="text"
-        name={`field_${String(formFields[i].id)}`}
-        label={formFields[i].name}
-        helperText={formFields[i].description}
-        multiline
-        style={{ width: '50%', marginLeft: '25%' }}
-        className={classes.margin}
-        value={formValues[i].value}
-        onChange={e => handleChangeValue(i, e)}
-      />,
-    );
+      formInputs.push(
+        <TextField
+          key={formFields[i].id}
+          type="text"
+          name={`field_${String(formFields[i].id)}`}
+          label={formFields[i].name}
+          helperText={formFields[i].description}
+          multiline
+          style={{ width: '50%', marginLeft: '25%' }}
+          className={classes.margin}
+          value={formValues[i].value}
+          onChange={e => handleChangeValue(i, e)}
+        />,
+      );
 
-    formValues.splice(formFields.length);
+      formValues.splice(formFields.length);
+    }
   }
 
   useEffect(() => {

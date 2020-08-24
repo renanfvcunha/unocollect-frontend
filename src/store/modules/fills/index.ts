@@ -1,10 +1,8 @@
 import { Reducer } from 'redux';
-import { FillsState, FillsTypes } from './types';
+import { FillsState, FillsTypes, Fill } from './types';
 
 const INITIAL_STATE: FillsState = {
-  latitude: undefined,
-  longitude: undefined,
-  values: [],
+  fill: {},
   forms: [],
 };
 
@@ -35,8 +33,10 @@ const reducer: Reducer<FillsState> = (state = INITIAL_STATE, action) => {
     case FillsTypes.ADD_USER_LOCATION:
       return {
         ...state,
-        latitude: action.payload.latitude,
-        longitude: action.payload.longitude,
+        fill: {
+          latitude: action.payload.latitude,
+          longitude: action.payload.longitude,
+        },
       };
 
     case FillsTypes.ADD_FILL_REQUEST:

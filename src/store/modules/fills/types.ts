@@ -33,8 +33,6 @@ export interface Value {
  * State Type
  */
 export interface FillsState {
-  readonly latitude?: number;
-  readonly longitude?: number;
-  readonly values?: Value[];
+  readonly fill: Fill;
   readonly forms?: Form[];
 }

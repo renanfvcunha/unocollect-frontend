@@ -2,8 +2,7 @@ import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { AnyAction } from 'redux';
 
 import api from '../../../services/api';
-import { FillsTypes, Fill } from './types';
-import { Form } from '../forms/types';
+import { FillsTypes } from './types';
 import {
   getFillsSuccess,
   getFillsFailure,

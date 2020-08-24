@@ -9,8 +9,18 @@ export const addFormRequest = (data: Form): Action =>
 export const addFormSuccess = (successMsg: string): Action =>
   action(FormsTypes.ADD_FORM_SUCCESS, { successMsg });
 
-export const adddFormFailure = (errorMsg: string): Action =>
+export const addFormFailure = (errorMsg: string): Action =>
   action(FormsTypes.ADD_FORM_FAILURE, { errorMsg });
+
+// Get Forms
+export const getFormsRequest = (): Action =>
+  action(FormsTypes.GET_FORMS_REQUEST);
+
+export const getFormsSuccess = (data: Form[]): Action =>
+  action(FormsTypes.GET_FORMS_SUCCESS, { data });
+
+export const getFormsFailure = (errorMsg: string): Action =>
+  action(FormsTypes.GET_FORMS_FAILURE, { errorMsg });
 
 // Get Form
 export const getFormRequest = (id: number): Action =>

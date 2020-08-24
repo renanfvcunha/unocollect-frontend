@@ -45,5 +45,6 @@ module.exports = {
         tsx: 'never',
       },
     ],
+    'import/no-mutable-exports': 'off',
   },
 };

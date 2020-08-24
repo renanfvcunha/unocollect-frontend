@@ -32,8 +32,12 @@ const ShowForm: React.FC = () => {
   const pageTitle = 'Formulários > Visualizar Formulário';
   const dispatch = useDispatch();
 
-  const formTitle = useSelector((state: ApplicationState) => state.forms.title);
-  const fields = useSelector((state: ApplicationState) => state.forms.fields);
+  const formTitle = useSelector(
+    (state: ApplicationState) => state.forms.form.title,
+  );
+  const fields = useSelector(
+    (state: ApplicationState) => state.forms.form.fields,
+  );
 
   const [tableColumns, setTableColumns] = useState<TableColumns[]>([
     {
@@ -49,24 +53,25 @@ const ShowForm: React.FC = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    const columns = fields.map(field => ({
-      title: field.name,
-      field: String(field.id),
-    }));
+    if (fields) {
+      const columns = fields.map(field => ({
+        title: field.name,
+        field: String(field.id),
+      }));
+      const finalColumns = [
+        ...columns,
+        {
+          title: 'Criado Por',
+          field: 'created_by',
+        },
+        {
+          title: 'Criado Em',
+          field: 'created_at',
+        },
+      ];
 
-    const finalColumns = [
-      ...columns,
-      {
-        title: 'Criado Por',
-        field: 'created_by',
-      },
-      {
-        title: 'Criado Em',
-        field: 'created_at',
-      },
-    ];
-
-    setTableColumns(finalColumns);
+      setTableColumns(finalColumns);
+    }
   }, [fields]);
 
   const tableIcons: Icons = {

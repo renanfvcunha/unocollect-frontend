@@ -6,6 +6,9 @@ export enum FormsTypes {
   ADD_FORM_REQUEST = '@forms/ADD_FORM_REQUEST',
   ADD_FORM_SUCCESS = '@forms/ADD_FORM_SUCCESS',
   ADD_FORM_FAILURE = '@forms/ADD_FORM_FAILURE',
+  GET_FORMS_REQUEST = '@forms/GET_FORMS_REQUEST',
+  GET_FORMS_SUCCESS = '@forms/GET_FORMS_SUCCESS',
+  GET_FORMS_FAILURE = '@forms/GET_FORMS_FAILURE',
   GET_FORM_REQUEST = '@forms/GET_FORM_REQUEST',
   GET_FORM_SUCCESS = '@forms/GET_FORM_SUCCESS',
   GET_FORM_FAILURE = '@forms/GET_FORM_FAILURE',
@@ -21,7 +24,7 @@ export interface Form {
   description?: string;
   category?: number | null;
   created_at?: Date;
-  fields: Field[];
+  fields?: Field[];
 }
 
 export interface Field {
@@ -42,11 +45,8 @@ export interface Value {
  * State Type
  */
 export interface FormsState {
-  readonly title?: string;
-  readonly description?: string;
-  readonly category?: number | null;
-  readonly created_at?: Date;
-  readonly fields: Field[];
+  readonly form: Form;
+  readonly forms: Form[];
   readonly loading: boolean;
   readonly error: boolean;
 }

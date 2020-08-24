@@ -25,6 +25,7 @@ import {
   Assignment,
   ExitToApp,
   Edit,
+  Room,
 } from '@material-ui/icons';
 
 import { ApplicationState } from '../../store';
@@ -77,21 +78,24 @@ const Header: React.FC = () => {
           })}
           color="primary"
         >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, {
-                [classes.hide]: open,
-              })}
-            >
-              <Menu />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              {title}
-            </Typography>
+          <Toolbar className={classes.toolbarFlex}>
+            <div className={classes.toolbarFlexLeft}>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                className={clsx(classes.menuButton, {
+                  [classes.hide]: open,
+                })}
+              >
+                <Menu />
+              </IconButton>
+              <Typography variant="h6" noWrap style={{ display: 'inline' }}>
+                {title}
+              </Typography>
+            </div>
+            <div>Logo Aqui</div>
           </Toolbar>
         </AppBar>
       </ThemeProvider>
@@ -168,6 +172,21 @@ const Header: React.FC = () => {
               </ListItem>
             </List>
           </Link>
+
+          {admin ? (
+            <Link to="/map" className={classes.link}>
+              <List>
+                <ListItem button>
+                  <ListItemIcon>
+                    <Room className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText primary="Mapa" />
+                </ListItem>
+              </List>
+            </Link>
+          ) : (
+            ''
+          )}
 
           {admin ? (
             <Link to="/users" className={classes.link}>
