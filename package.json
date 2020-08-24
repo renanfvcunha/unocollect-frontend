@@ -32,7 +32,7 @@
   "scripts": {
     "dev": "BROWSER=none react-scripts start",
     "start": "node server",
-    "postinstall": "yarn build",
+    "postinstall": "npm run build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
