@@ -5,19 +5,42 @@ const INITIAL_STATE: UsersState = {
   user: {},
   usersForms: [],
   loading: false,
+  success: false,
   error: false,
+  modalTitle: undefined,
+  modalMsg: undefined,
 };
 
 const reducer: Reducer<UsersState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case UsersTypes.ADD_USER_REQUEST:
-      return { ...state, loading: true, error: false };
+      return { ...state, loading: true, success: false, error: false };
 
     case UsersTypes.ADD_USER_SUCCESS:
-      return { ...state, loading: false, error: false };
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
+      };
 
     case UsersTypes.ADD_USER_FAILURE:
-      return { ...state, loading: false, error: true };
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
+      };
+
+    case UsersTypes.SET_ERROR_FALSE:
+      return {
+        ...state,
+        error: false,
+      };
 
     case UsersTypes.GET_USERS_FORMS_REQUEST:
       return { ...state, loading: true, error: false };

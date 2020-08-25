@@ -9,6 +9,7 @@ export enum UsersTypes {
   GET_USERS_FORMS_REQUEST = '@users/GET_USERS_FORMS_REQUEST',
   GET_USERS_FORMS_SUCCESS = '@users/GET_USERS_FORMS_SUCCESS',
   GET_USERS_FORMS_FAILURE = '@users/GET_USERS_FORMS_FAILURE',
+  SET_ERROR_FALSE = '@users/SET_ERROR_FALSE',
 }
 
 /**
@@ -40,5 +41,8 @@ export interface UsersState {
   readonly usersForms: UserForm[];
   readonly user: User;
   readonly loading: boolean;
+  readonly success: boolean;
   readonly error: boolean;
+  readonly modalTitle?: string;
+  readonly modalMsg?: string;
 }

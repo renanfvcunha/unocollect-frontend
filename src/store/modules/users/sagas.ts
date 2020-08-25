@@ -9,7 +9,6 @@ import {
   getUsersFormsSuccess,
   getUsersFormsFailure,
 } from './actions';
-import tron from '../../../config/ReactotronConfig';
 
 interface Payload extends AnyAction {
   payload: {
@@ -27,17 +26,13 @@ export function* addUser({ payload }: Payload) {
   try {
     const response: Response = yield call(api.post, 'users', payload.data);
 
-    alert(response.data.msg);
     yield put(addUserSuccess(response.data.msg));
   } catch (err) {
     if (err.message === 'Network Error') {
-      alert('Erro ao conectar ao servidor.');
       yield put(addUserFailure('Erro ao conectar ao servidor.'));
     } else if (err.response) {
-      alert(err.response.data.msg);
       yield put(addUserFailure(err.response.data.msg));
     } else {
-      alert(err);
       yield put(addUserFailure(err));
     }
   }

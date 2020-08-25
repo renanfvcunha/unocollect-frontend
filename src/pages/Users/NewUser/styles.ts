@@ -13,7 +13,7 @@ export const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    backgroundColor: '#e7e7e7',
+    backgroundColor: '#b5b5b5',
   },
   iconBack: {
     marginRight: 8,
@@ -47,6 +47,11 @@ export const useStyles = makeStyles(theme => ({
   },
   margin: {
     margin: theme.spacing(1),
+  },
+  progress: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   subButton: {
     margin: theme.spacing(1),

@@ -8,7 +8,7 @@ export const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    backgroundColor: '#e7e7e7',
+    backgroundColor: '#b5b5b5',
   },
   iconAdd: {
     marginRight: 8,
