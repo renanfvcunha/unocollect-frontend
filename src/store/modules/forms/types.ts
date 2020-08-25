@@ -48,5 +48,6 @@ export interface FormsState {
   readonly form: Form;
   readonly forms: Form[];
   readonly loading: boolean;
+  readonly success: boolean;
   readonly error: boolean;
 }

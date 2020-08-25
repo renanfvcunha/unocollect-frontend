@@ -5,6 +5,7 @@ import {
   ThemeProvider,
   Button,
   FormControl,
+  TextField,
   InputLabel,
   Select,
   MenuItem,
@@ -13,13 +14,18 @@ import {
   Tooltip,
   Fab,
 } from '@material-ui/core';
-import { ArrowBack, Add, Remove } from '@material-ui/icons';
+import { ArrowBack, Add, Remove, Close } from '@material-ui/icons';
 
 import { ApplicationState } from '../../../store';
 import setPageTitle from '../../../store/modules/pageTitle/actions';
-import { getCategoriesRequest } from '../../../store/modules/categories/actions';
+import {
+  getCategoriesRequest,
+  addCategoryRequest,
+  setErrorFalse,
+} from '../../../store/modules/categories/actions';
 import { addFormRequest } from '../../../store/modules/forms/actions';
-import { useStyles, BtnStyle, Tooltips, BlueTextField } from './styles';
+import { useStyles, BtnStyle, Tooltips } from './styles';
+import ModalAlert from '../../../components/ModalAlert';
 
 interface Fields {
   name: string;
@@ -31,36 +37,54 @@ const NewForm: React.FC = () => {
   const pageTitle = 'Formulários > Novo Formulário';
   const dispatch = useDispatch();
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState(0);
   const categories = useSelector(
     (state: ApplicationState) => state.categories.categories,
   );
+  const loading = useSelector(
+    (state: ApplicationState) => state.categories.loading,
+  );
+  const success = useSelector(
+    (state: ApplicationState) => state.categories.success,
+  );
+  const error = useSelector(
+    (state: ApplicationState) => state.categories.error,
+  );
+  const modalMsg = useSelector(
+    (state: ApplicationState) => state.categories.modalMsg,
+  );
+  const modalTitle = useSelector(
+    (state: ApplicationState) => state.categories.modalTitle,
+  );
 
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState(0);
   const [fields, setFields] = useState<Fields[]>([]);
   const [fieldsLength, setFieldsLength] = useState(1);
 
-  useEffect(() => {
-    dispatch(setPageTitle(pageTitle));
+  const [showAddCat, setShowAddCat] = useState(false);
+  const [catName, setCatName] = useState('');
 
-    dispatch(getCategoriesRequest());
-  }, [dispatch]);
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
-  function handleAddField() {
+  const handleAddField = () => {
     setFieldsLength(fieldsLength + 1);
-  }
+  };
 
-  function handleRemoveField(i: number, fds: Fields[]) {
+  const handleRemoveField = (i: number, fds: Fields[]) => {
     fds.splice(i, 1);
 
     setFieldsLength(fieldsLength - 1);
-  }
+  };
 
-  function handleChangeFieldName(
+  const handleChangeFieldName = (
     i: number,
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
+  ) => {
     const newFields = [...fields];
 
     const field = {
@@ -71,12 +95,12 @@ const NewForm: React.FC = () => {
     newFields[i] = field;
 
     setFields(newFields);
-  }
+  };
 
-  function handleChangeFieldDesc(
+  const handleChangeFieldDesc = (
     i: number,
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
+  ) => {
     const newFields = [...fields];
 
     const field = {
@@ -87,11 +111,11 @@ const NewForm: React.FC = () => {
     newFields[i] = field;
 
     setFields(newFields);
-  }
+  };
 
-  function handleChangeCategory(e: ChangeEvent<HTMLSelectElement>) {
+  const handleChangeCategory = (e: ChangeEvent<HTMLSelectElement>) => {
     setCategory(Number(e.target.value));
-  }
+  };
 
   const fieldsForm = [];
   for (let i = 0; i < fieldsLength; i += 1) {
@@ -131,7 +155,7 @@ const NewForm: React.FC = () => {
           )}
 
           <div className={classes.fieldsFormFields}>
-            <BlueTextField
+            <TextField
               type="text"
               name="name"
               label={`Campo ${i + 1}`}
@@ -143,7 +167,7 @@ const NewForm: React.FC = () => {
               onChange={e => handleChangeFieldName(i, e)}
             />
 
-            <BlueTextField
+            <TextField
               type="text"
               name="name"
               label="Descrição (opcional)"
@@ -193,7 +217,14 @@ const NewForm: React.FC = () => {
     fields.splice(fieldsLength);
   }
 
-  function handleSubmit(e: FormEvent) {
+  const handleAddCategory = (e: FormEvent) => {
+    e.preventDefault();
+
+    dispatch(addCategoryRequest(catName));
+    dispatch(getCategoriesRequest());
+  };
+
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     const FormData = {
@@ -204,91 +235,165 @@ const NewForm: React.FC = () => {
     };
 
     dispatch(addFormRequest(FormData));
-  }
+  };
+
+  useEffect(() => {
+    dispatch(setPageTitle(pageTitle));
+
+    dispatch(getCategoriesRequest());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error || success) {
+      setModalOpen(true);
+
+      dispatch(setErrorFalse());
+    }
+  }, [error, success, dispatch]);
 
   return (
-    <main className={classes.content}>
-      <div className={classes.toolbar} />
-      <Link to="/forms" style={{ position: 'absolute' }}>
-        <ThemeProvider theme={BtnStyle}>
+    <ThemeProvider theme={BtnStyle}>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <Link to="/forms" style={{ position: 'absolute' }}>
           <Button variant="contained" color="primary">
             <ArrowBack className={classes.iconBack} />
             Voltar
           </Button>
-        </ThemeProvider>
-      </Link>
+        </Link>
 
-      <div className={classes.form}>
-        <form className={classes.formBox} onSubmit={handleSubmit}>
-          <Typography variant="h5" className={classes.title} align="center">
-            Novo Formulário
-          </Typography>
+        <div className={classes.form}>
+          <div className={classes.formBox}>
+            <Typography variant="h5" className={classes.title} align="center">
+              Novo Formulário
+            </Typography>
 
-          <div className={classes.mainForm}>
-            <BlueTextField
-              type="text"
-              name="name"
-              label="Nome do Formulário"
-              style={{ width: '50%' }}
-              required
-              className={classes.margin}
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-            />
-
-            <FormControl className={classes.margin}>
-              <InputLabel id="category">Categoria</InputLabel>
-              <Select
-                labelId="category"
-                value={category}
-                onChange={handleChangeCategory}
-              >
-                <MenuItem value={0}>Sem Categoria</MenuItem>
-                {categories?.map(cat => (
-                  <MenuItem key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <BlueTextField
-              type="text"
-              name="description"
-              label="Descrição (opcional)"
-              multiline
-              style={{ width: '75%' }}
-              className={classes.margin}
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-            />
-          </div>
-
-          <Divider style={{ marginTop: 24 }} />
-
-          <Typography variant="h6" className={classes.title} align="center">
-            Campos
-          </Typography>
-
-          {fieldsForm}
-
-          <div className={classes.subButton}>
-            <FormControl style={{ width: '50%' }}>
-              <ThemeProvider theme={BtnStyle}>
+            {showAddCat ? (
+              <form className={classes.addCatForm} onSubmit={handleAddCategory}>
+                <TextField
+                  type="text"
+                  name="name"
+                  label="Nome da Categoria"
+                  style={{ width: '20%' }}
+                  required
+                  className={classes.margin}
+                  value={catName}
+                  onChange={e => setCatName(e.target.value)}
+                />
                 <Button
+                  size="small"
                   variant="contained"
                   color="primary"
-                  className={classes.margin}
+                  style={{ padding: 8 }}
                   type="submit"
                 >
-                  Adicionar Formulário
+                  Adicionar
                 </Button>
-              </ThemeProvider>
-            </FormControl>
+              </form>
+            ) : (
+              <div />
+            )}
+
+            <form onSubmit={handleSubmit}>
+              <div className={classes.mainForm}>
+                <TextField
+                  type="text"
+                  name="name"
+                  label="Nome do Formulário"
+                  style={{ width: '50%' }}
+                  required
+                  className={classes.margin}
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                />
+
+                <FormControl className={classes.margin}>
+                  <InputLabel id="category">Categoria</InputLabel>
+                  <Select
+                    labelId="category"
+                    value={category}
+                    onChange={handleChangeCategory}
+                  >
+                    <MenuItem value={0}>Sem Categoria</MenuItem>
+                    {categories?.map(cat => (
+                      <MenuItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {showAddCat ? (
+                  <ThemeProvider theme={Tooltips}>
+                    <Tooltip
+                      title="Cancelar"
+                      aria-label="cancel"
+                      style={{ marginRight: '2.5%' }}
+                      onClick={() => setShowAddCat(false)}
+                    >
+                      <Fab color="secondary" size="small">
+                        <Close />
+                      </Fab>
+                    </Tooltip>
+                  </ThemeProvider>
+                ) : (
+                  <ThemeProvider theme={Tooltips}>
+                    <Tooltip
+                      title="Adicionar Categoria"
+                      aria-label="addCat"
+                      style={{ marginRight: '2.5%' }}
+                      onClick={() => setShowAddCat(true)}
+                    >
+                      <Fab color="primary" size="small">
+                        <Add />
+                      </Fab>
+                    </Tooltip>
+                  </ThemeProvider>
+                )}
+
+                <TextField
+                  type="text"
+                  name="description"
+                  label="Descrição (opcional)"
+                  multiline
+                  style={{ width: '75%' }}
+                  className={classes.margin}
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                />
+              </div>
+
+              <Divider style={{ marginTop: 24 }} />
+
+              <Typography variant="h6" className={classes.title} align="center">
+                Campos
+              </Typography>
+
+              {fieldsForm}
+
+              <div className={classes.subButton}>
+                <FormControl style={{ width: '50%' }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.margin}
+                    type="submit"
+                  >
+                    Adicionar Formulário
+                  </Button>
+                </FormControl>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
-    </main>
+        </div>
+        <ModalAlert
+          open={modalOpen}
+          close={handleModalClose}
+          title={modalTitle}
+          msg={modalMsg}
+        />
+      </main>
+    </ThemeProvider>
   );
 };
 

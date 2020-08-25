@@ -4,7 +4,10 @@ import { CategoriesState, CategoriesTypes } from './types';
 const INITIAL_STATE: CategoriesState = {
   categories: [],
   loading: false,
+  success: false,
   error: false,
+  modalMsg: undefined,
+  modalTitle: undefined,
 };
 
 const reducer: Reducer<CategoriesState> = (state = INITIAL_STATE, action) => {
@@ -14,6 +17,7 @@ const reducer: Reducer<CategoriesState> = (state = INITIAL_STATE, action) => {
 
     case CategoriesTypes.GET_CATEGORIES_SUCCESS:
       return {
+        ...state,
         categories: action.payload.data,
         loading: false,
         error: false,
@@ -21,6 +25,41 @@ const reducer: Reducer<CategoriesState> = (state = INITIAL_STATE, action) => {
 
     case CategoriesTypes.GET_CATEGORIES_FAILURE:
       return { ...state, loading: false, error: true };
+
+    case CategoriesTypes.ADD_CATEGORY_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+
+    case CategoriesTypes.ADD_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        modalMsg: '',
+        modalTitle: action.payload.successMsg,
+      };
+
+    case CategoriesTypes.ADD_CATEGORY_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalMsg: '',
+        modalTitle: action.payload.errorMsg,
+      };
+
+    case CategoriesTypes.SET_ERROR_FALSE:
+      return {
+        ...state,
+        error: false,
+        loading: false,
+      };
 
     default:
       return state;

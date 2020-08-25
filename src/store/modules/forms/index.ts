@@ -5,6 +5,7 @@ const INITIAL_STATE: FormsState = {
   form: {},
   forms: [],
   loading: false,
+  success: false,
   error: false,
 };
 

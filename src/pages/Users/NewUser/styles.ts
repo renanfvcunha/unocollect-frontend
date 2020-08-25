@@ -1,9 +1,4 @@
-import {
-  makeStyles,
-  createMuiTheme,
-  withStyles,
-} from '@material-ui/core/styles';
-import { TextField } from '@material-ui/core';
+import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 
 export const useStyles = makeStyles(theme => ({
@@ -60,7 +55,7 @@ export const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const BtnStyle = createMuiTheme({
+export const theme = createMuiTheme({
   overrides: {
     MuiButton: {
       containedPrimary: {
@@ -74,14 +69,3 @@ export const BtnStyle = createMuiTheme({
     },
   },
 });
-
-export const GreenTextField = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: '#66bb6a',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: '#66bb6a',
-    },
-  },
-})(TextField);

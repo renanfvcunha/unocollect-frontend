@@ -1,9 +1,4 @@
-import {
-  makeStyles,
-  createMuiTheme,
-  withStyles,
-} from '@material-ui/core/styles';
-import { TextField } from '@material-ui/core';
+import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import { blue, red } from '@material-ui/core/colors';
 
 export const useStyles = makeStyles(theme => ({
@@ -13,7 +8,7 @@ export const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    backgroundColor: '#e7e7e7',
+    backgroundColor: '#b5b5b5',
   },
   iconBack: {
     marginRight: 8,
@@ -36,6 +31,11 @@ export const useStyles = makeStyles(theme => ({
     border: '1px solid #ccc',
     borderRadius: 12,
     width: '75%',
+  },
+  addCatForm: {
+    display: 'flex',
+    alignItems: 'baseline',
+    justifyContent: 'center',
   },
   mainForm: {
     display: 'flex',
@@ -91,17 +91,6 @@ export const BtnStyle = createMuiTheme({
     },
   },
 });
-
-export const BlueTextField = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: '#42a5f5',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: '#42a5f5',
-    },
-  },
-})(TextField);
 
 export const Tooltips = createMuiTheme({
   palette: {

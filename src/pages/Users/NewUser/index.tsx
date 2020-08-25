@@ -6,6 +6,7 @@ import {
   ThemeProvider,
   Typography,
   FormControl,
+  TextField,
   Select,
   MenuItem,
   InputLabel,
@@ -13,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 
-import { useStyles, BtnStyle, GreenTextField } from './styles';
+import { useStyles, theme } from './styles';
 import { ApplicationState } from '../../../store';
 import setPageTitle from '../../../store/modules/pageTitle/actions';
 import {
@@ -82,7 +83,7 @@ const NewUser: React.FC = () => {
   }, [error, success, dispatch]);
 
   return (
-    <ThemeProvider theme={BtnStyle}>
+    <ThemeProvider theme={theme}>
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Link to="/users" style={{ position: 'absolute' }}>
@@ -99,7 +100,7 @@ const NewUser: React.FC = () => {
                 Novo Usuário
               </Typography>
 
-              <GreenTextField
+              <TextField
                 label="Nome Completo"
                 required
                 className={classes.field}
@@ -107,7 +108,7 @@ const NewUser: React.FC = () => {
                 onChange={e => setName(e.target.value)}
               />
 
-              <GreenTextField
+              <TextField
                 label="Nome de Usuário"
                 required
                 className={classes.field}
@@ -130,7 +131,7 @@ const NewUser: React.FC = () => {
                 </Select>
               </FormControl>
 
-              <GreenTextField
+              <TextField
                 label="Senha"
                 required
                 className={classes.field}
@@ -139,7 +140,7 @@ const NewUser: React.FC = () => {
                 onChange={e => setPassword(e.target.value)}
               />
 
-              <GreenTextField
+              <TextField
                 label="Confirmar Senha"
                 required
                 className={classes.field}

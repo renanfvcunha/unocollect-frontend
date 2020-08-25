@@ -36,12 +36,6 @@ const reducer: Reducer<UsersState> = (state = INITIAL_STATE, action) => {
         modalMsg: action.payload.errorMsg,
       };
 
-    case UsersTypes.SET_ERROR_FALSE:
-      return {
-        ...state,
-        error: false,
-      };
-
     case UsersTypes.GET_USERS_FORMS_REQUEST:
       return { ...state, loading: true, error: false };
 
@@ -55,6 +49,12 @@ const reducer: Reducer<UsersState> = (state = INITIAL_STATE, action) => {
 
     case UsersTypes.GET_USERS_FORMS_FAILURE:
       return { ...state, loading: false, error: true };
+
+    case UsersTypes.SET_ERROR_FALSE:
+      return {
+        ...state,
+        error: false,
+      };
 
     default:
       return state;

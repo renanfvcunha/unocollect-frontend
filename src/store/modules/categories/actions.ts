@@ -2,6 +2,7 @@ import { action } from 'typesafe-actions';
 import { Action } from 'redux';
 import { CategoriesTypes, Category } from './types';
 
+// Get Categories
 export const getCategoriesRequest = (): Action =>
   action(CategoriesTypes.GET_CATEGORIES_REQUEST);
 
@@ -10,3 +11,16 @@ export const getCategoriesSuccess = (data: Category): Action =>
 
 export const getCategoriesFailure = (errorMsg: string): Action =>
   action(CategoriesTypes.GET_CATEGORIES_FAILURE, { errorMsg });
+
+// Add Category
+export const addCategoryRequest = (name: string): Action =>
+  action(CategoriesTypes.ADD_CATEGORY_REQUEST, { name });
+
+export const addCategorySuccess = (successMsg: string): Action =>
+  action(CategoriesTypes.ADD_CATEGORY_SUCCESS, { successMsg });
+
+export const addCategoryFailure = (errorMsg: string): Action =>
+  action(CategoriesTypes.ADD_CATEGORY_FAILURE, { errorMsg });
+
+export const setErrorFalse = (): Action =>
+  action(CategoriesTypes.SET_ERROR_FALSE);
