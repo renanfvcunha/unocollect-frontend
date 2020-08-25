@@ -40,8 +40,8 @@ const reducer: Reducer<CategoriesState> = (state = INITIAL_STATE, action) => {
         loading: false,
         success: true,
         error: false,
-        modalMsg: '',
-        modalTitle: action.payload.successMsg,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
       };
 
     case CategoriesTypes.ADD_CATEGORY_FAILURE:
@@ -50,8 +50,8 @@ const reducer: Reducer<CategoriesState> = (state = INITIAL_STATE, action) => {
         loading: false,
         success: false,
         error: true,
-        modalMsg: '',
-        modalTitle: action.payload.errorMsg,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
       };
 
     case CategoriesTypes.SET_ERROR_FALSE:

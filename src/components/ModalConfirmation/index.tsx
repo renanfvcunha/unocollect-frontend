@@ -14,12 +14,13 @@ import { red } from '@material-ui/core/colors';
 import Draggable from 'react-draggable';
 import PropTypes from 'prop-types';
 
-interface IModal {
+interface Modal {
   open: boolean;
   close(): void;
+  confirmAction(): void;
   name?: string;
   cancel: string;
-  del: string;
+  confirm: string;
 }
 
 function PaperComponent(props: PaperProps) {
@@ -41,12 +42,13 @@ const Red = createMuiTheme({
   },
 });
 
-const ModalConfirmation: React.FC<IModal> = ({
+const ModalConfirmation: React.FC<Modal> = ({
   open,
   close,
+  confirmAction,
   name,
   cancel,
-  del,
+  confirm,
 }) => {
   return (
     <div>
@@ -70,8 +72,8 @@ const ModalConfirmation: React.FC<IModal> = ({
             {cancel}
           </Button>
           <ThemeProvider theme={Red}>
-            <Button onClick={close} color="secondary">
-              {del}
+            <Button onClick={confirmAction} color="secondary">
+              {confirm}
             </Button>
           </ThemeProvider>
         </DialogActions>
@@ -83,9 +85,10 @@ const ModalConfirmation: React.FC<IModal> = ({
 ModalConfirmation.propTypes = {
   open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
+  confirmAction: PropTypes.func.isRequired,
   name: PropTypes.string,
   cancel: PropTypes.string.isRequired,
-  del: PropTypes.string.isRequired,
+  confirm: PropTypes.string.isRequired,
 };
 
 ModalConfirmation.defaultProps = {

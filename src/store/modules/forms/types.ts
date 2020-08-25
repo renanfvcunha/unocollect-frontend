@@ -12,6 +12,10 @@ export enum FormsTypes {
   GET_FORM_REQUEST = '@forms/GET_FORM_REQUEST',
   GET_FORM_SUCCESS = '@forms/GET_FORM_SUCCESS',
   GET_FORM_FAILURE = '@forms/GET_FORM_FAILURE',
+  DELETE_FORM_REQUEST = '@forms/DELETE_FORM_REQUEST',
+  DELETE_FORM_SUCCESS = '@forms/DELETE_FORM_SUCCESS',
+  DELETE_FORM_FAILURE = '@forms/DELETE_FORM_FAILURE',
+  SET_ERROR_FALSE = '@forms/SET_ERROR_FALSE',
 }
 
 /**
@@ -50,4 +54,6 @@ export interface FormsState {
   readonly loading: boolean;
   readonly success: boolean;
   readonly error: boolean;
+  readonly modalTitle?: string;
+  readonly modalMsg?: string;
 }

@@ -10,7 +10,10 @@ import {
   getFormsFailure,
   getFormSuccess,
   getFormFailure,
+  deleteFormSuccess,
+  deleteFormFailure,
 } from './actions';
+import tron from '../../../config/ReactotronConfig';
 
 interface Payload extends AnyAction {
   payload: {
@@ -74,8 +77,28 @@ export function* getForm({ payload }: AnyAction) {
   }
 }
 
+export function* deleteForm({ payload }: AnyAction) {
+  try {
+    if (tron.log) {
+      tron.log(payload.id);
+    }
+    const response = yield call(api.delete, `forms/${payload.id}`);
+
+    yield put(deleteFormSuccess(response.data.msg));
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(deleteFormFailure('Erro ao conectar ao servidor.'));
+    } else if (err.response) {
+      yield put(deleteFormFailure(err.response.data.msg));
+    } else {
+      yield put(deleteFormFailure(err));
+    }
+  }
+}
+
 export default all([
   takeLatest(FormsTypes.ADD_FORM_REQUEST, addForm),
   takeLatest(FormsTypes.GET_FORMS_REQUEST, getForms),
   takeLatest(FormsTypes.GET_FORM_REQUEST, getForm),
+  takeLatest(FormsTypes.DELETE_FORM_REQUEST, deleteForm),
 ]);

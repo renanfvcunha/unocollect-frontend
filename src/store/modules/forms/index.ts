@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { FormsState, FormsTypes, Form } from './types';
+import { FormsState, FormsTypes } from './types';
 
 const INITIAL_STATE: FormsState = {
   form: {},
@@ -7,6 +7,8 @@ const INITIAL_STATE: FormsState = {
   loading: false,
   success: false,
   error: false,
+  modalTitle: undefined,
+  modalMsg: undefined,
 };
 
 const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
@@ -47,6 +49,36 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
         ...state,
         loading: false,
         error: true,
+      };
+
+    case FormsTypes.DELETE_FORM_REQUEST:
+      return { ...state, loading: true, success: false, error: false };
+
+    case FormsTypes.DELETE_FORM_SUCCESS:
+      return {
+        ...state,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
+        loading: false,
+        success: true,
+        error: false,
+      };
+
+    case FormsTypes.DELETE_FORM_FAILURE:
+      return {
+        ...state,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
+        loading: false,
+        success: false,
+        error: true,
+      };
+
+    case FormsTypes.SET_ERROR_FALSE:
+      return {
+        ...state,
+        error: false,
+        loading: false,
       };
 
     default:

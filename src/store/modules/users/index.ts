@@ -54,6 +54,7 @@ const reducer: Reducer<UsersState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         error: false,
+        loading: false,
       };
 
     default:

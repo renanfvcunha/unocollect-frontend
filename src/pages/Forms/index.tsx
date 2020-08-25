@@ -1,5 +1,5 @@
 import React, { useState, useEffect, forwardRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { ThemeProvider, Button } from '@material-ui/core';
 import {
@@ -17,8 +17,14 @@ import {
 import MaterialTable, { Icons } from 'material-table';
 
 import api from '../../services/api';
+import { ApplicationState } from '../../store';
 import setPageTitle from '../../store/modules/pageTitle/actions';
+import {
+  deleteFormRequest,
+  setErrorFalse,
+} from '../../store/modules/forms/actions';
 import ModalConfirmation from '../../components/ModalConfirmation';
+import ModalAlert from '../../components/ModalAlert';
 import { useStyles, BtnStyle, TRow } from './styles';
 
 interface RowData {
@@ -30,21 +36,34 @@ interface RowData {
 
 const Forms: React.FC = () => {
   const history = useHistory();
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [name, setName] = useState('');
-
-  const handleModalClose = () => {
-    setModalOpen(false);
-  };
-
-  const classes = useStyles();
   const dispatch = useDispatch();
+  const classes = useStyles();
   const pageTitle = 'Formulários';
 
-  useEffect(() => {
-    dispatch(setPageTitle(pageTitle));
-  }, [dispatch]);
+  const success = useSelector((state: ApplicationState) => state.forms.success);
+  const error = useSelector((state: ApplicationState) => state.forms.error);
+  const modalMsg = useSelector(
+    (state: ApplicationState) => state.forms.modalMsg,
+  );
+  const modalTitle = useSelector(
+    (state: ApplicationState) => state.forms.modalTitle,
+  );
+
+  const [modalConfirmation, setModalConfirmation] = useState(false);
+  const [modalAlert, setModalAlert] = useState(false);
+  const [formName, setFormName] = useState('');
+  const [formToRemove, setFormToRemove] = useState(0);
+
+  const handleModalClose = () => {
+    setModalConfirmation(false);
+    setModalAlert(false);
+  };
+
+  const handleRemoveForm = () => {
+    setModalConfirmation(false);
+
+    dispatch(deleteFormRequest(formToRemove));
+  };
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -59,6 +78,18 @@ const Forms: React.FC = () => {
       <ArrowDownward {...props} ref={ref} />
     )),
   };
+
+  useEffect(() => {
+    dispatch(setPageTitle(pageTitle));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error || success) {
+      setModalAlert(true);
+
+      dispatch(setErrorFalse());
+    }
+  }, [error, success, dispatch]);
 
   return (
     <main className={classes.content}>
@@ -160,8 +191,9 @@ const Forms: React.FC = () => {
                   icon: () => <Delete />,
                   tooltip: 'Remover Formulário',
                   onClick: (event, rowData: RowData) => {
-                    setModalOpen(true);
-                    setName(rowData.title);
+                    setModalConfirmation(true);
+                    setFormName(rowData.title);
+                    setFormToRemove(rowData.id);
                   },
                 },
               ]}
@@ -178,11 +210,19 @@ const Forms: React.FC = () => {
       </div>
 
       <ModalConfirmation
-        open={modalOpen}
+        open={modalConfirmation}
         close={handleModalClose}
-        name={`o formulário "${name}"`}
+        confirmAction={handleRemoveForm}
+        name={formName}
         cancel="Cancelar"
-        del="Remover"
+        confirm="Remover"
+      />
+
+      <ModalAlert
+        open={modalAlert}
+        close={handleModalClose}
+        title={modalTitle}
+        msg={modalMsg}
       />
     </main>
   );

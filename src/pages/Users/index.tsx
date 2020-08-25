@@ -194,9 +194,10 @@ const Users: React.FC = () => {
       <ModalConfirmation
         open={modalOpen}
         close={handleModalClose}
+        confirmAction={() => {}}
         name={name}
         cancel="Cancelar"
-        del="Remover"
+        confirm="Remover"
       />
     </main>
   );

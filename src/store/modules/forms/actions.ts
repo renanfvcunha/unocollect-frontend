@@ -31,3 +31,15 @@ export const getFormSuccess = (data: Form): Action =>
 
 export const getFormFailure = (errorMsg: string): Action =>
   action(FormsTypes.GET_FORM_FAILURE, { errorMsg });
+
+// Delete Form
+export const deleteFormRequest = (id: number): Action =>
+  action(FormsTypes.DELETE_FORM_REQUEST, { id });
+
+export const deleteFormSuccess = (successMsg: string): Action =>
+  action(FormsTypes.DELETE_FORM_SUCCESS, { successMsg });
+
+export const deleteFormFailure = (errorMsg: string): Action =>
+  action(FormsTypes.DELETE_FORM_FAILURE, { errorMsg });
+
+export const setErrorFalse = (): Action => action(FormsTypes.SET_ERROR_FALSE);
