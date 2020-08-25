@@ -49,7 +49,7 @@ export const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     color: '#fff',
-    backgroundColor: '#78909c',
+    backgroundColor: '#37474f',
   },
   drawerClose: {
     transition: theme.transitions.create('width', {
@@ -62,7 +62,7 @@ export const useStyles = makeStyles(theme => ({
       width: theme.spacing(9) + 1,
     },
     color: '#fff',
-    backgroundColor: '#78909c',
+    backgroundColor: '#37474f',
   },
   welcome: {
     fontSize: 20,
@@ -93,7 +93,7 @@ export const useStyles = makeStyles(theme => ({
 export const BlueGrey = createMuiTheme({
   palette: {
     primary: {
-      main: blueGrey[400],
+      main: blueGrey[800],
     },
   },
 });

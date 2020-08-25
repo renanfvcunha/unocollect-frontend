@@ -94,7 +94,12 @@ const Header: React.FC = () => {
                 {title}
               </Typography>
             </div>
-            <div>Logo Aqui</div>
+            <img
+              src="/assets/images/logoUnoCollect.png"
+              alt="Logo Uno Collect"
+              width="50"
+              height="50"
+            />
           </Toolbar>
         </AppBar>
       </ThemeProvider>
