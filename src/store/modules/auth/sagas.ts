@@ -30,13 +30,16 @@ export function* login({ payload }: Payload) {
       password,
     });
 
+    if (!response.data.user.admin) {
+      yield put(
+        loginFailure('Aplicação acessível somente para administradores!'),
+      );
+      return;
+    }
+
     const { token, user } = response.data;
 
     api.defaults.headers.Authorization = `Bearer ${token}`;
-
-    if (!user.admin) {
-      history.push('/fills');
-    }
 
     yield put(loginSuccess(token, user));
   } catch (err) {

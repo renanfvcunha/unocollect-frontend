@@ -40,7 +40,6 @@ const Header: React.FC = () => {
   const dispatch = useDispatch();
   const title = useSelector((state: ApplicationState) => state.pageTitle.title);
   const name = useSelector((state: ApplicationState) => state.auth.user.name);
-  const admin = useSelector((state: ApplicationState) => state.auth.user.admin);
 
   const [open, setOpen] = useState(false);
 
@@ -132,35 +131,27 @@ const Header: React.FC = () => {
 
           <Divider />
 
-          {admin ? (
-            <Link to="/" className={classes.link}>
-              <List>
-                <ListItem button>
-                  <ListItemIcon>
-                    <MdDashboard className={classes.icon} />
-                  </ListItemIcon>
-                  <ListItemText primary="Painel de Controle" />
-                </ListItem>
-              </List>
-            </Link>
-          ) : (
-            ''
-          )}
+          <Link to="/" className={classes.link}>
+            <List>
+              <ListItem button>
+                <ListItemIcon>
+                  <MdDashboard className={classes.icon} />
+                </ListItemIcon>
+                <ListItemText primary="Painel de Controle" />
+              </ListItem>
+            </List>
+          </Link>
 
-          {admin ? (
-            <Link to="/forms" className={classes.link}>
-              <List>
-                <ListItem button>
-                  <ListItemIcon>
-                    <Assignment className={classes.icon} />
-                  </ListItemIcon>
-                  <ListItemText primary="Formulários" />
-                </ListItem>
-              </List>
-            </Link>
-          ) : (
-            ''
-          )}
+          <Link to="/forms" className={classes.link}>
+            <List>
+              <ListItem button>
+                <ListItemIcon>
+                  <Assignment className={classes.icon} />
+                </ListItemIcon>
+                <ListItemText primary="Formulários" />
+              </ListItem>
+            </List>
+          </Link>
 
           <Link to="/fills" className={classes.link}>
             <List>
@@ -173,35 +164,27 @@ const Header: React.FC = () => {
             </List>
           </Link>
 
-          {admin ? (
-            <Link to="/map" className={classes.link}>
-              <List>
-                <ListItem button>
-                  <ListItemIcon>
-                    <Room className={classes.icon} />
-                  </ListItemIcon>
-                  <ListItemText primary="Mapa" />
-                </ListItem>
-              </List>
-            </Link>
-          ) : (
-            ''
-          )}
+          <Link to="/map" className={classes.link}>
+            <List>
+              <ListItem button>
+                <ListItemIcon>
+                  <Room className={classes.icon} />
+                </ListItemIcon>
+                <ListItemText primary="Mapa" />
+              </ListItem>
+            </List>
+          </Link>
 
-          {admin ? (
-            <Link to="/users" className={classes.link}>
-              <List>
-                <ListItem button>
-                  <ListItemIcon>
-                    <Group className={classes.icon} />
-                  </ListItemIcon>
-                  <ListItemText primary="Usuários" />
-                </ListItem>
-              </List>
-            </Link>
-          ) : (
-            ''
-          )}
+          <Link to="/users" className={classes.link}>
+            <List>
+              <ListItem button>
+                <ListItemIcon>
+                  <Group className={classes.icon} />
+                </ListItemIcon>
+                <ListItemText primary="Usuários" />
+              </ListItem>
+            </List>
+          </Link>
 
           <Divider />
 

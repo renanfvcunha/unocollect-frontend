@@ -1,5 +1,5 @@
 import React, { useState, useEffect, forwardRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { ThemeProvider, Button } from '@material-ui/core';
 import {
@@ -17,7 +17,6 @@ import {
 import MaterialTable, { Icons } from 'material-table';
 
 import api from '../../services/api';
-import { ApplicationState } from '../../store';
 import setPageTitle from '../../store/modules/pageTitle/actions';
 import ModalConfirmation from '../../components/ModalConfirmation';
 import { useStyles, BtnStyle, TRow } from './styles';
@@ -29,9 +28,8 @@ interface RowData {
   fills: number;
 }
 
-const Dashboard: React.FC = () => {
+const Forms: React.FC = () => {
   const history = useHistory();
-  const admin = useSelector((state: ApplicationState) => state.auth.user.admin);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState('');
@@ -67,22 +65,18 @@ const Dashboard: React.FC = () => {
       <div className={classes.toolbar} />
 
       <div className="button">
-        {admin ? (
-          <ThemeProvider theme={BtnStyle}>
-            <Link to="/forms/new">
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ marginBottom: 24 }}
-              >
-                <Assignment style={{ marginRight: 8 }} />
-                Novo Formulário
-              </Button>
-            </Link>
-          </ThemeProvider>
-        ) : (
-          ''
-        )}
+        <ThemeProvider theme={BtnStyle}>
+          <Link to="/forms/new">
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginBottom: 24 }}
+            >
+              <Assignment style={{ marginRight: 8 }} />
+              Novo Formulário
+            </Button>
+          </Link>
+        </ThemeProvider>
 
         <div className={classes.table}>
           <ThemeProvider theme={TRow}>
@@ -194,4 +188,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Forms;

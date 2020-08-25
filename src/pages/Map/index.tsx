@@ -30,10 +30,6 @@ const Map: React.FC = () => {
     0,
     0,
   ]);
-  const [usersLocations, setUsersLocations] = useState<[number, number]>([
-    0,
-    0,
-  ]);
   const [formState, setFormState] = useState(0);
 
   useEffect(() => {

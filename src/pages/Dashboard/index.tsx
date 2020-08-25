@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Typography } from '@material-ui/core';
-import { ApplicationState } from '../../store';
-import * as PageTitleActions from '../../store/modules/pageTitle/actions';
+import setPageTitle from '../../store/modules/pageTitle/actions';
 import useStyles from './styles';
 
 const Dashboard: React.FC = () => {
@@ -11,7 +10,7 @@ const Dashboard: React.FC = () => {
   const title = 'Painel de Controle';
 
   useEffect(() => {
-    dispatch(PageTitleActions.default(title));
+    dispatch(setPageTitle(title));
   }, [dispatch]);
 
   return (
@@ -24,6 +23,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default connect((state: ApplicationState) => ({
-  title: state.pageTitle.title,
-}))(Dashboard);
+export default Dashboard;

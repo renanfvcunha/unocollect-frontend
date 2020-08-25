@@ -1,15 +1,12 @@
 import React, { useState, FormEvent, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  Avatar,
   Button,
   CssBaseline,
   TextField,
-  Typography,
   Container,
   CircularProgress,
 } from '@material-ui/core';
-import { LockOutlined } from '@material-ui/icons';
 
 import { ApplicationState } from '../../store';
 import { loginRequest, setErrorFalse } from '../../store/modules/auth/actions';
@@ -56,12 +53,12 @@ const Login: React.FC = () => {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlined />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Data Collector - Login
-          </Typography>
+          <img
+            src="/assets/images/logoUnoCollect.png"
+            alt="Logo Uno Collect"
+            width="200"
+            height="200"
+          />
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
