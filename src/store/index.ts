@@ -1,7 +1,7 @@
 import { createStore, Store, applyMiddleware, compose } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import createSagaMiddleware from 'redux-saga';
+import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
 
 import { AuthState } from './modules/auth/types';
 import { PageTitleState } from './modules/pageTitle/types';
@@ -22,25 +22,55 @@ export interface ApplicationState {
   categories: CategoriesState;
 }
 
+/**
+ * Criando configuração do Redux Persist.
+ */
 const persistConfig = {
   key: 'datacollector',
   storage,
   whitelist: ['auth'],
 };
 
-const sagaMonitor = tron.createSagaMonitor!();
+/**
+ * Criando configuração do Saga Middleware utilizando
+ * Reactotron Saga Monitor para desenvolvimento.
+ */
+let sagaMiddleware: SagaMiddleware;
+if (process.env.NODE_ENV === 'development' && tron.createSagaMonitor) {
+  const sagaMonitor = tron.createSagaMonitor();
+  sagaMiddleware = createSagaMiddleware({ sagaMonitor });
+} else {
+  sagaMiddleware = createSagaMiddleware();
+}
 
-const sagaMiddleware = createSagaMiddleware({ sagaMonitor });
-
+/**
+ * Mesclando configurações do Redux Persist com o Root Reducer
+ */
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const store: Store<ApplicationState> = createStore(
-  persistedReducer,
-  compose(applyMiddleware(sagaMiddleware), tron.createEnhancer!()),
-);
+/**
+ * Criando o store principal do Redux utilizando
+ * Reactotron para desenvolvimento
+ */
+let store: Store;
+if (process.env.NODE_ENV === 'development' && tron.createEnhancer) {
+  store = createStore(
+    persistedReducer,
+    compose(applyMiddleware(sagaMiddleware), tron.createEnhancer()),
+  );
+} else {
+  store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
+}
 
+/**
+ * Atribuindo variavel para o Persist Store do Redux Persist
+ * passando o store principal como parâmetro
+ */
 const persistor = persistStore(store);
 
+/**
+ * Inicializando os Side Effects do Redux Saga
+ */
 sagaMiddleware.run(rootSaga);
 
 export { store, persistor };

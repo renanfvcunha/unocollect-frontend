@@ -26,7 +26,6 @@ const Login: React.FC = () => {
   );
 
   const [modalOpen, setModalOpen] = useState(false);
-  // const [errorMsg, setErrorMsg] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
