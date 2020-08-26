@@ -1,4 +1,5 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { SagaIterator } from 'redux-saga';
 import { AnyAction } from 'redux';
 
 import api from '../../../services/api';
@@ -8,6 +9,8 @@ import {
   addUserFailure,
   getUsersFormsSuccess,
   getUsersFormsFailure,
+  deleteUserSuccess,
+  deleteUserFailure,
 } from './actions';
 
 interface Payload extends AnyAction {
@@ -22,7 +25,7 @@ interface Response {
   };
 }
 
-export function* addUser({ payload }: Payload) {
+export function* addUser({ payload }: Payload): SagaIterator {
   try {
     const response: Response = yield call(api.post, 'users', payload.data);
 
@@ -38,7 +41,7 @@ export function* addUser({ payload }: Payload) {
   }
 }
 
-export function* getUsersForms({ payload }: AnyAction) {
+export function* getUsersForms({ payload }: AnyAction): SagaIterator {
   try {
     const response = yield call(api.get, `userform/${payload.id}`);
 
@@ -57,7 +60,24 @@ export function* getUsersForms({ payload }: AnyAction) {
   }
 }
 
+export function* deleteUser({ payload }: AnyAction): SagaIterator {
+  try {
+    const response = yield call(api.delete, `users/${payload.id}`);
+
+    yield put(deleteUserSuccess(response.data.msg));
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(deleteUserFailure('Erro ao conectar ao servidor.'));
+    } else if (err.response) {
+      yield put(deleteUserFailure(err.response.data.msg));
+    } else {
+      yield put(deleteUserFailure(err));
+    }
+  }
+}
+
 export default all([
   takeLatest(UsersTypes.ADD_USER_REQUEST, addUser),
   takeLatest(UsersTypes.GET_USERS_FORMS_REQUEST, getUsersForms),
+  takeLatest(UsersTypes.DELETE_USER_REQUEST, deleteUser),
 ]);

@@ -222,6 +222,8 @@ const NewForm: React.FC = () => {
 
     dispatch(addCategoryRequest(catName));
     dispatch(getCategoriesRequest());
+    setShowAddCat(false);
+    setCatName('');
   };
 
   const handleSubmit = (e: FormEvent) => {

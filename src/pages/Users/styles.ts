@@ -20,23 +20,13 @@ export const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const BtnStyle = createMuiTheme({
+export const theme = createMuiTheme({
   overrides: {
     MuiButton: {
       containedPrimary: {
         color: '#fff',
       },
     },
-  },
-  palette: {
-    primary: {
-      main: green[400],
-    },
-  },
-});
-
-export const TRow = createMuiTheme({
-  overrides: {
     MuiTableSortLabel: {
       root: {
         '&:hover': {
@@ -51,6 +41,11 @@ export const TRow = createMuiTheme({
           cursor: 'default',
         },
       },
+    },
+  },
+  palette: {
+    primary: {
+      main: green[400],
     },
   },
 });

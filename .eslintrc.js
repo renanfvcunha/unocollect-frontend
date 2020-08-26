@@ -35,7 +35,6 @@ module.exports = {
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
     'react/jsx-props-no-spreading': 'off',
     'react/jsx-one-expression-per-line': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'off',
     'react/jsx-curly-newline': 'off',
     'import/extensions': [
       'error',

@@ -1,5 +1,11 @@
-import React, { useState, useEffect, forwardRef } from 'react';
-import { useDispatch } from 'react-redux';
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  createRef,
+  RefObject,
+} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, ThemeProvider } from '@material-ui/core';
 import {
@@ -13,13 +19,20 @@ import {
   ArrowDownward,
   Edit,
   Delete,
+  Refresh,
 } from '@material-ui/icons';
-import MaterialTable, { Icons } from 'material-table';
+import MaterialTable, { Icons, MaterialTableProps } from 'material-table';
 
 import ModalConfirmation from '../../components/ModalConfirmation';
-import { useStyles, BtnStyle, TRow } from './styles';
-import setPageTitle from '../../store/modules/pageTitle/actions';
+import ModalAlert from '../../components/ModalAlert';
 import api from '../../services/api';
+import { ApplicationState } from '../../store';
+import setPageTitle from '../../store/modules/pageTitle/actions';
+import {
+  deleteUserRequest,
+  setErrorFalse,
+} from '../../store/modules/users/actions';
+import { useStyles, theme } from './styles';
 
 interface RowData {
   id: number;
@@ -32,17 +45,48 @@ const Users: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const pageTitle = 'Usuários';
+  const tableRef: RefObject<any> = createRef();
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const success = useSelector((state: ApplicationState) => state.users.success);
+  const error = useSelector((state: ApplicationState) => state.users.error);
+  const modalMsg = useSelector(
+    (state: ApplicationState) => state.users.modalMsg,
+  );
+  const modalTitle = useSelector(
+    (state: ApplicationState) => state.users.modalTitle,
+  );
+
+  const [modalConfirmation, setModalConfirmation] = useState(false);
+  const [modalAlert, setModalAlert] = useState(false);
+  const [userToRemove, setUserToRemove] = useState(0);
   const [name, setName] = useState('');
 
+  const refreshTable = () => {
+    tableRef.current.onQueryChange();
+  };
+
+  const handleRemoveUser = () => {
+    setModalConfirmation(false);
+    dispatch(deleteUserRequest(userToRemove));
+    refreshTable();
+  };
+
   const handleModalClose = () => {
-    setModalOpen(false);
+    setModalConfirmation(false);
+    setModalAlert(false);
   };
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error || success) {
+      setModalAlert(true);
+
+      dispatch(setErrorFalse());
+    }
+  }, [error, success, dispatch]);
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -59,24 +103,23 @@ const Users: React.FC = () => {
   };
 
   return (
-    <main className={classes.content}>
-      <div className={classes.toolbar} />
+    <ThemeProvider theme={theme}>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
 
-      <div className="button">
-        <ThemeProvider theme={BtnStyle}>
+        <div className="button">
           <Link to="/users/new">
             <Button variant="contained" color="primary">
               <PersonAdd className={classes.iconAdd} />
               Novo Usuário
             </Button>
           </Link>
-        </ThemeProvider>
-      </div>
+        </div>
 
-      <div className={classes.table}>
-        <ThemeProvider theme={TRow}>
+        <div className={classes.table}>
           <MaterialTable
             title="Lista de Usuários"
+            tableRef={tableRef}
             columns={[
               {
                 title: 'Id',
@@ -153,9 +196,16 @@ const Users: React.FC = () => {
                 icon: () => <Delete />,
                 tooltip: 'Remover Usuário',
                 onClick: (event, rowData: RowData) => {
-                  setModalOpen(true);
+                  setModalConfirmation(true);
                   setName(rowData.name);
+                  setUserToRemove(rowData.id);
                 },
+              },
+              {
+                icon: () => <Refresh />,
+                tooltip: 'Atualizar',
+                isFreeAction: true,
+                onClick: () => refreshTable(),
               },
             ]}
             icons={tableIcons}
@@ -188,18 +238,24 @@ const Users: React.FC = () => {
               },
             }}
           />
-        </ThemeProvider>
-      </div>
+        </div>
 
-      <ModalConfirmation
-        open={modalOpen}
-        close={handleModalClose}
-        confirmAction={() => {}}
-        name={name}
-        cancel="Cancelar"
-        confirm="Remover"
-      />
-    </main>
+        <ModalConfirmation
+          open={modalConfirmation}
+          close={handleModalClose}
+          confirmAction={handleRemoveUser}
+          name={name}
+          cancel="Cancelar"
+          confirm="Remover"
+        />
+        <ModalAlert
+          open={modalAlert}
+          close={handleModalClose}
+          title={modalTitle}
+          msg={modalMsg}
+        />
+      </main>
+    </ThemeProvider>
   );
 };
 

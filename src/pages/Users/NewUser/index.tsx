@@ -22,7 +22,6 @@ import {
   setErrorFalse,
 } from '../../../store/modules/users/actions';
 import ModalAlert from '../../../components/ModalAlert';
-import tron from '../../../config/ReactotronConfig';
 
 const NewUser: React.FC = () => {
   const classes = useStyles();
@@ -64,8 +63,6 @@ const NewUser: React.FC = () => {
       password,
       passwordConf,
     };
-
-    tron.log!(data);
 
     dispatch(addUserRequest(data));
   };

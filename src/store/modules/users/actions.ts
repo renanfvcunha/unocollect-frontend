@@ -20,6 +20,16 @@ export const getUsersFormsSuccess = (data: UserForm): Action =>
   action(UsersTypes.GET_USERS_FORMS_SUCCESS, { data });
 
 export const getUsersFormsFailure = (errorMsg: string): Action =>
-  action(UsersTypes.GET_USERS_FORMS_SUCCESS, { errorMsg });
+  action(UsersTypes.GET_USERS_FORMS_FAILURE, { errorMsg });
+
+// Delete User
+export const deleteUserRequest = (id: number): Action =>
+  action(UsersTypes.DELETE_USER_REQUEST, { id });
+
+export const deleteUserSuccess = (successMsg: string): Action =>
+  action(UsersTypes.DELETE_USER_SUCCESS, { successMsg });
+
+export const deleteUserFailure = (errorMsg: string): Action =>
+  action(UsersTypes.DELETE_USER_FAILURE, { errorMsg });
 
 export const setErrorFalse = (): Action => action(UsersTypes.SET_ERROR_FALSE);

@@ -50,11 +50,34 @@ const reducer: Reducer<UsersState> = (state = INITIAL_STATE, action) => {
     case UsersTypes.GET_USERS_FORMS_FAILURE:
       return { ...state, loading: false, error: true };
 
+    case UsersTypes.DELETE_USER_REQUEST:
+      return { ...state, loading: true, success: false, error: false };
+
+    case UsersTypes.DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
+      };
+
+    case UsersTypes.DELETE_USER_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
+      };
+
     case UsersTypes.SET_ERROR_FALSE:
       return {
         ...state,
         error: false,
-        loading: false,
+        success: false,
       };
 
     default:

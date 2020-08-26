@@ -1,4 +1,10 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  createRef,
+  RefObject,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { ThemeProvider, Button } from '@material-ui/core';
@@ -13,6 +19,7 @@ import {
   ArrowDownward,
   Visibility,
   Delete,
+  Refresh,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
 
@@ -39,6 +46,7 @@ const Forms: React.FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const pageTitle = 'Formulários';
+  const tableRef: RefObject<any> = createRef();
 
   const success = useSelector((state: ApplicationState) => state.forms.success);
   const error = useSelector((state: ApplicationState) => state.forms.error);
@@ -54,6 +62,10 @@ const Forms: React.FC = () => {
   const [formName, setFormName] = useState('');
   const [formToRemove, setFormToRemove] = useState(0);
 
+  const refreshTable = () => {
+    tableRef.current.onQueryChange();
+  };
+
   const handleModalClose = () => {
     setModalConfirmation(false);
     setModalAlert(false);
@@ -61,8 +73,8 @@ const Forms: React.FC = () => {
 
   const handleRemoveForm = () => {
     setModalConfirmation(false);
-
     dispatch(deleteFormRequest(formToRemove));
+    refreshTable();
   };
 
   const tableIcons: Icons = {
@@ -113,6 +125,7 @@ const Forms: React.FC = () => {
           <ThemeProvider theme={TRow}>
             <MaterialTable
               title="Lista de Formulários"
+              tableRef={tableRef}
               columns={[
                 {
                   title: 'Id',
@@ -195,6 +208,12 @@ const Forms: React.FC = () => {
                     setFormName(rowData.title);
                     setFormToRemove(rowData.id);
                   },
+                },
+                {
+                  icon: () => <Refresh />,
+                  tooltip: 'Atualizar',
+                  isFreeAction: true,
+                  onClick: () => refreshTable(),
                 },
               ]}
               options={{

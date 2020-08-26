@@ -30,5 +30,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(configs.port, () => {
-  console.log(`Listening on ${configs.port}!`);
+  console.log(`Listening on ${configs.port}`);
 });
