@@ -7,11 +7,16 @@ import { UsersTypes, User } from './types';
 import {
   addUserSuccess,
   addUserFailure,
-  getUsersFormsSuccess,
-  getUsersFormsFailure,
+  getUserSuccess,
+  getUserFailure,
+  updateUserSuccess,
+  updateUserFailure,
   deleteUserSuccess,
   deleteUserFailure,
+  getUsersFormsSuccess,
+  getUsersFormsFailure,
 } from './actions';
+import tron from '../../../config/ReactotronConfig';
 
 interface Payload extends AnyAction {
   payload: {
@@ -41,21 +46,38 @@ export function* addUser({ payload }: Payload): SagaIterator {
   }
 }
 
-export function* getUsersForms({ payload }: AnyAction): SagaIterator {
+export function* getUser({ payload }: AnyAction): SagaIterator {
   try {
-    const response = yield call(api.get, `userform/${payload.id}`);
+    const response = yield call(api.get, `users/${payload.id}`);
 
-    yield put(getUsersFormsSuccess(response.data));
+    yield put(getUserSuccess(response.data));
   } catch (err) {
-    if (err.response.data.msg) {
-      alert(err.response.data.msg);
-      yield put(getUsersFormsFailure(err.response.data.msg));
-    } else if (err.message === 'Network Error') {
-      alert('Erro ao conectar ao servidor.');
-      yield put(getUsersFormsFailure('Erro ao conectar ao servidor.'));
+    if (err.message === 'Network Error') {
+      yield put(getUserFailure('Erro ao conectar ao servidor.'));
+    } else if (err.response) {
+      yield put(getUserFailure(err.response.data.msg));
     } else {
-      alert(err);
-      yield put(getUsersFormsFailure(err));
+      yield put(getUserFailure(err));
+    }
+  }
+}
+
+export function* updateUser({ payload }: AnyAction): SagaIterator {
+  try {
+    const response: Response = yield call(
+      api.put,
+      `users/${payload.id}`,
+      payload.data,
+    );
+
+    yield put(updateUserSuccess(response.data.msg));
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(updateUserFailure('Erro ao conectar ao servidor.'));
+    } else if (err.response) {
+      yield put(updateUserFailure(err.response.data.msg));
+    } else {
+      yield put(updateUserFailure(err));
     }
   }
 }
@@ -76,8 +98,29 @@ export function* deleteUser({ payload }: AnyAction): SagaIterator {
   }
 }
 
+export function* getUsersForms({ payload }: AnyAction): SagaIterator {
+  try {
+    const response = yield call(api.get, `userform/${payload.id}`);
+
+    yield put(getUsersFormsSuccess(response.data));
+  } catch (err) {
+    if (err.response.data.msg) {
+      alert(err.response.data.msg);
+      yield put(getUsersFormsFailure(err.response.data.msg));
+    } else if (err.message === 'Network Error') {
+      alert('Erro ao conectar ao servidor.');
+      yield put(getUsersFormsFailure('Erro ao conectar ao servidor.'));
+    } else {
+      alert(err);
+      yield put(getUsersFormsFailure(err));
+    }
+  }
+}
+
 export default all([
   takeLatest(UsersTypes.ADD_USER_REQUEST, addUser),
+  takeLatest(UsersTypes.GET_USER_REQUEST, getUser),
+  takeLatest(UsersTypes.UPDATE_USER_REQUEST, updateUser),
   takeLatest(UsersTypes.GET_USERS_FORMS_REQUEST, getUsersForms),
   takeLatest(UsersTypes.DELETE_USER_REQUEST, deleteUser),
 ]);

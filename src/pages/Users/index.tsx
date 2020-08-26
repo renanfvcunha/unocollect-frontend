@@ -6,7 +6,7 @@ import React, {
   RefObject,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Button, ThemeProvider } from '@material-ui/core';
 import {
   PersonAdd,
@@ -45,6 +45,7 @@ const Users: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const pageTitle = 'Usuários';
+  const history = useHistory();
   const tableRef: RefObject<any> = createRef();
 
   const success = useSelector((state: ApplicationState) => state.users.success);
@@ -189,8 +190,7 @@ const Users: React.FC = () => {
                 icon: () => <Edit />,
                 tooltip: 'Editar Usuário',
                 onClick: (event, rowData: RowData) =>
-                  // eslint-disable-next-line no-alert
-                  alert(`You saved ${rowData.name}`),
+                  history.push(`/users/edit/${rowData.id}`),
               },
               {
                 icon: () => <Delete />,

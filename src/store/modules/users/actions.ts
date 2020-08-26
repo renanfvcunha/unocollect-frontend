@@ -12,15 +12,25 @@ export const addUserSuccess = (successMsg: string): Action =>
 export const addUserFailure = (errorMsg: string): Action =>
   action(UsersTypes.ADD_USER_FAILURE, { errorMsg });
 
-// Get Users
-export const getUsersFormsRequest = (id: number): Action =>
-  action(UsersTypes.GET_USERS_FORMS_REQUEST, { id });
+// Get User
+export const getUserRequest = (id: number): Action =>
+  action(UsersTypes.GET_USER_REQUEST, { id });
 
-export const getUsersFormsSuccess = (data: UserForm): Action =>
-  action(UsersTypes.GET_USERS_FORMS_SUCCESS, { data });
+export const getUserSuccess = (data: User): Action =>
+  action(UsersTypes.GET_USER_SUCCESS, { data });
 
-export const getUsersFormsFailure = (errorMsg: string): Action =>
-  action(UsersTypes.GET_USERS_FORMS_FAILURE, { errorMsg });
+export const getUserFailure = (errorMsg: string): Action =>
+  action(UsersTypes.GET_USER_FAILURE, { errorMsg });
+
+// Update User
+export const updateUserRequest = (id: number, data: User): Action =>
+  action(UsersTypes.UPDATE_USER_REQUEST, { id, data });
+
+export const updateUserSuccess = (successMsg: string): Action =>
+  action(UsersTypes.UPDATE_USER_SUCCESS, { successMsg });
+
+export const updateUserFailure = (errorMsg: string): Action =>
+  action(UsersTypes.UPDATE_USER_FAILURE, { errorMsg });
 
 // Delete User
 export const deleteUserRequest = (id: number): Action =>
@@ -31,5 +41,15 @@ export const deleteUserSuccess = (successMsg: string): Action =>
 
 export const deleteUserFailure = (errorMsg: string): Action =>
   action(UsersTypes.DELETE_USER_FAILURE, { errorMsg });
+
+// Get Users
+export const getUsersFormsRequest = (id: number): Action =>
+  action(UsersTypes.GET_USERS_FORMS_REQUEST, { id });
+
+export const getUsersFormsSuccess = (data: UserForm): Action =>
+  action(UsersTypes.GET_USERS_FORMS_SUCCESS, { data });
+
+export const getUsersFormsFailure = (errorMsg: string): Action =>
+  action(UsersTypes.GET_USERS_FORMS_FAILURE, { errorMsg });
 
 export const setErrorFalse = (): Action => action(UsersTypes.SET_ERROR_FALSE);
