@@ -13,7 +13,6 @@ import {
   deleteFormSuccess,
   deleteFormFailure,
 } from './actions';
-import tron from '../../../config/ReactotronConfig';
 
 interface Payload extends AnyAction {
   payload: {
@@ -79,9 +78,6 @@ export function* getForm({ payload }: AnyAction) {
 
 export function* deleteForm({ payload }: AnyAction) {
   try {
-    if (tron.log) {
-      tron.log(payload.id);
-    }
     const response = yield call(api.delete, `forms/${payload.id}`);
 
     yield put(deleteFormSuccess(response.data.msg));

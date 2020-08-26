@@ -14,17 +14,18 @@ import {
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
 
+import api from '../../../services/api';
 import { ApplicationState } from '../../../store';
 import setPageTitle from '../../../store/modules/pageTitle/actions';
 import { getFormRequest } from '../../../store/modules/forms/actions';
 import { useStyles, BtnStyle, TRow } from './styles';
 import tron from '../../../config/ReactotronConfig';
 
-interface TableColumns {
+/* interface TableColumns {
   title?: string;
   field?: string;
   align?: 'center' | 'inherit' | 'justify' | 'left' | 'right';
-}
+} */
 
 const ShowForm: React.FC = () => {
   const { id } = useParams();
@@ -39,12 +40,7 @@ const ShowForm: React.FC = () => {
     (state: ApplicationState) => state.forms.form.fields,
   );
 
-  const [tableColumns, setTableColumns] = useState<TableColumns[]>([
-    {
-      title: 'Criado por',
-      field: 'created_by',
-    },
-  ]);
+  // const [tableColumns, setTableColumns] = useState<TableColumns[]>([]);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
@@ -52,7 +48,7 @@ const ShowForm: React.FC = () => {
     dispatch(getFormRequest(id));
   }, [dispatch, id]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (fields) {
       const columns = fields.map(field => ({
         title: field.name,
@@ -72,7 +68,7 @@ const ShowForm: React.FC = () => {
 
       setTableColumns(finalColumns);
     }
-  }, [fields]);
+  }, [fields]); */
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -104,15 +100,46 @@ const ShowForm: React.FC = () => {
         <ThemeProvider theme={TRow}>
           <MaterialTable
             title={formTitle}
-            columns={tableColumns}
-            data={[
+            columns={[
               {
-                '8': 'Teste',
-                '9': 'Teste',
-                created_by: 'Renan Cunha',
-                created_at: `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`,
+                title: 'Campo',
+                field: 'field',
+                type: 'numeric',
+                align: 'left',
+              },
+              {
+                title: 'Valor',
+                field: 'value',
+                type: 'string',
+                align: 'left',
+              },
+              {
+                title: 'Criado Por',
+                field: 'created_by',
+                type: 'string',
+                align: 'left',
+              },
+              {
+                title: 'Criado em',
+                field: 'created_at',
+                type: 'datetime',
+                align: 'left',
               },
             ]}
+            data={query =>
+              new Promise(resolve => {
+                const url = `fills/${id}?per_page=${
+                  query.pageSize
+                }&page=${query.page + 1}&search=${query.search}`;
+                api.get(url).then(response => {
+                  resolve({
+                    data: response.data.fills,
+                    page: response.data.page - 1,
+                    totalCount: response.data.totalCount,
+                  });
+                });
+              })
+            }
             icons={tableIcons}
             localization={{
               toolbar: {
