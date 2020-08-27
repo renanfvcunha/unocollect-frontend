@@ -21,7 +21,7 @@ import {
   Delete,
   Refresh,
 } from '@material-ui/icons';
-import MaterialTable, { Icons, MaterialTableProps } from 'material-table';
+import MaterialTable, { Icons } from 'material-table';
 
 import ModalConfirmation from '../../components/ModalConfirmation';
 import ModalAlert from '../../components/ModalAlert';

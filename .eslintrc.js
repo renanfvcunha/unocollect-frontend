@@ -32,6 +32,7 @@ module.exports = {
   rules: {
     'prettierx/options': 'warn',
     'camelcase': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
     'react/jsx-props-no-spreading': 'off',
     'react/jsx-one-expression-per-line': 'off',
