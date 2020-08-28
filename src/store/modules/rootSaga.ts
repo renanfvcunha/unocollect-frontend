@@ -6,7 +6,8 @@ import users from './users/sagas';
 import forms from './forms/sagas';
 import categories from './categories/sagas';
 import fills from './fills/sagas';
+import images from './images/sagas';
 
 export default function* rootSaga(): SagaIterator {
-  return yield all([auth, users, forms, categories, fills]);
+  return yield all([auth, users, forms, categories, fills, images]);
 }

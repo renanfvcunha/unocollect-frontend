@@ -18,6 +18,17 @@ export const useStyles = makeStyles(theme => ({
     marginTop: 24,
     marginBottom: 36,
   },
+  imagesBox: {
+    marginBottom: 32,
+  },
+  images: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  imageThumb: {
+    width: 200,
+    marginRight: 8,
+  },
 }));
 
 export const theme = createMuiTheme({

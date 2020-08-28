@@ -5,6 +5,7 @@ import users from './users';
 import forms from './forms';
 import categories from './categories';
 import fills from './fills';
+import images from './images';
 
 export default combineReducers({
   pageTitle,
@@ -13,4 +14,5 @@ export default combineReducers({
   forms,
   categories,
   fills,
+  images,
 });

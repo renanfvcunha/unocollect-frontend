@@ -1,14 +1,22 @@
-import React, { useState, useEffect, createRef, RefObject } from 'react';
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  createRef,
+  RefObject,
+} from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { ThemeProvider, Button } from '@material-ui/core';
-import { ArrowBack, Refresh } from '@material-ui/icons';
-import MaterialTable from 'material-table';
+import { ThemeProvider, Button, Typography } from '@material-ui/core';
+import { ArrowBack, Refresh, SaveAlt } from '@material-ui/icons';
+import MaterialTable, { Icons } from 'material-table';
+import ModalImage from 'react-modal-image';
 
 import api from '../../../services/api';
 import { ApplicationState } from '../../../store';
 import setPageTitle from '../../../store/modules/pageTitle/actions';
 import { getFormRequest } from '../../../store/modules/forms/actions';
+import { getUsersImagesRequest } from '../../../store/modules/images/actions';
 import { useStyles, theme } from './styles';
 
 interface TableColumns {
@@ -29,13 +37,16 @@ const ShowForm: React.FC = () => {
   const fields = useSelector(
     (state: ApplicationState) => state.forms.form.fields,
   );
+  const usersImages = useSelector(
+    (state: ApplicationState) => state.images.usersImages,
+  );
 
   const [tableColumns, setTableColumns] = useState<TableColumns[]>([]);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
-
     dispatch(getFormRequest(id));
+    dispatch(getUsersImagesRequest(id));
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -60,6 +71,10 @@ const ShowForm: React.FC = () => {
       setTableColumns(finalColumns);
     }
   }, [fields]);
+
+  const tableIcons: Icons = {
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -88,9 +103,14 @@ const ShowForm: React.FC = () => {
                 });
               })
             }
+            icons={tableIcons}
             localization={{
               header: {
                 actions: 'Ações',
+              },
+              toolbar: {
+                exportTitle: 'Exportar',
+                exportAriaLabel: 'Exportar',
               },
               body: {
                 emptyDataSourceMessage: 'Busca não obteve resultados',
@@ -112,8 +132,38 @@ const ShowForm: React.FC = () => {
               paging: false,
               search: false,
               sorting: false,
+              exportButton: true,
             }}
           />
+        </div>
+
+        <div>
+          <Typography component="h1" variant="h4">
+            Imagens
+          </Typography>
+
+          {usersImages.map(userImage => (
+            <div className={classes.imagesBox}>
+              <Typography component="h2" variant="h6">
+                {userImage.name}
+              </Typography>
+              <div className={classes.images}>
+                {userImage.images ? (
+                  userImage.images.map(image => (
+                    <div className={classes.imageThumb}>
+                      <ModalImage
+                        small={image}
+                        large={image}
+                        alt={image.split('/').pop()}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div />
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </main>
     </ThemeProvider>
