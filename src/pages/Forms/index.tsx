@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React, {
   useState,
   useEffect,
@@ -20,6 +21,8 @@ import {
   Visibility,
   Delete,
   Refresh,
+  Edit,
+  SettingsPower,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
 
@@ -28,17 +31,20 @@ import { ApplicationState } from '../../store';
 import setPageTitle from '../../store/modules/pageTitle/actions';
 import {
   deleteFormRequest,
+  alterFormStatusRequest,
   setErrorFalse,
 } from '../../store/modules/forms/actions';
 import ModalConfirmation from '../../components/ModalConfirmation';
 import ModalAlert from '../../components/ModalAlert';
-import { useStyles, BtnStyle, TRow } from './styles';
+import { useStyles, theme } from './styles';
 
 interface RowData {
   id: number;
   title: string;
   category?: string;
   fills: number;
+  status: string;
+  created_at: Date;
 }
 
 const Forms: React.FC = () => {
@@ -59,8 +65,10 @@ const Forms: React.FC = () => {
 
   const [modalConfirmation, setModalConfirmation] = useState(false);
   const [modalAlert, setModalAlert] = useState(false);
-  const [formName, setFormName] = useState('');
-  const [formToRemove, setFormToRemove] = useState(0);
+  const [modalConfTitle, setModalConfTitle] = useState('');
+  const [modalConfMsg, setModalConfMsg] = useState<JSX.Element>();
+  const [modalConfActTxt, setModalConfActTxt] = useState('');
+  const [formId, setFormId] = useState(0);
 
   const refreshTable = () => {
     tableRef.current.onQueryChange();
@@ -71,10 +79,20 @@ const Forms: React.FC = () => {
     setModalAlert(false);
   };
 
-  const handleRemoveForm = () => {
-    setModalConfirmation(false);
-    dispatch(deleteFormRequest(formToRemove));
-    refreshTable();
+  const handleConfirmAction = () => {
+    if (modalConfActTxt === 'Ativar') {
+      setModalConfirmation(false);
+      dispatch(alterFormStatusRequest(formId, '1'));
+      setTimeout(refreshTable(), 2000);
+    } else if (modalConfActTxt === 'Desativar') {
+      setModalConfirmation(false);
+      dispatch(alterFormStatusRequest(formId, '0'));
+      setTimeout(refreshTable(), 2000);
+    } else {
+      setModalConfirmation(false);
+      dispatch(deleteFormRequest(formId));
+      refreshTable();
+    }
   };
 
   const tableIcons: Icons = {
@@ -104,11 +122,11 @@ const Forms: React.FC = () => {
   }, [error, success, dispatch]);
 
   return (
-    <main className={classes.content}>
-      <div className={classes.toolbar} />
+    <ThemeProvider theme={theme}>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
 
-      <div className="button">
-        <ThemeProvider theme={BtnStyle}>
+        <div className="button">
           <Link to="/forms/new">
             <Button
               variant="contained"
@@ -119,10 +137,8 @@ const Forms: React.FC = () => {
               Novo Formulário
             </Button>
           </Link>
-        </ThemeProvider>
 
-        <div className={classes.table}>
-          <ThemeProvider theme={TRow}>
+          <div className={classes.table}>
             <MaterialTable
               title="Lista de Formulários"
               tableRef={tableRef}
@@ -132,12 +148,26 @@ const Forms: React.FC = () => {
                   field: 'id',
                   type: 'numeric',
                   align: 'left',
+                  headerStyle: {
+                    maxWidth: '5%',
+                  },
+                  cellStyle: {
+                    maxWidth: '5%',
+                  },
                 },
                 {
                   title: 'Título do Formulário',
                   field: 'title',
                   type: 'string',
                   align: 'left',
+                  headerStyle: {
+                    width: '30%',
+                    maxWidth: '30%',
+                  },
+                  cellStyle: {
+                    width: '30%',
+                    maxWidth: '30%',
+                  },
                 },
                 {
                   title: 'Categoria',
@@ -148,8 +178,26 @@ const Forms: React.FC = () => {
                 {
                   title: 'Preenchimentos',
                   field: 'fills',
-                  type: 'numeric',
+                  type: 'string',
                   align: 'left',
+                  headerStyle: {
+                    maxWidth: '10%',
+                  },
+                  cellStyle: {
+                    maxWidth: '10%',
+                  },
+                },
+                {
+                  title: 'Status',
+                  field: 'status',
+                  type: 'string',
+                  align: 'left',
+                  headerStyle: {
+                    maxWidth: '5%',
+                  },
+                  cellStyle: {
+                    maxWidth: '5%',
+                  },
                 },
                 {
                   title: 'Criado Em',
@@ -196,17 +244,65 @@ const Forms: React.FC = () => {
               actions={[
                 {
                   icon: () => <Visibility />,
-                  tooltip: 'Visualizar Formulário',
+                  tooltip: 'Visualizar Preenchimentos',
                   onClick: (event, rowData: RowData) =>
                     history.push(`/forms/${rowData.id}`),
+                },
+                {
+                  icon: () => <SettingsPower />,
+                  tooltip: 'Ativar / Desativar Formulário',
+                  onClick: (event, rowData: RowData) => {
+                    setModalConfirmation(true);
+                    setModalConfTitle('');
+                    if (rowData.status === 'Ativo') {
+                      setModalConfMsg(
+                        <span>
+                          Deseja desativar o formulário &quot;
+                          <span style={{ fontWeight: 'bold' }}>
+                            {rowData.title}
+                          </span>
+                          &quot;?
+                        </span>,
+                      );
+                      setModalConfActTxt('Desativar');
+                    } else {
+                      setModalConfMsg(
+                        <span>
+                          Deseja ativar o formulário &quot;
+                          <span style={{ fontWeight: 'bold' }}>
+                            {rowData.title}
+                          </span>
+                          &quot;?
+                        </span>,
+                      );
+                      setModalConfActTxt('Ativar');
+                    }
+                    setFormId(rowData.id);
+                  },
+                },
+                {
+                  icon: () => <Edit />,
+                  tooltip: 'Editar Formulário',
+                  onClick: (event, rowData: RowData) =>
+                    history.push(`/forms/edit/${rowData.id}`),
                 },
                 {
                   icon: () => <Delete />,
                   tooltip: 'Remover Formulário',
                   onClick: (event, rowData: RowData) => {
                     setModalConfirmation(true);
-                    setFormName(rowData.title);
-                    setFormToRemove(rowData.id);
+                    setModalConfTitle('Alerta de Exclusão');
+                    setModalConfMsg(
+                      <span>
+                        Deseja remover permanentemente o formulário &quot;
+                        <span style={{ fontWeight: 'bold' }}>
+                          {rowData.title}
+                        </span>
+                        &quot;?
+                      </span>,
+                    );
+                    setModalConfActTxt('Remover');
+                    setFormId(rowData.id);
                   },
                 },
                 {
@@ -221,29 +317,34 @@ const Forms: React.FC = () => {
                   backgroundColor: '#42a5f5',
                   color: '#fff',
                 },
+                actionsCellStyle: {
+                  width: '8%',
+                },
                 actionsColumnIndex: -1,
+                sorting: false,
               }}
             />
-          </ThemeProvider>
+          </div>
         </div>
-      </div>
 
-      <ModalConfirmation
-        open={modalConfirmation}
-        close={handleModalClose}
-        confirmAction={handleRemoveForm}
-        name={formName}
-        cancel="Cancelar"
-        confirm="Remover"
-      />
+        <ModalConfirmation
+          open={modalConfirmation}
+          close={handleModalClose}
+          confirmAction={handleConfirmAction}
+          title={modalConfTitle}
+          msg={modalConfMsg || ''}
+          cancel="Cancelar"
+          confirm={modalConfActTxt}
+        />
 
-      <ModalAlert
-        open={modalAlert}
-        close={handleModalClose}
-        title={modalTitle}
-        msg={modalMsg}
-      />
-    </main>
+        <ModalAlert
+          open={modalAlert}
+          close={handleModalClose}
+          title={modalTitle}
+          msg={modalMsg}
+        />
+      </main>
+    </ThemeProvider>
   );
 };
 

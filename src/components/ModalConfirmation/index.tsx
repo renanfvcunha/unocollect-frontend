@@ -18,7 +18,8 @@ interface Modal {
   open: boolean;
   close(): void;
   confirmAction(): void;
-  name?: string;
+  title?: string;
+  msg: string | JSX.Element;
   cancel: string;
   confirm: string;
 }
@@ -46,10 +47,15 @@ const ModalConfirmation: React.FC<Modal> = ({
   open,
   close,
   confirmAction,
-  name,
+  title,
+  msg,
   cancel,
   confirm,
 }) => {
+  /* const [nameParsed, setNameParsed] = useState<Document>();
+  if (name) {
+    setNameParsed(new DOMParser().parseFromString(name, 'text/html'));
+  } */
   return (
     <div>
       <Dialog
@@ -59,13 +65,10 @@ const ModalConfirmation: React.FC<Modal> = ({
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-          Alerta de Exclusão
+          {title}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Deseja remover permanentemente{' '}
-            <span style={{ fontWeight: 'bold' }}>{name}</span>?
-          </DialogContentText>
+          <DialogContentText>{msg}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={close} color="primary">
@@ -86,13 +89,14 @@ ModalConfirmation.propTypes = {
   open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   confirmAction: PropTypes.func.isRequired,
-  name: PropTypes.string,
+  title: PropTypes.string,
+  msg: PropTypes.string.isRequired,
   cancel: PropTypes.string.isRequired,
   confirm: PropTypes.string.isRequired,
 };
 
 ModalConfirmation.defaultProps = {
-  name: '',
+  title: '',
 };
 
 export default ModalConfirmation;

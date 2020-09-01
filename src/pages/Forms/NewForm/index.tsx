@@ -232,7 +232,9 @@ const NewForm: React.FC = () => {
     const FormData = {
       title,
       description,
-      category: category === 0 ? null : category,
+      category: {
+        id: category === 0 ? null : category,
+      },
       fields,
     };
 
@@ -317,11 +319,16 @@ const NewForm: React.FC = () => {
                     onChange={handleChangeCategory}
                   >
                     <MenuItem value={0}>Sem Categoria</MenuItem>
-                    {categories?.map(cat => (
-                      <MenuItem key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </MenuItem>
-                    ))}
+                    {categories?.map(cat => {
+                      if (cat.id && cat.id !== null) {
+                        return (
+                          <MenuItem key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </MenuItem>
+                        );
+                      }
+                      return <MenuItem />;
+                    })}
                   </Select>
                 </FormControl>
 

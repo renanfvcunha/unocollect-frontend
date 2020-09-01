@@ -34,7 +34,7 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
       };
 
     case FormsTypes.GET_FORM_REQUEST:
-      return { ...state, loading: true, error: false };
+      return { ...state, loading: true, success: false, error: false };
 
     case FormsTypes.GET_FORM_SUCCESS:
       return {
@@ -48,7 +48,31 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         loading: false,
+        success: false,
         error: true,
+      };
+
+    case FormsTypes.ALTER_FORM_STATUS_REQUEST:
+      return { ...state, loading: true, success: false, error: false };
+
+    case FormsTypes.ALTER_FORM_STATUS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
+      };
+
+    case FormsTypes.ALTER_FORM_STATUS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
       };
 
     case FormsTypes.DELETE_FORM_REQUEST:
@@ -57,28 +81,29 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
     case FormsTypes.DELETE_FORM_SUCCESS:
       return {
         ...state,
-        modalTitle: '',
-        modalMsg: action.payload.successMsg,
         loading: false,
         success: true,
         error: false,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
       };
 
     case FormsTypes.DELETE_FORM_FAILURE:
       return {
         ...state,
-        modalTitle: 'Erro',
-        modalMsg: action.payload.errorMsg,
         loading: false,
         success: false,
         error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
       };
 
     case FormsTypes.SET_ERROR_FALSE:
       return {
         ...state,
-        error: false,
         loading: false,
+        success: false,
+        error: false,
       };
 
     default:

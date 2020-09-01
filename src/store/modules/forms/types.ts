@@ -1,3 +1,5 @@
+import { Category } from '../categories/types';
+
 /**
  * Action Types
  */
@@ -12,6 +14,9 @@ export enum FormsTypes {
   GET_FORM_REQUEST = '@forms/GET_FORM_REQUEST',
   GET_FORM_SUCCESS = '@forms/GET_FORM_SUCCESS',
   GET_FORM_FAILURE = '@forms/GET_FORM_FAILURE',
+  ALTER_FORM_STATUS_REQUEST = '@forms/ALTER_FORM_STATUS_REQUEST',
+  ALTER_FORM_STATUS_SUCCESS = '@forms/ALTER_FORM_STATUS_SUCCESS',
+  ALTER_FORM_STATUS_FAILURE = '@forms/ALTER_FORM_STATUS_FAILURE',
   DELETE_FORM_REQUEST = '@forms/DELETE_FORM_REQUEST',
   DELETE_FORM_SUCCESS = '@forms/DELETE_FORM_SUCCESS',
   DELETE_FORM_FAILURE = '@forms/DELETE_FORM_FAILURE',
@@ -26,7 +31,7 @@ export interface Form {
   id?: number;
   title?: string;
   description?: string;
-  category?: number | null;
+  category?: Category;
   created_at?: Date;
   fields?: Field[];
 }

@@ -17,7 +17,7 @@ export enum CategoriesTypes {
  */
 
 export interface Category {
-  id?: number;
+  id?: number | null;
   name?: string;
 }
 

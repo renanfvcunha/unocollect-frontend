@@ -7,6 +7,7 @@ import NewUser from './pages/Users/NewUser';
 import EditUser from './pages/Users/EditUser';
 import Forms from './pages/Forms';
 import NewForm from './pages/Forms/NewForm';
+import EditForm from './pages/Forms/EditForm';
 import ShowForm from './pages/Forms/ShowForm';
 import Fills from './pages/Fills';
 import NewFill from './pages/Fills/NewFill';
@@ -22,6 +23,7 @@ const Routes: React.FC = () => {
       <Route path="/users" component={Users} />
 
       <Route path="/forms/new" component={NewForm} />
+      <Route path="/forms/edit/:id" component={EditForm} />
       <Route path="/forms/:id" component={ShowForm} />
       <Route path="/forms" component={Forms} />
 

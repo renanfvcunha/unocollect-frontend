@@ -1,4 +1,5 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { SagaIterator } from 'redux-saga';
 import { AnyAction } from 'redux';
 
 import api from '../../../services/api';
@@ -10,9 +11,12 @@ import {
   getFormsFailure,
   getFormSuccess,
   getFormFailure,
+  alterFormStatusSuccess,
+  alterFormStatusFailure,
   deleteFormSuccess,
   deleteFormFailure,
 } from './actions';
+import tron from '../../../config/ReactotronConfig';
 
 interface Payload extends AnyAction {
   payload: {
@@ -26,7 +30,7 @@ interface Response {
   };
 }
 
-export function* addForm({ payload }: Payload) {
+export function* addForm({ payload }: Payload): SagaIterator {
   try {
     const response: Response = yield call(api.post, 'forms', payload.data);
 
@@ -46,18 +50,22 @@ export function* addForm({ payload }: Payload) {
   }
 }
 
-export function* getForms() {
+export function* getForms(): SagaIterator {
   try {
-    const response = yield call(api.get, 'forms?per_page=10&page=1');
+    const response = yield call(api.get, 'forms?per_page=15&page=1');
 
     yield put(getFormsSuccess(response.data.forms));
   } catch (err) {
-    if (err.response.data.msg) {
+    if (err.message === 'Network Error') {
+      alert('Erro ao conectar ao servidor.');
+      yield put(
+        getFormsFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte',
+        ),
+      );
+    } else if (err.response) {
       alert(err.response.data.msg);
       yield put(getFormsFailure(err.response.data.msg));
-    } else if (err.message === 'Network Error') {
-      alert('Erro ao conectar ao servidor.');
-      yield put(getFormsFailure('Erro ao conectar ao servidor.'));
     } else {
       alert(err);
       yield put(getFormsFailure(err));
@@ -65,7 +73,7 @@ export function* getForms() {
   }
 }
 
-export function* getForm({ payload }: AnyAction) {
+export function* getForm({ payload }: AnyAction): SagaIterator {
   try {
     const response = yield call(api.get, `forms/${payload.id}`);
 
@@ -76,14 +84,43 @@ export function* getForm({ payload }: AnyAction) {
   }
 }
 
-export function* deleteForm({ payload }: AnyAction) {
+export function* alterFormStatus({ payload }: AnyAction): SagaIterator {
+  if (tron.log) {
+    tron.log(payload.status);
+  }
+  try {
+    const response = yield call(api.put, `forms/${payload.id}`, {
+      status: payload.status,
+    });
+
+    yield put(alterFormStatusSuccess(response.data.msg));
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(
+        alterFormStatusFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
+    } else if (err.response) {
+      yield put(alterFormStatusFailure(err.response.data.msg));
+    } else {
+      yield put(alterFormStatusFailure(err));
+    }
+  }
+}
+
+export function* deleteForm({ payload }: AnyAction): SagaIterator {
   try {
     const response = yield call(api.delete, `forms/${payload.id}`);
 
     yield put(deleteFormSuccess(response.data.msg));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(deleteFormFailure('Erro ao conectar ao servidor.'));
+      yield put(
+        deleteFormFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
     } else if (err.response) {
       yield put(deleteFormFailure(err.response.data.msg));
     } else {
@@ -96,5 +133,6 @@ export default all([
   takeLatest(FormsTypes.ADD_FORM_REQUEST, addForm),
   takeLatest(FormsTypes.GET_FORMS_REQUEST, getForms),
   takeLatest(FormsTypes.GET_FORM_REQUEST, getForm),
+  takeLatest(FormsTypes.ALTER_FORM_STATUS_REQUEST, alterFormStatus),
   takeLatest(FormsTypes.DELETE_FORM_REQUEST, deleteForm),
 ]);

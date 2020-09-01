@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React, {
   useState,
   useEffect,
@@ -244,7 +245,12 @@ const Users: React.FC = () => {
           open={modalConfirmation}
           close={handleModalClose}
           confirmAction={handleRemoveUser}
-          name={name}
+          msg={
+            <span>
+              Deseja remover permanentemente
+              <span style={{ fontWeight: 'bold' }}>{name}</span>?
+            </span>
+          }
           cancel="Cancelar"
           confirm="Remover"
         />

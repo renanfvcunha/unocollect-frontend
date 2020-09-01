@@ -32,6 +32,16 @@ export const getFormSuccess = (data: Form): Action =>
 export const getFormFailure = (errorMsg: string): Action =>
   action(FormsTypes.GET_FORM_FAILURE, { errorMsg });
 
+// Alter Form Status
+export const alterFormStatusRequest = (id: number, status: string): Action =>
+  action(FormsTypes.ALTER_FORM_STATUS_REQUEST, { id, status });
+
+export const alterFormStatusSuccess = (successMsg: string): Action =>
+  action(FormsTypes.ALTER_FORM_STATUS_SUCCESS, { successMsg });
+
+export const alterFormStatusFailure = (errorMsg: string): Action =>
+  action(FormsTypes.ALTER_FORM_STATUS_FAILURE, { errorMsg });
+
 // Delete Form
 export const deleteFormRequest = (id: number): Action =>
   action(FormsTypes.DELETE_FORM_REQUEST, { id });
