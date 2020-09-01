@@ -1,5 +1,7 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { SagaIterator } from 'redux-saga';
 import { AnyAction } from 'redux';
+import { AxiosResponse } from 'axios';
 
 import api from '../../../services/api';
 import { CategoriesTypes, Category } from './types';
@@ -11,13 +13,13 @@ import {
 } from './actions';
 import tron from '../../../config/ReactotronConfig';
 
-interface Response {
-  data: Category;
+interface Msg {
+  msg: string;
 }
 
-export function* getCategories() {
+export function* getCategories(): SagaIterator {
   try {
-    const response: Response = yield call(api.get, 'categories');
+    const response: AxiosResponse<Category> = yield call(api.get, 'categories');
 
     yield put(getCategoriesSuccess(response.data));
   } catch (err) {
@@ -25,12 +27,16 @@ export function* getCategories() {
   }
 }
 
-export function* addCategory({ payload }: AnyAction) {
+export function* addCategory({ payload }: AnyAction): SagaIterator {
   try {
     if (tron.log) {
       tron.log(payload);
     }
-    const response = yield call(api.post, 'categories', payload);
+    const response: AxiosResponse<Msg> = yield call(
+      api.post,
+      'categories',
+      payload,
+    );
 
     yield put(addCategorySuccess(response.data.msg));
   } catch (err) {

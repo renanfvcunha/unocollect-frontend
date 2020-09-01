@@ -34,8 +34,13 @@ export const useStyles = makeStyles(theme => ({
   },
   addCatForm: {
     display: 'flex',
-    alignItems: 'baseline',
+    alignItems: 'center',
     justifyContent: 'center',
+  },
+  btnAddCat: {
+    padding: 8,
+    marginLeft: 8,
+    marginRight: 16,
   },
   mainForm: {
     display: 'flex',
@@ -69,6 +74,11 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     marginTop: 8,
+  },
+  progress: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   subButton: {
     display: 'flex',

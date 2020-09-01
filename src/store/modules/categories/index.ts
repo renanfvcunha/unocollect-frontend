@@ -13,7 +13,7 @@ const INITIAL_STATE: CategoriesState = {
 const reducer: Reducer<CategoriesState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CategoriesTypes.GET_CATEGORIES_REQUEST:
-      return { ...state, loading: true, error: false };
+      return { ...state, loading: true, success: false, error: false };
 
     case CategoriesTypes.GET_CATEGORIES_SUCCESS:
       return {
@@ -24,7 +24,14 @@ const reducer: Reducer<CategoriesState> = (state = INITIAL_STATE, action) => {
       };
 
     case CategoriesTypes.GET_CATEGORIES_FAILURE:
-      return { ...state, loading: false, error: true };
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
+      };
 
     case CategoriesTypes.ADD_CATEGORY_REQUEST:
       return {

@@ -14,23 +14,48 @@ const INITIAL_STATE: FormsState = {
 const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case FormsTypes.ADD_FORM_REQUEST:
-      return { ...state, loading: true, error: false };
+      return { ...state, loading: true, success: false, error: false };
 
     case FormsTypes.ADD_FORM_SUCCESS:
-      return { ...state, loading: false, error: false };
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
+      };
 
     case FormsTypes.ADD_FORM_FAILURE:
-      return { ...state, loading: false, error: true };
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.successMsg,
+      };
 
     case FormsTypes.GET_FORMS_REQUEST:
-      return { ...state, loading: true, error: false };
+      return { ...state, loading: true, success: false, error: false };
 
     case FormsTypes.GET_FORMS_SUCCESS:
       return {
         ...state,
         forms: action.payload.data,
-        loading: true,
+        loading: false,
         error: false,
+      };
+
+    case FormsTypes.GET_FORMS_FAILURE:
+      return {
+        ...state,
+        forms: action.payload.data,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
       };
 
     case FormsTypes.GET_FORM_REQUEST:

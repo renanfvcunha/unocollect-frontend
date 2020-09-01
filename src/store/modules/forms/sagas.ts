@@ -1,6 +1,7 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import { AnyAction } from 'redux';
+import { AxiosResponse } from 'axios';
 
 import api from '../../../services/api';
 import { FormsTypes, Form } from './types';
@@ -16,35 +17,31 @@ import {
   deleteFormSuccess,
   deleteFormFailure,
 } from './actions';
-import tron from '../../../config/ReactotronConfig';
 
-interface Payload extends AnyAction {
+interface IForm extends AnyAction {
   payload: {
     data: Form;
   };
 }
 
-interface Response {
-  data: {
-    msg: string;
-  };
+interface Msg {
+  msg: string;
 }
 
-export function* addForm({ payload }: Payload): SagaIterator {
+export function* addForm({ payload }: IForm): SagaIterator {
   try {
-    const response: Response = yield call(api.post, 'forms', payload.data);
+    const response: AxiosResponse<Msg> = yield call(api.post, 'forms', {
+      ...payload.data,
+      category: payload.data.category?.id,
+    });
 
-    alert(response.data.msg);
     yield put(addFormSuccess(response.data.msg));
   } catch (err) {
     if (err.message === 'Network Error') {
-      alert('Erro ao conectar ao servidor.');
       yield put(addFormFailure('Erro ao conectar ao servidor.'));
     } else if (err.response) {
-      alert(err.response.data.msg);
       yield put(addFormFailure(err.response.data.msg));
     } else {
-      alert(err);
       yield put(addFormFailure(err));
     }
   }
@@ -52,22 +49,22 @@ export function* addForm({ payload }: Payload): SagaIterator {
 
 export function* getForms(): SagaIterator {
   try {
-    const response = yield call(api.get, 'forms?per_page=15&page=1');
+    const response: AxiosResponse = yield call(
+      api.get,
+      'forms?per_page=15&page=1',
+    );
 
     yield put(getFormsSuccess(response.data.forms));
   } catch (err) {
     if (err.message === 'Network Error') {
-      alert('Erro ao conectar ao servidor.');
       yield put(
         getFormsFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte',
         ),
       );
     } else if (err.response) {
-      alert(err.response.data.msg);
       yield put(getFormsFailure(err.response.data.msg));
     } else {
-      alert(err);
       yield put(getFormsFailure(err));
     }
   }
@@ -75,7 +72,10 @@ export function* getForms(): SagaIterator {
 
 export function* getForm({ payload }: AnyAction): SagaIterator {
   try {
-    const response = yield call(api.get, `forms/${payload.id}`);
+    const response: AxiosResponse<Form> = yield call(
+      api.get,
+      `forms/${payload.id}`,
+    );
 
     yield put(getFormSuccess(response.data));
   } catch (err) {
@@ -85,13 +85,14 @@ export function* getForm({ payload }: AnyAction): SagaIterator {
 }
 
 export function* alterFormStatus({ payload }: AnyAction): SagaIterator {
-  if (tron.log) {
-    tron.log(payload.status);
-  }
   try {
-    const response = yield call(api.put, `forms/${payload.id}`, {
-      status: payload.status,
-    });
+    const response: AxiosResponse<Msg> = yield call(
+      api.put,
+      `forms/${payload.id}`,
+      {
+        status: payload.status,
+      },
+    );
 
     yield put(alterFormStatusSuccess(response.data.msg));
   } catch (err) {
@@ -111,7 +112,10 @@ export function* alterFormStatus({ payload }: AnyAction): SagaIterator {
 
 export function* deleteForm({ payload }: AnyAction): SagaIterator {
   try {
-    const response = yield call(api.delete, `forms/${payload.id}`);
+    const response: AxiosResponse<Msg> = yield call(
+      api.delete,
+      `forms/${payload.id}`,
+    );
 
     yield put(deleteFormSuccess(response.data.msg));
   } catch (err) {

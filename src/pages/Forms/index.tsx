@@ -79,19 +79,19 @@ const Forms: React.FC = () => {
     setModalAlert(false);
   };
 
-  const handleConfirmAction = () => {
+  const handleConfirmAction = async () => {
     if (modalConfActTxt === 'Ativar') {
       setModalConfirmation(false);
       dispatch(alterFormStatusRequest(formId, '1'));
-      setTimeout(refreshTable(), 2000);
+      setTimeout(refreshTable(), 3000);
     } else if (modalConfActTxt === 'Desativar') {
       setModalConfirmation(false);
       dispatch(alterFormStatusRequest(formId, '0'));
-      setTimeout(refreshTable(), 2000);
+      setTimeout(refreshTable(), 3000);
     } else {
       setModalConfirmation(false);
       dispatch(deleteFormRequest(formId));
-      refreshTable();
+      setTimeout(refreshTable(), 3000);
     }
   };
 

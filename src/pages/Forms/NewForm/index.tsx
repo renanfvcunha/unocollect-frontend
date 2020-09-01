@@ -13,6 +13,7 @@ import {
   Divider,
   Tooltip,
   Fab,
+  CircularProgress,
 } from '@material-ui/core';
 import { ArrowBack, Add, Remove, Close } from '@material-ui/icons';
 
@@ -40,20 +41,34 @@ const NewForm: React.FC = () => {
   const categories = useSelector(
     (state: ApplicationState) => state.categories.categories,
   );
-  const loading = useSelector(
+  const loadingCat = useSelector(
     (state: ApplicationState) => state.categories.loading,
   );
-  const success = useSelector(
+  const successCat = useSelector(
     (state: ApplicationState) => state.categories.success,
   );
-  const error = useSelector(
+  const errorCat = useSelector(
     (state: ApplicationState) => state.categories.error,
   );
-  const modalMsg = useSelector(
+  const modalMsgCat = useSelector(
     (state: ApplicationState) => state.categories.modalMsg,
   );
-  const modalTitle = useSelector(
+  const modalTitleCat = useSelector(
     (state: ApplicationState) => state.categories.modalTitle,
+  );
+
+  const loadingForm = useSelector(
+    (state: ApplicationState) => state.forms.loading,
+  );
+  const successForm = useSelector(
+    (state: ApplicationState) => state.forms.success,
+  );
+  const errorForm = useSelector((state: ApplicationState) => state.forms.error);
+  const modalMsgForm = useSelector(
+    (state: ApplicationState) => state.forms.modalMsg,
+  );
+  const modalTitleForm = useSelector(
+    (state: ApplicationState) => state.forms.modalTitle,
   );
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -248,12 +263,12 @@ const NewForm: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (error || success) {
+    if (errorCat || successCat || errorForm || successForm) {
       setModalOpen(true);
 
       dispatch(setErrorFalse());
     }
-  }, [error, success, dispatch]);
+  }, [errorCat, successCat, errorForm, successForm, dispatch]);
 
   return (
     <ThemeProvider theme={BtnStyle}>
@@ -288,11 +303,12 @@ const NewForm: React.FC = () => {
                   size="small"
                   variant="contained"
                   color="primary"
-                  style={{ padding: 8 }}
+                  className={classes.btnAddCat}
                   type="submit"
                 >
                   Adicionar
                 </Button>
+                {loadingCat ? <CircularProgress /> : ''}
               </form>
             ) : (
               <div />
@@ -380,6 +396,14 @@ const NewForm: React.FC = () => {
 
               {fieldsForm}
 
+              {loadingForm ? (
+                <div className={classes.progress}>
+                  <CircularProgress />
+                </div>
+              ) : (
+                ''
+              )}
+
               <div className={classes.subButton}>
                 <FormControl style={{ width: '50%' }}>
                   <Button
@@ -398,8 +422,8 @@ const NewForm: React.FC = () => {
         <ModalAlert
           open={modalOpen}
           close={handleModalClose}
-          title={modalTitle}
-          msg={modalMsg}
+          title={modalTitleCat || modalTitleForm}
+          msg={modalMsgCat || modalMsgForm}
         />
       </main>
     </ThemeProvider>
