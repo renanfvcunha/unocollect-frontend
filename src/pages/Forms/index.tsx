@@ -2,6 +2,7 @@
 import React, {
   useState,
   useEffect,
+  useCallback,
   forwardRef,
   createRef,
   RefObject,
@@ -70,9 +71,11 @@ const Forms: React.FC = () => {
   const [modalConfActTxt, setModalConfActTxt] = useState('');
   const [formId, setFormId] = useState(0);
 
-  const refreshTable = () => {
-    tableRef.current.onQueryChange();
-  };
+  const refreshTable = useCallback(() => {
+    if (success) {
+      tableRef.current.onQueryChange();
+    }
+  }, [tableRef, success]);
 
   const handleModalClose = () => {
     setModalConfirmation(false);
@@ -83,15 +86,12 @@ const Forms: React.FC = () => {
     if (modalConfActTxt === 'Ativar') {
       setModalConfirmation(false);
       dispatch(alterFormStatusRequest(formId, '1'));
-      setTimeout(refreshTable(), 3000);
     } else if (modalConfActTxt === 'Desativar') {
       setModalConfirmation(false);
       dispatch(alterFormStatusRequest(formId, '0'));
-      setTimeout(refreshTable(), 3000);
     } else {
       setModalConfirmation(false);
       dispatch(deleteFormRequest(formId));
-      setTimeout(refreshTable(), 3000);
     }
   };
 
@@ -114,12 +114,14 @@ const Forms: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    refreshTable();
+
     if (error || success) {
       setModalAlert(true);
 
       dispatch(setErrorFalse());
     }
-  }, [error, success, dispatch]);
+  }, [error, success, refreshTable, dispatch]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -284,7 +286,8 @@ const Forms: React.FC = () => {
                   icon: () => <Edit />,
                   tooltip: 'Editar Formulário',
                   onClick: (event, rowData: RowData) =>
-                    history.push(`/forms/edit/${rowData.id}`),
+                    alert('Funcionalidade a ser implementada em breve.'),
+                  /* history.push(`/forms/edit/${rowData.id}`), */
                 },
                 {
                   icon: () => <Delete />,
@@ -309,7 +312,7 @@ const Forms: React.FC = () => {
                   icon: () => <Refresh />,
                   tooltip: 'Atualizar',
                   isFreeAction: true,
-                  onClick: () => refreshTable(),
+                  onClick: () => tableRef.current.onQueryChange(),
                 },
               ]}
               options={{

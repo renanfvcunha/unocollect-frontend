@@ -2,6 +2,7 @@
 import React, {
   useState,
   useEffect,
+  useCallback,
   forwardRef,
   createRef,
   RefObject,
@@ -63,14 +64,15 @@ const Users: React.FC = () => {
   const [userToRemove, setUserToRemove] = useState(0);
   const [name, setName] = useState('');
 
-  const refreshTable = () => {
-    tableRef.current.onQueryChange();
-  };
+  const refreshTable = useCallback(() => {
+    if (success) {
+      tableRef.current.onQueryChange();
+    }
+  }, [success, tableRef]);
 
   const handleRemoveUser = () => {
     setModalConfirmation(false);
     dispatch(deleteUserRequest(userToRemove));
-    refreshTable();
   };
 
   const handleModalClose = () => {
@@ -83,12 +85,14 @@ const Users: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    refreshTable();
+
     if (error || success) {
       setModalAlert(true);
 
       dispatch(setErrorFalse());
     }
-  }, [error, success, dispatch]);
+  }, [error, success, refreshTable, dispatch]);
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -129,12 +133,10 @@ const Users: React.FC = () => {
                 type: 'numeric',
                 align: 'left',
                 headerStyle: {
-                  width: 'calc(5% + 0px)',
-                  maxWidth: 'calc(5% + 0px)',
+                  maxWidth: '5%',
                 },
                 cellStyle: {
-                  width: 'calc(5% + 0px)',
-                  maxWidth: 'calc(5% + 0px)',
+                  maxWidth: '5%',
                 },
               },
               {
@@ -148,28 +150,12 @@ const Users: React.FC = () => {
                 field: 'username',
                 type: 'string',
                 align: 'left',
-                headerStyle: {
-                  width: 'calc(15% + 0px)',
-                  maxWidth: 'calc(15% + 0px)',
-                },
-                cellStyle: {
-                  width: 'calc(15% + 0px)',
-                  maxWidth: 'calc(15% + 0px)',
-                },
               },
               {
                 title: 'Administrador',
                 field: 'admin',
                 type: 'string',
                 align: 'left',
-                headerStyle: {
-                  width: 'calc(15% + 0px)',
-                  maxWidth: 'calc(15% + 0px)',
-                },
-                cellStyle: {
-                  width: 'calc(15% + 0px)',
-                  maxWidth: 'calc(15% + 0px)',
-                },
               },
             ]}
             data={query =>
@@ -206,7 +192,7 @@ const Users: React.FC = () => {
                 icon: () => <Refresh />,
                 tooltip: 'Atualizar',
                 isFreeAction: true,
-                onClick: () => refreshTable(),
+                onClick: () => tableRef.current.onQueryChange(),
               },
             ]}
             icons={tableIcons}
@@ -232,7 +218,7 @@ const Users: React.FC = () => {
             }}
             options={{
               actionsColumnIndex: -1,
-              actionsCellStyle: { width: 'calc(5% + 0px)' },
+              actionsCellStyle: { width: '8%' },
               headerStyle: {
                 backgroundColor: '#66bb6a',
                 color: '#fff',
@@ -247,7 +233,7 @@ const Users: React.FC = () => {
           confirmAction={handleRemoveUser}
           msg={
             <span>
-              Deseja remover permanentemente
+              Deseja remover permanentemente{' '}
               <span style={{ fontWeight: 'bold' }}>{name}</span>?
             </span>
           }

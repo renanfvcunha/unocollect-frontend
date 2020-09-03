@@ -24,7 +24,6 @@ import {
   Group,
   Assignment,
   ExitToApp,
-  Edit,
   Room,
 } from '@material-ui/icons';
 
@@ -154,17 +153,6 @@ const Header: React.FC = () => {
                   <Assignment className={classes.icon} />
                 </ListItemIcon>
                 <ListItemText primary="Formulários" />
-              </ListItem>
-            </List>
-          </Link>
-
-          <Link to="/fills" className={classes.link}>
-            <List>
-              <ListItem button>
-                <ListItemIcon>
-                  <Edit className={classes.icon} />
-                </ListItemIcon>
-                <ListItemText primary="Preenchimentos" />
               </ListItem>
             </List>
           </Link>
