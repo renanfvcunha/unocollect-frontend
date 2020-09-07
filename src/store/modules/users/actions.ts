@@ -1,5 +1,6 @@
 import { action } from 'typesafe-actions';
 import { Action } from 'redux';
+
 import { UsersTypes, User, UserForm } from './types';
 
 // Add User

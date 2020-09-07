@@ -8,7 +8,6 @@ import { PageTitleState } from './modules/pageTitle/types';
 import { UsersState } from './modules/users/types';
 import { FormsState } from './modules/forms/types';
 import { CategoriesState } from './modules/categories/types';
-import { FillsState } from './modules/fills/types';
 import { ImagesState } from './modules/images/types';
 import tron from '../config/ReactotronConfig';
 import rootReducer from './modules/rootReducer';
@@ -19,7 +18,6 @@ export interface ApplicationState {
   pageTitle: PageTitleState;
   users: UsersState;
   forms: FormsState;
-  fills: FillsState;
   categories: CategoriesState;
   images: ImagesState;
 }

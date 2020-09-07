@@ -1,4 +1,5 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { SagaIterator } from 'redux-saga';
 import { AnyAction } from 'redux';
 import { createBrowserHistory } from 'history';
 import { AxiosResponse } from 'axios';
@@ -21,7 +22,7 @@ interface Response {
 
 const history = createBrowserHistory();
 
-export function* login({ payload }: Payload) {
+export function* login({ payload }: Payload): SagaIterator {
   try {
     const { username, password } = payload;
 

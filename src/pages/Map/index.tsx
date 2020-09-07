@@ -6,31 +6,34 @@ import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
 import { ApplicationState } from '../../store';
 import setPageTitle from '../../store/modules/pageTitle/actions';
 import { getFormsRequest } from '../../store/modules/forms/actions';
-import { getUsersFormsRequest } from '../../store/modules/users/actions';
+import {
+  setErrorFalse,
+  getUsersFormsRequest,
+} from '../../store/modules/users/actions';
+
 import useStyles from './styles';
-import tron from '../../config/ReactotronConfig';
+import ModalAlert from '../../components/ModalAlert';
 
 const Map: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const title = 'Mapa';
 
-  const latitude = useSelector(
-    (state: ApplicationState) => state.fills.fill.latitude,
-  );
-  const longitude = useSelector(
-    (state: ApplicationState) => state.fills.fill.longitude,
-  );
   const forms = useSelector((state: ApplicationState) => state.forms.forms);
   const usersForms = useSelector(
     (state: ApplicationState) => state.users.usersForms,
   );
 
-  const [currentLocation, setCurrentLocation] = useState<[number, number]>([
-    0,
-    0,
-  ]);
+  const error = useSelector((state: ApplicationState) => state.users.error);
+  const modalMsg = useSelector(
+    (state: ApplicationState) => state.users.modalMsg,
+  );
+  const modalTitle = useSelector(
+    (state: ApplicationState) => state.users.modalTitle,
+  );
+
   const [formState, setFormState] = useState(0);
+  const [modalAlert, setModalAlert] = useState(false);
 
   useEffect(() => {
     dispatch(setPageTitle(title));
@@ -38,21 +41,23 @@ const Map: React.FC = () => {
     dispatch(getFormsRequest());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (latitude && longitude) {
-      setCurrentLocation([latitude, longitude]);
-    }
-  }, [latitude, longitude]);
+  const handleModalClose = () => {
+    setModalAlert(false);
+  };
 
-  function handleChangeForm(e: ChangeEvent<HTMLSelectElement>) {
+  const handleChangeForm = (e: ChangeEvent<HTMLSelectElement>) => {
     setFormState(Number(e.target.value));
-  }
+  };
 
   useEffect(() => {
     dispatch(getUsersFormsRequest(formState));
-  }, [dispatch, formState]);
 
-  tron.log!(usersForms);
+    if (error) {
+      setModalAlert(true);
+
+      dispatch(setErrorFalse());
+    }
+  }, [dispatch, formState, error]);
 
   return (
     <main className={classes.content}>
@@ -80,7 +85,11 @@ const Map: React.FC = () => {
       </div>
 
       <div className={classes.centeredMap}>
-        <LeafletMap center={currentLocation} zoom={15} className={classes.map}>
+        <LeafletMap
+          center={[-5.10458, -42.8289127]}
+          zoom={13}
+          className={classes.map}
+        >
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -106,6 +115,13 @@ const Map: React.FC = () => {
           ))}
         </LeafletMap>
       </div>
+
+      <ModalAlert
+        open={modalAlert}
+        close={handleModalClose}
+        title={modalTitle}
+        msg={modalMsg}
+      />
     </main>
   );
 };

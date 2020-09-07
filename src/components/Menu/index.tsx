@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
@@ -29,7 +29,6 @@ import {
 
 import { ApplicationState } from '../../store';
 import { logout } from '../../store/modules/auth/actions';
-import { addUserLocation } from '../../store/modules/fills/actions';
 import { useStyles, BlueGrey } from './styles';
 import Routes from '../../routes';
 
@@ -53,17 +52,6 @@ const Header: React.FC = () => {
   function handleLogout() {
     dispatch(logout());
   }
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(position => {
-      if (position.coords) {
-        const { latitude } = position.coords;
-        const { longitude } = position.coords;
-
-        dispatch(addUserLocation(latitude, longitude));
-      }
-    });
-  }, [dispatch]);
 
   return (
     <div className={classes.root}>

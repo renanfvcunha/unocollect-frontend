@@ -16,7 +16,6 @@ import {
   getUsersFormsSuccess,
   getUsersFormsFailure,
 } from './actions';
-import tron from '../../../config/ReactotronConfig';
 
 interface Payload extends AnyAction {
   payload: {
@@ -104,14 +103,11 @@ export function* getUsersForms({ payload }: AnyAction): SagaIterator {
 
     yield put(getUsersFormsSuccess(response.data));
   } catch (err) {
-    if (err.response.data.msg) {
-      alert(err.response.data.msg);
-      yield put(getUsersFormsFailure(err.response.data.msg));
-    } else if (err.message === 'Network Error') {
-      alert('Erro ao conectar ao servidor.');
+    if (err.message === 'Network Error') {
       yield put(getUsersFormsFailure('Erro ao conectar ao servidor.'));
+    } else if (err.response) {
+      yield put(getUsersFormsFailure(err.response.data.msg));
     } else {
-      alert(err);
       yield put(getUsersFormsFailure(err));
     }
   }
