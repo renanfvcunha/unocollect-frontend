@@ -62,13 +62,20 @@ export const useStyles = makeStyles(theme => ({
   fieldsFormFields: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     justifyContent: 'center',
     width: '40%',
   },
-  fieldsFormField: {
+  fieldsFormExtra: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+  },
+  fieldsFormOptions: {
     margin: theme.spacing(1),
-    height: 30,
+    display: 'flex',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
   },
   fieldsDivider: {
     display: 'flex',

@@ -33,7 +33,7 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
         success: false,
         error: true,
         modalTitle: 'Erro',
-        modalMsg: action.payload.successMsg,
+        modalMsg: action.payload.errorMsg,
       };
 
     case FormsTypes.GET_FORMS_REQUEST:
