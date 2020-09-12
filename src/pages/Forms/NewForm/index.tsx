@@ -38,19 +38,14 @@ import {
 } from '../../../store/modules/forms/actions';
 import { useStyles, BtnStyle, Tooltips } from './styles';
 import ModalAlert from '../../../components/ModalAlert';
-import tron from '../../../config/ReactotronConfig';
 
-interface Fields {
+interface Field {
   name: string;
   description?: string;
   type?: string;
   options: string[];
   required?: boolean;
 }
-
-/* interface FieldsOptions {
-  field: string[];
-} */
 
 const NewForm: React.FC = () => {
   const classes = useStyles();
@@ -96,8 +91,15 @@ const NewForm: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState(0);
-  const [fields, setFields] = useState<Fields[]>([]);
-  const [fieldsLength, setFieldsLength] = useState(1);
+  const [fields, setFields] = useState<Field[]>([
+    {
+      name: '',
+      description: '',
+      type: 'text',
+      required: false,
+      options: [''],
+    },
+  ]);
 
   const [showAddCat, setShowAddCat] = useState(false);
   const [catName, setCatName] = useState('');
@@ -112,14 +114,36 @@ const NewForm: React.FC = () => {
     setModalOpen(false);
   };
 
-  const handleAddField = () => {
-    setFieldsLength(fieldsLength + 1);
+  const handleChangeCategory = (e: ChangeEvent<HTMLSelectElement>) => {
+    setCategory(Number(e.target.value));
   };
 
-  const handleRemoveField = (i: number, fds: Fields[]) => {
-    fds.splice(i, 1);
+  const handleAddCategory = (e: FormEvent) => {
+    e.preventDefault();
 
-    setFieldsLength(fieldsLength - 1);
+    dispatch(addCategoryRequest(catName));
+    setShowAddCat(false);
+    setCatName('');
+  };
+
+  const handleAddField = () => {
+    const newField = [...fields];
+    newField.push({
+      name: '',
+      description: '',
+      type: 'text',
+      required: false,
+      options: [''],
+    });
+
+    setFields(newField);
+  };
+
+  const handleRemoveField = (i: number) => {
+    const rmField = [...fields];
+    rmField.splice(i, 1);
+
+    setFields(rmField);
   };
 
   const handleChangeFieldName = (
@@ -235,233 +259,6 @@ const NewForm: React.FC = () => {
     setFields(newFields);
   };
 
-  const handleChangeCategory = (e: ChangeEvent<HTMLSelectElement>) => {
-    setCategory(Number(e.target.value));
-  };
-
-  const fieldsForm = [];
-  for (let i = 0; i < fieldsLength; i += 1) {
-    fields.push({
-      name: '',
-      description: '',
-      type: 'text',
-      required: false,
-      options: [''],
-    });
-    fieldsForm.push(
-      <div key={i}>
-        {/* Button Add Field */}
-        <div className={classes.fieldsForm}>
-          {i === fieldsLength - 1 ? (
-            <ThemeProvider theme={Tooltips}>
-              <Tooltip
-                title="Adicionar Campo"
-                aria-label="add"
-                style={{ marginRight: '2.5%' }}
-                onClick={handleAddField}
-              >
-                <Fab color="primary" size="small">
-                  <Add />
-                </Fab>
-              </Tooltip>
-            </ThemeProvider>
-          ) : (
-            <ThemeProvider theme={Tooltips}>
-              <Tooltip
-                title="Adicionar Campo"
-                aria-label="add"
-                style={{ marginRight: '2.5%', visibility: 'hidden' }}
-                onClick={handleAddField}
-              >
-                <Fab color="primary" size="small">
-                  <Add />
-                </Fab>
-              </Tooltip>
-            </ThemeProvider>
-          )}
-
-          <div className={classes.fieldsFormFields}>
-            {/* Field Name */}
-            <TextField
-              type="text"
-              name="name"
-              label={`Campo ${i + 1}`}
-              required
-              className={classes.margin}
-              fullWidth
-              size="small"
-              value={fields[i].name}
-              onChange={e => handleChangeFieldName(i, e)}
-            />
-
-            {/* Field Description */}
-            <TextField
-              type="text"
-              name="name"
-              label="Descrição (opcional)"
-              multiline
-              className={classes.margin}
-              fullWidth
-              size="small"
-              value={fields[i].description}
-              onChange={e => handleChangeFieldDesc(i, e)}
-            />
-
-            <div className={classes.fieldsFormExtra}>
-              {/* Field Type */}
-              <FormControl className={classes.margin}>
-                <InputLabel id="type">Tipo</InputLabel>
-                <Select
-                  labelId="type"
-                  value={fields[i].type}
-                  onChange={e => handleChangeFieldType(i, e)}
-                >
-                  <MenuItem value="text">Texto / Numérico</MenuItem>
-                  <MenuItem value="radio">
-                    Múltipla Escolha (Uma Opção)
-                  </MenuItem>
-                  <MenuItem value="checkbox">
-                    Múltipla Escolha (Várias Opções)
-                  </MenuItem>
-                </Select>
-              </FormControl>
-
-              {/* Required */}
-              <FormControlLabel
-                className={classes.margin}
-                control={
-                  <Checkbox
-                    onChange={e => handleChangeFieldRequired(i, e)}
-                    name="required"
-                    color="primary"
-                  />
-                }
-                label="Obrigatório"
-              />
-            </div>
-
-            {fields[i].type === 'radio' || fields[i].type === 'checkbox' ? (
-              fields[i].options.map((option, j) => (
-                <div key={j} className={classes.fieldsFormOptions}>
-                  {/* Button Add Option */}
-                  {j === fields[i].options.length - 1 ? (
-                    <ThemeProvider theme={Tooltips}>
-                      <Tooltip
-                        title="Adicionar Opção"
-                        aria-label="add"
-                        style={{ marginRight: '2.5%' }}
-                        onClick={() => handleAddFieldOption(i)}
-                      >
-                        <Fab color="primary" size="small">
-                          <Add />
-                        </Fab>
-                      </Tooltip>
-                    </ThemeProvider>
-                  ) : (
-                    <ThemeProvider theme={Tooltips}>
-                      <Tooltip
-                        title="Adicionar Opção"
-                        aria-label="add"
-                        style={{ marginRight: '2.5%', visibility: 'hidden' }}
-                      >
-                        <Fab color="primary" size="small">
-                          <Add />
-                        </Fab>
-                      </Tooltip>
-                    </ThemeProvider>
-                  )}
-
-                  <TextField
-                    type="text"
-                    name="option"
-                    label={`Opção ${j + 1}`}
-                    className={classes.margin}
-                    size="small"
-                    value={option}
-                    onChange={e => handleChangeFieldOption(i, j, e)}
-                  />
-
-                  {/* Button Remove Option */}
-                  {j === 0 && fields[i].options.length === 1 ? (
-                    <ThemeProvider theme={Tooltips}>
-                      <Tooltip
-                        title="Remover Opção"
-                        aria-label="remove"
-                        style={{ marginLeft: '2.5%', visibility: 'hidden' }}
-                      >
-                        <Fab color="secondary" size="small">
-                          <Remove />
-                        </Fab>
-                      </Tooltip>
-                    </ThemeProvider>
-                  ) : (
-                    <ThemeProvider theme={Tooltips}>
-                      <Tooltip
-                        title="Remover Opção"
-                        aria-label="remove"
-                        style={{ marginLeft: '2.5%' }}
-                        onClick={() => handleRemoveFieldOption(i, j)}
-                      >
-                        <Fab color="secondary" size="small">
-                          <Remove />
-                        </Fab>
-                      </Tooltip>
-                    </ThemeProvider>
-                  )}
-                </div>
-              ))
-            ) : (
-              <div />
-            )}
-          </div>
-
-          {/* Button Remove Field */}
-          {i === 0 && fieldsLength === 1 ? (
-            <ThemeProvider theme={Tooltips}>
-              <Tooltip
-                title="Remover Campo"
-                aria-label="remove"
-                style={{ marginLeft: '2.5%', visibility: 'hidden' }}
-                onClick={() => handleRemoveField(i, fields)}
-              >
-                <Fab color="secondary" size="small">
-                  <Remove />
-                </Fab>
-              </Tooltip>
-            </ThemeProvider>
-          ) : (
-            <ThemeProvider theme={Tooltips}>
-              <Tooltip
-                title="Remover Campo"
-                aria-label="remove"
-                style={{ marginLeft: '2.5%' }}
-                onClick={() => handleRemoveField(i, fields)}
-              >
-                <Fab color="secondary" size="small">
-                  <Remove />
-                </Fab>
-              </Tooltip>
-            </ThemeProvider>
-          )}
-        </div>
-
-        <div className={classes.fieldsDivider}>
-          <Divider style={{ width: '75%' }} />,
-        </div>
-      </div>,
-    );
-    fields.splice(fieldsLength);
-  }
-
-  const handleAddCategory = (e: FormEvent) => {
-    e.preventDefault();
-
-    dispatch(addCategoryRequest(catName));
-    dispatch(getCategoriesRequest());
-    setShowAddCat(false);
-    setCatName('');
-  };
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
@@ -471,15 +268,11 @@ const NewForm: React.FC = () => {
       category: {
         id: category === 0 ? null : category,
       },
-      fields: fields.map((field: Fields) => ({
+      fields: fields.map((field: Field) => ({
         ...field,
         options: field.type !== 'text' ? JSON.stringify(field.options) : '',
       })),
     };
-
-    if (tron.log) {
-      tron.log(FormData);
-    }
 
     dispatch(addFormRequest(FormData));
   };
@@ -496,6 +289,7 @@ const NewForm: React.FC = () => {
     if (errorCat || successCat || errorForm) {
       setModalOpen(true);
 
+      dispatch(getCategoriesRequest());
       dispatch(setErrorCatFalse());
       dispatch(setErrorFormFalse());
     }
@@ -625,7 +419,213 @@ const NewForm: React.FC = () => {
                 Campos
               </Typography>
 
-              {fieldsForm}
+              {fields.map((field, i) => (
+                <div key={i}>
+                  {/* Button Add Field */}
+                  <div className={classes.fieldsForm}>
+                    {i === fields.length - 1 ? (
+                      <ThemeProvider theme={Tooltips}>
+                        <Tooltip
+                          title="Adicionar Campo"
+                          aria-label="add"
+                          style={{ marginRight: '2.5%' }}
+                          onClick={handleAddField}
+                        >
+                          <Fab color="primary" size="small">
+                            <Add />
+                          </Fab>
+                        </Tooltip>
+                      </ThemeProvider>
+                    ) : (
+                      <ThemeProvider theme={Tooltips}>
+                        <Tooltip
+                          title="Adicionar Campo"
+                          aria-label="add"
+                          style={{ marginRight: '2.5%', visibility: 'hidden' }}
+                          onClick={handleAddField}
+                        >
+                          <Fab color="primary" size="small">
+                            <Add />
+                          </Fab>
+                        </Tooltip>
+                      </ThemeProvider>
+                    )}
+
+                    <div className={classes.fieldsFormFields}>
+                      {/* Field Name */}
+                      <TextField
+                        type="text"
+                        name="name"
+                        label={`Campo ${i + 1}`}
+                        required
+                        className={classes.margin}
+                        fullWidth
+                        size="small"
+                        value={field.name}
+                        onChange={e => handleChangeFieldName(i, e)}
+                      />
+
+                      {/* Field Description */}
+                      <TextField
+                        type="text"
+                        name="name"
+                        label="Descrição (opcional)"
+                        multiline
+                        className={classes.margin}
+                        fullWidth
+                        size="small"
+                        value={field.description}
+                        onChange={e => handleChangeFieldDesc(i, e)}
+                      />
+
+                      <div className={classes.fieldsFormExtra}>
+                        {/* Field Type */}
+                        <FormControl className={classes.margin}>
+                          <InputLabel id="type">Tipo</InputLabel>
+                          <Select
+                            labelId="type"
+                            value={field.type}
+                            onChange={e => handleChangeFieldType(i, e)}
+                          >
+                            <MenuItem value="text">Texto / Numérico</MenuItem>
+                            <MenuItem value="radio">
+                              Múltipla Escolha (Uma Opção)
+                            </MenuItem>
+                            <MenuItem value="checkbox">
+                              Múltipla Escolha (Várias Opções)
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+
+                        {/* Required */}
+                        <FormControlLabel
+                          className={classes.margin}
+                          control={
+                            <Checkbox
+                              onChange={e => handleChangeFieldRequired(i, e)}
+                              name="required"
+                              color="primary"
+                            />
+                          }
+                          label="Obrigatório"
+                        />
+                      </div>
+
+                      {field.type === 'radio' || field.type === 'checkbox' ? (
+                        field.options.map((option, j) => (
+                          <div key={j} className={classes.fieldsFormOptions}>
+                            {/* Button Add Option */}
+                            {j === fields[i].options.length - 1 ? (
+                              <ThemeProvider theme={Tooltips}>
+                                <Tooltip
+                                  title="Adicionar Opção"
+                                  aria-label="add"
+                                  style={{ marginRight: '2.5%' }}
+                                  onClick={() => handleAddFieldOption(i)}
+                                >
+                                  <Fab color="primary" size="small">
+                                    <Add />
+                                  </Fab>
+                                </Tooltip>
+                              </ThemeProvider>
+                            ) : (
+                              <ThemeProvider theme={Tooltips}>
+                                <Tooltip
+                                  title="Adicionar Opção"
+                                  aria-label="add"
+                                  style={{
+                                    marginRight: '2.5%',
+                                    visibility: 'hidden',
+                                  }}
+                                >
+                                  <Fab color="primary" size="small">
+                                    <Add />
+                                  </Fab>
+                                </Tooltip>
+                              </ThemeProvider>
+                            )}
+
+                            <TextField
+                              type="text"
+                              name="option"
+                              label={`Opção ${j + 1}`}
+                              className={classes.margin}
+                              size="small"
+                              value={option}
+                              onChange={e => handleChangeFieldOption(i, j, e)}
+                            />
+
+                            {/* Button Remove Option */}
+                            {j === 0 && fields[i].options.length === 1 ? (
+                              <ThemeProvider theme={Tooltips}>
+                                <Tooltip
+                                  title="Remover Opção"
+                                  aria-label="remove"
+                                  style={{
+                                    marginLeft: '2.5%',
+                                    visibility: 'hidden',
+                                  }}
+                                >
+                                  <Fab color="secondary" size="small">
+                                    <Remove />
+                                  </Fab>
+                                </Tooltip>
+                              </ThemeProvider>
+                            ) : (
+                              <ThemeProvider theme={Tooltips}>
+                                <Tooltip
+                                  title="Remover Opção"
+                                  aria-label="remove"
+                                  style={{ marginLeft: '2.5%' }}
+                                  onClick={() => handleRemoveFieldOption(i, j)}
+                                >
+                                  <Fab color="secondary" size="small">
+                                    <Remove />
+                                  </Fab>
+                                </Tooltip>
+                              </ThemeProvider>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div />
+                      )}
+                    </div>
+
+                    {/* Button Remove Field */}
+                    {i === 0 && fields.length === 1 ? (
+                      <ThemeProvider theme={Tooltips}>
+                        <Tooltip
+                          title="Remover Campo"
+                          aria-label="remove"
+                          style={{ marginLeft: '2.5%', visibility: 'hidden' }}
+                        >
+                          <Fab color="secondary" size="small">
+                            <Remove />
+                          </Fab>
+                        </Tooltip>
+                      </ThemeProvider>
+                    ) : (
+                      <ThemeProvider theme={Tooltips}>
+                        <Tooltip
+                          title="Remover Campo"
+                          aria-label="remove"
+                          style={{ marginLeft: '2.5%' }}
+                          onClick={() => handleRemoveField(i)}
+                        >
+                          <Fab color="secondary" size="small">
+                            <Remove />
+                          </Fab>
+                        </Tooltip>
+                      </ThemeProvider>
+                    )}
+                  </div>
+
+                  <div className={classes.fieldsDivider}>
+                    <Divider style={{ width: '75%' }} />,
+                  </div>
+                </div>
+              ))}
 
               {loadingForm ? (
                 <div className={classes.progress}>
