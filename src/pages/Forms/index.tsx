@@ -286,8 +286,7 @@ const Forms: React.FC = () => {
                   icon: () => <Edit />,
                   tooltip: 'Editar Formulário',
                   onClick: (event, rowData: RowData) =>
-                    alert('Funcionalidade a ser implementada em breve.'),
-                  /* history.push(`/forms/edit/${rowData.id}`), */
+                    history.push(`/forms/edit/${rowData.id}`),
                 },
                 {
                   icon: () => <Delete />,

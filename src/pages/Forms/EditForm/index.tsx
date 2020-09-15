@@ -5,7 +5,7 @@ import React, {
   FormEvent,
   ChangeEvent,
 } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   ThemeProvider,
@@ -33,22 +33,26 @@ import {
   setErrorFalse as setErrorCatFalse,
 } from '../../../store/modules/categories/actions';
 import {
-  addFormRequest,
+  getFormRequest,
+  editFormRequest,
   setErrorFalse as setErrorFormFalse,
 } from '../../../store/modules/forms/actions';
 import { Field } from '../../../store/modules/forms/types';
 import { useStyles, BtnStyle, Tooltips } from './styles';
 import ModalAlert from '../../../components/ModalAlert';
 
-const NewForm: React.FC = () => {
+const EditForm: React.FC = () => {
   const classes = useStyles();
-  const pageTitle = 'Formulários > Novo Formulário';
+  const pageTitle = 'Formulários > Editar Formulário';
   const dispatch = useDispatch();
   const history = useHistory();
+  const { id } = useParams();
 
   const categories = useSelector(
     (state: ApplicationState) => state.categories.categories,
   );
+  const form = useSelector((state: ApplicationState) => state.forms.form);
+
   const loadingCat = useSelector(
     (state: ApplicationState) => state.categories.loading,
   );
@@ -264,13 +268,14 @@ const NewForm: React.FC = () => {
       fields,
     };
 
-    dispatch(addFormRequest(FormData));
+    dispatch(editFormRequest(id, FormData));
   };
 
   useEffect(() => {
+    dispatch(getFormRequest(id));
     dispatch(setPageTitle(pageTitle));
     dispatch(getCategoriesRequest());
-  }, [dispatch]);
+  }, [id, dispatch]);
 
   useEffect(() => {
     navBack();
@@ -283,6 +288,34 @@ const NewForm: React.FC = () => {
       dispatch(setErrorFormFalse());
     }
   }, [navBack, errorCat, successCat, errorForm, dispatch]);
+
+  useEffect(() => {
+    if (form.title) {
+      setTitle(form.title);
+      setDescription(form.description || '');
+    }
+
+    if (form.category) {
+      if (form.category.id) {
+        setCategory(form.category.id);
+      }
+    } else {
+      setCategory(0);
+    }
+
+    if (form.fields) {
+      const fieldsParsed = form.fields.map(formField => ({
+        id: formField.id,
+        name: formField.name || '',
+        description: formField.description || '',
+        type: formField.type,
+        options: formField.options,
+        required: formField.required,
+      }));
+
+      setFields(fieldsParsed);
+    }
+  }, [form]);
 
   return (
     <ThemeProvider theme={BtnStyle}>
@@ -298,7 +331,7 @@ const NewForm: React.FC = () => {
         <div className={classes.form}>
           <div className={classes.formBox}>
             <Typography variant="h5" className={classes.title} align="center">
-              Novo Formulário
+              Editar Formulário
             </Typography>
 
             {showAddCat ? (
@@ -640,7 +673,7 @@ const NewForm: React.FC = () => {
                     className={classes.margin}
                     type="submit"
                   >
-                    Adicionar Formulário
+                    Salvar
                   </Button>
                 </FormControl>
               </div>
@@ -658,4 +691,4 @@ const NewForm: React.FC = () => {
   );
 };
 
-export default NewForm;
+export default EditForm;

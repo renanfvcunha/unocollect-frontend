@@ -14,6 +14,9 @@ export enum FormsTypes {
   GET_FORM_REQUEST = '@forms/GET_FORM_REQUEST',
   GET_FORM_SUCCESS = '@forms/GET_FORM_SUCCESS',
   GET_FORM_FAILURE = '@forms/GET_FORM_FAILURE',
+  EDIT_FORM_REQUEST = '@forms/EDIT_FORM_REQUEST',
+  EDIT_FORM_SUCCESS = '@forms/EDIT_FORM_SUCCESS',
+  EDIT_FORM_FAILURE = '@forms/EDIT_FORM_FAILURE',
   ALTER_FORM_STATUS_REQUEST = '@forms/ALTER_FORM_STATUS_REQUEST',
   ALTER_FORM_STATUS_SUCCESS = '@forms/ALTER_FORM_STATUS_SUCCESS',
   ALTER_FORM_STATUS_FAILURE = '@forms/ALTER_FORM_STATUS_FAILURE',
@@ -40,8 +43,11 @@ export interface Field {
   id?: number;
   name?: string;
   description?: string;
-  created_at?: Date;
+  type: string;
+  options: string[];
+  required: boolean;
   values?: Value[];
+  created_at?: Date;
 }
 
 export interface Value {

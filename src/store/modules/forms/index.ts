@@ -77,6 +77,29 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
         error: true,
       };
 
+    case FormsTypes.EDIT_FORM_REQUEST:
+      return { ...state, loading: true, success: false, error: false };
+
+    case FormsTypes.EDIT_FORM_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
+      };
+
+    case FormsTypes.EDIT_FORM_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
+      };
+
     case FormsTypes.ALTER_FORM_STATUS_REQUEST:
       return { ...state, loading: true, success: false, error: false };
 

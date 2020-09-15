@@ -12,6 +12,8 @@ import {
   getFormsFailure,
   getFormSuccess,
   getFormFailure,
+  editFormSuccess,
+  editFormFailure,
   alterFormStatusSuccess,
   alterFormStatusFailure,
   deleteFormSuccess,
@@ -20,6 +22,7 @@ import {
 
 interface IForm extends AnyAction {
   payload: {
+    id?: number;
     data: Form;
   };
 }
@@ -84,6 +87,29 @@ export function* getForm({ payload }: AnyAction): SagaIterator {
   }
 }
 
+export function* editForm({ payload }: IForm): SagaIterator {
+  try {
+    const response: AxiosResponse<Msg> = yield call(
+      api.put,
+      `forms/${payload.id}`,
+      {
+        ...payload.data,
+        category: payload.data.category?.id,
+      },
+    );
+
+    yield put(editFormSuccess(response.data.msg));
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(editFormFailure('Erro ao conectar ao servidor.'));
+    } else if (err.response) {
+      yield put(editFormFailure(err.response.data.msg));
+    } else {
+      yield put(editFormFailure(err));
+    }
+  }
+}
+
 export function* alterFormStatus({ payload }: AnyAction): SagaIterator {
   try {
     const response: AxiosResponse<Msg> = yield call(
@@ -137,6 +163,7 @@ export default all([
   takeLatest(FormsTypes.ADD_FORM_REQUEST, addForm),
   takeLatest(FormsTypes.GET_FORMS_REQUEST, getForms),
   takeLatest(FormsTypes.GET_FORM_REQUEST, getForm),
+  takeLatest(FormsTypes.EDIT_FORM_REQUEST, editForm),
   takeLatest(FormsTypes.ALTER_FORM_STATUS_REQUEST, alterFormStatus),
   takeLatest(FormsTypes.DELETE_FORM_REQUEST, deleteForm),
 ]);

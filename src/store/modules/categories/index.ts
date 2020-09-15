@@ -65,6 +65,7 @@ const reducer: Reducer<CategoriesState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         error: false,
+        success: false,
         loading: false,
       };
 

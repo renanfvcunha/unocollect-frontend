@@ -32,6 +32,16 @@ export const getFormSuccess = (data: Form): Action =>
 export const getFormFailure = (errorMsg: string): Action =>
   action(FormsTypes.GET_FORM_FAILURE, { errorMsg });
 
+// Edit Form
+export const editFormRequest = (id: number, data: Form): Action =>
+  action(FormsTypes.EDIT_FORM_REQUEST, { id, data });
+
+export const editFormSuccess = (successMsg: string): Action =>
+  action(FormsTypes.EDIT_FORM_SUCCESS, { successMsg });
+
+export const editFormFailure = (errorMsg: string): Action =>
+  action(FormsTypes.EDIT_FORM_FAILURE, { errorMsg });
+
 // Alter Form Status
 export const alterFormStatusRequest = (id: number, status: string): Action =>
   action(FormsTypes.ALTER_FORM_STATUS_REQUEST, { id, status });
