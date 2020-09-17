@@ -21,6 +21,8 @@ import {
   Search,
 } from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
+import { AxiosResponse } from 'axios';
+import { CSVLink } from 'react-csv';
 import ModalImage from 'react-modal-image';
 
 import api from '../../../services/api';
@@ -53,6 +55,7 @@ const ShowForm: React.FC = () => {
   );
 
   const [tableColumns, setTableColumns] = useState<TableColumns[]>([]);
+  const [csvData, setCsvData] = useState<[string[]]>([[]]);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
@@ -97,6 +100,14 @@ const ShowForm: React.FC = () => {
       setTableColumns(finalColumns);
     }
   }, [fields]);
+
+  useEffect(() => {
+    api
+      .get(`/fills/export/${id}`)
+      .then((response: AxiosResponse<[string[]]>) => {
+        setCsvData(response.data);
+      });
+  }, [id]);
 
   const tableIcons: Icons = {
     Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
@@ -184,12 +195,18 @@ const ShowForm: React.FC = () => {
               },
               search: false,
               sorting: false,
-              exportButton: true,
             }}
           />
         </div>
 
         <div>
+          <CSVLink data={csvData} style={{ float: 'right' }}>
+            <Button color="primary" variant="contained">
+              <SaveAlt style={{ marginRight: 8 }} />
+              Baixar CSV
+            </Button>
+          </CSVLink>
+
           <Typography component="h1" variant="h4">
             Imagens
           </Typography>
