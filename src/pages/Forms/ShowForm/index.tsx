@@ -8,7 +8,18 @@ import React, {
 import { useParams, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { ThemeProvider, Button, Typography } from '@material-ui/core';
-import { ArrowBack, Refresh, SaveAlt } from '@material-ui/icons';
+import {
+  ArrowBack,
+  ArrowDownward,
+  ChevronLeft,
+  ChevronRight,
+  Clear,
+  FirstPage,
+  LastPage,
+  Refresh,
+  SaveAlt,
+  Search,
+} from '@material-ui/icons';
 import MaterialTable, { Icons } from 'material-table';
 import ModalImage from 'react-modal-image';
 
@@ -51,11 +62,26 @@ const ShowForm: React.FC = () => {
 
   useEffect(() => {
     if (fields) {
+      const idColumn = [
+        {
+          title: 'Id',
+          field: 'id',
+          type: 'numeric',
+          align: 'left',
+          headerStyle: {
+            maxWidth: '5%',
+          },
+          cellStyle: {
+            maxWidth: '5%',
+          },
+        },
+      ];
       const columns = fields.map(field => ({
         title: field.name,
         field: String(field.id),
       }));
       const finalColumns = [
+        ...idColumn,
         ...columns,
         {
           title: 'Criado Por',
@@ -74,6 +100,17 @@ const ShowForm: React.FC = () => {
 
   const tableIcons: Icons = {
     Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    PreviousPage: forwardRef((props, ref) => (
+      <ChevronLeft {...props} ref={ref} />
+    )),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+    SortArrow: forwardRef((props, ref) => (
+      <ArrowDownward {...props} ref={ref} />
+    )),
   };
 
   return (
@@ -94,13 +131,18 @@ const ShowForm: React.FC = () => {
             tableRef={tableRef}
             data={query =>
               new Promise(resolve => {
-                api.get(`fills/${id}`).then(response => {
-                  resolve({
-                    data: response.data,
-                    page: 0,
-                    totalCount: 0,
+                api
+                  .get(
+                    `fills/${id}/?per_page=${query.pageSize}&page=${query.page +
+                      1}`,
+                  )
+                  .then(response => {
+                    resolve({
+                      data: response.data.fills,
+                      page: response.data.page - 1,
+                      totalCount: response.data.totalCount,
+                    });
                   });
-                });
               })
             }
             icons={tableIcons}
@@ -115,13 +157,24 @@ const ShowForm: React.FC = () => {
               body: {
                 emptyDataSourceMessage: 'Busca não obteve resultados',
               },
+              pagination: {
+                firstTooltip: 'Primeira Página',
+                lastTooltip: 'Última Página',
+                previousTooltip: 'Página Anterior',
+                nextTooltip: 'Próxima Página',
+                labelDisplayedRows: '{from}-{to} de {count}',
+                labelRowsSelect: 'linhas',
+              },
             }}
             actions={[
               {
                 icon: () => <Refresh />,
                 tooltip: 'Atualizar',
                 isFreeAction: true,
-                onClick: () => tableRef.current.onQueryChange(),
+                onClick: () => {
+                  tableRef.current.onQueryChange();
+                  dispatch(getUsersImagesRequest(id));
+                },
               },
             ]}
             options={{
@@ -129,7 +182,6 @@ const ShowForm: React.FC = () => {
                 backgroundColor: '#ab47bc',
                 color: '#fff',
               },
-              paging: false,
               search: false,
               sorting: false,
               exportButton: true,
@@ -142,28 +194,35 @@ const ShowForm: React.FC = () => {
             Imagens
           </Typography>
 
-          {usersImages.map(userImage => (
-            <div className={classes.imagesBox}>
-              <Typography component="h2" variant="h6">
-                {userImage.name}
-              </Typography>
-              <div className={classes.images}>
-                {userImage.images ? (
-                  userImage.images.map(image => (
-                    <div className={classes.imageThumb}>
-                      <ModalImage
-                        small={image}
-                        large={image}
-                        alt={image.split('/').pop()}
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <div />
-                )}
-              </div>
-            </div>
-          ))}
+          {usersImages.length !== 0 ? (
+            usersImages.map(userImage =>
+              userImage.images.length !== 0 ? (
+                <div className={classes.imagesBox}>
+                  <Typography component="h2" variant="h6">
+                    {userImage.name} no preenchimento {userImage.id_user_form}
+                  </Typography>
+
+                  <div className={classes.images}>
+                    {userImage.images.map(image => (
+                      <div className={classes.imageThumb}>
+                        <ModalImage
+                          small={image}
+                          large={image}
+                          alt={image.split('/').pop()}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div />
+              ),
+            )
+          ) : (
+            <Typography component="h2" variant="subtitle1">
+              Não há imagens enviadas neste formulário.
+            </Typography>
+          )}
         </div>
       </main>
     </ThemeProvider>

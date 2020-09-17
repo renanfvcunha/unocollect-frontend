@@ -31,10 +31,9 @@
     "typescript": "~3.7.2"
   },
   "scripts": {
-    "dev": "BROWSER=none react-scripts start",
-    "start": "node server",
+    "start": "BROWSER=none react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "mv build ../frontend_build",
+    "postbuild": "mv build/* ../frontend_build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

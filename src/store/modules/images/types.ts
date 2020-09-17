@@ -13,9 +13,9 @@ export enum ImagesTypes {
  */
 
 export interface UserImage {
-  id?: number;
-  name?: string;
-  images?: string[];
+  id_user_form: number;
+  name: string;
+  images: string[];
 }
 
 /**
