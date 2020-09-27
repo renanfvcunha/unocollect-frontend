@@ -12,8 +12,8 @@ import {
   getFormsFailure,
   getFormSuccess,
   getFormFailure,
-  editFormSuccess,
-  editFormFailure,
+  updateFormSuccess,
+  updateFormFailure,
   alterFormStatusSuccess,
   alterFormStatusFailure,
   deleteFormSuccess,
@@ -98,14 +98,14 @@ export function* editForm({ payload }: IForm): SagaIterator {
       },
     );
 
-    yield put(editFormSuccess(response.data.msg));
+    yield put(updateFormSuccess(response.data.msg));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(editFormFailure('Erro ao conectar ao servidor.'));
+      yield put(updateFormFailure('Erro ao conectar ao servidor.'));
     } else if (err.response) {
-      yield put(editFormFailure(err.response.data.msg));
+      yield put(updateFormFailure(err.response.data.msg));
     } else {
-      yield put(editFormFailure(err));
+      yield put(updateFormFailure(err));
     }
   }
 }
@@ -163,7 +163,7 @@ export default all([
   takeLatest(FormsTypes.ADD_FORM_REQUEST, addForm),
   takeLatest(FormsTypes.GET_FORMS_REQUEST, getForms),
   takeLatest(FormsTypes.GET_FORM_REQUEST, getForm),
-  takeLatest(FormsTypes.EDIT_FORM_REQUEST, editForm),
+  takeLatest(FormsTypes.UPDATE_FORM_REQUEST, editForm),
   takeLatest(FormsTypes.ALTER_FORM_STATUS_REQUEST, alterFormStatus),
   takeLatest(FormsTypes.DELETE_FORM_REQUEST, deleteForm),
 ]);

@@ -34,7 +34,7 @@ import {
 } from '../../../store/modules/categories/actions';
 import {
   getFormRequest,
-  editFormRequest,
+  updateFormRequest,
   setErrorFalse as setErrorFormFalse,
 } from '../../../store/modules/forms/actions';
 import { Field } from '../../../store/modules/forms/types';
@@ -268,7 +268,7 @@ const EditForm: React.FC = () => {
       fields,
     };
 
-    dispatch(editFormRequest(id, FormData));
+    dispatch(updateFormRequest(id, FormData));
   };
 
   useEffect(() => {

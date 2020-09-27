@@ -7,7 +7,12 @@ import React, {
 } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { ThemeProvider, Button, Typography } from '@material-ui/core';
+import {
+  ThemeProvider,
+  Button,
+  Typography,
+  CircularProgress,
+} from '@material-ui/core';
 import {
   ArrowBack,
   ArrowDownward,
@@ -55,7 +60,7 @@ const ShowForm: React.FC = () => {
   );
 
   const [tableColumns, setTableColumns] = useState<TableColumns[]>([]);
-  const [csvData, setCsvData] = useState<[string[]]>([[]]);
+  const [csvData, setCsvData] = useState<[string[]]>([['']]);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
@@ -200,12 +205,18 @@ const ShowForm: React.FC = () => {
         </div>
 
         <div>
-          <CSVLink data={csvData} style={{ float: 'right' }}>
-            <Button color="primary" variant="contained">
-              <SaveAlt style={{ marginRight: 8 }} />
-              Baixar CSV
-            </Button>
-          </CSVLink>
+          {csvData !== [['']] ? (
+            <CSVLink data={csvData} style={{ float: 'right' }}>
+              <Button color="primary" variant="contained">
+                <SaveAlt style={{ marginRight: 8 }} />
+                Baixar CSV
+              </Button>
+            </CSVLink>
+          ) : (
+            <div style={{ float: 'right' }}>
+              <CircularProgress />
+            </div>
+          )}
 
           <Typography component="h1" variant="h4">
             Imagens

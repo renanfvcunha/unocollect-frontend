@@ -31,11 +31,15 @@ export function* login({ payload }: Payload): SagaIterator {
       password,
     });
 
-    if (!response.data.user.admin) {
+    /* if (!response.data.user.admin) {
       yield put(
         loginFailure('Aplicação acessível somente para administradores!'),
       );
       return;
+    } */
+
+    if (!response.data.user.admin) {
+      history.push('/fills');
     }
 
     const { token, user } = response.data;

@@ -77,10 +77,10 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
         error: true,
       };
 
-    case FormsTypes.EDIT_FORM_REQUEST:
+    case FormsTypes.UPDATE_FORM_REQUEST:
       return { ...state, loading: true, success: false, error: false };
 
-    case FormsTypes.EDIT_FORM_SUCCESS:
+    case FormsTypes.UPDATE_FORM_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -90,7 +90,7 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
         modalMsg: action.payload.successMsg,
       };
 
-    case FormsTypes.EDIT_FORM_FAILURE:
+    case FormsTypes.UPDATE_FORM_FAILURE:
       return {
         ...state,
         loading: false,
