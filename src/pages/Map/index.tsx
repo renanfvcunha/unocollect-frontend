@@ -5,9 +5,12 @@ import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
 
 import { ApplicationState } from '../../store';
 import setPageTitle from '../../store/modules/pageTitle/actions';
-import { getFormsRequest } from '../../store/modules/forms/actions';
 import {
-  setErrorFalse,
+  getFormsRequest,
+  setErrorFalse as setErrorFormsFalse,
+} from '../../store/modules/forms/actions';
+import {
+  setErrorFalse as setErrorUsersFalse,
   getUsersFormsRequest,
 } from '../../store/modules/users/actions';
 
@@ -24,22 +27,27 @@ const Map: React.FC = () => {
     (state: ApplicationState) => state.users.usersForms,
   );
 
-  const error = useSelector((state: ApplicationState) => state.users.error);
-  const modalMsg = useSelector(
+  const errorUsers = useSelector(
+    (state: ApplicationState) => state.users.error,
+  );
+  const modalMsgUsers = useSelector(
     (state: ApplicationState) => state.users.modalMsg,
   );
-  const modalTitle = useSelector(
+  const modalTitleUsers = useSelector(
     (state: ApplicationState) => state.users.modalTitle,
+  );
+  const errorForms = useSelector(
+    (state: ApplicationState) => state.forms.error,
+  );
+  const modalMsgForms = useSelector(
+    (state: ApplicationState) => state.forms.modalMsg,
+  );
+  const modalTitleForms = useSelector(
+    (state: ApplicationState) => state.forms.modalTitle,
   );
 
   const [formState, setFormState] = useState(0);
   const [modalAlert, setModalAlert] = useState(false);
-
-  useEffect(() => {
-    dispatch(setPageTitle(title));
-
-    dispatch(getFormsRequest());
-  }, [dispatch]);
 
   const handleModalClose = () => {
     setModalAlert(false);
@@ -50,14 +58,19 @@ const Map: React.FC = () => {
   };
 
   useEffect(() => {
+    dispatch(setPageTitle(title));
+    dispatch(getFormsRequest());
     dispatch(getUsersFormsRequest(formState));
+  }, [dispatch, formState]);
 
-    if (error) {
+  useEffect(() => {
+    if (errorUsers || errorForms) {
       setModalAlert(true);
 
-      dispatch(setErrorFalse());
+      dispatch(setErrorUsersFalse());
+      dispatch(setErrorFormsFalse());
     }
-  }, [dispatch, formState, error]);
+  }, [dispatch, errorUsers, errorForms]);
 
   return (
     <main className={classes.content}>
@@ -75,11 +88,15 @@ const Map: React.FC = () => {
         <FormControl>
           <Select value={formState} onChange={handleChangeForm}>
             <MenuItem value={0}>Selecione um formulário</MenuItem>
-            {forms.map(form => (
-              <MenuItem key={form.id} value={form.id}>
-                {form.title}
-              </MenuItem>
-            ))}
+            {forms ? (
+              forms.map(form => (
+                <MenuItem key={form.id} value={form.id}>
+                  {form.title}
+                </MenuItem>
+              ))
+            ) : (
+              <div />
+            )}
           </Select>
         </FormControl>
       </div>
@@ -104,10 +121,15 @@ const Map: React.FC = () => {
               }
             >
               <Popup>
-                <Typography variant="body1" component="p">
+                <Typography variant="body1" component="span">
+                  Preenchimento: {userForm.id}
+                </Typography>
+                <br />
+                <Typography variant="body1" component="span">
                   Usuário: {userForm.created_by}
                 </Typography>
-                <Typography variant="body1" component="p">
+                <br />
+                <Typography variant="body1" component="span">
                   Criado em: {userForm.created_at}
                 </Typography>
               </Popup>
@@ -119,8 +141,8 @@ const Map: React.FC = () => {
       <ModalAlert
         open={modalAlert}
         close={handleModalClose}
-        title={modalTitle}
-        msg={modalMsg}
+        title={modalTitleUsers || modalTitleForms}
+        msg={modalMsgUsers || modalMsgForms}
       />
     </main>
   );
