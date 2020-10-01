@@ -1,5 +1,4 @@
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { blue, green } from '@material-ui/core/colors';
 
 export const useStyles = makeStyles(theme => ({
   toolbar: {

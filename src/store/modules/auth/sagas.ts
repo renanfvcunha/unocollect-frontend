@@ -31,15 +31,11 @@ export function* login({ payload }: Payload): SagaIterator {
       password,
     });
 
-    /* if (!response.data.user.admin) {
+    if (!response.data.user.admin) {
       yield put(
         loginFailure('Aplicação acessível somente para administradores!'),
       );
       return;
-    } */
-
-    if (!response.data.user.admin) {
-      history.push('/fills');
     }
 
     const { token, user } = response.data;
@@ -48,7 +44,13 @@ export function* login({ payload }: Payload): SagaIterator {
 
     yield put(loginSuccess(token, user));
   } catch (err) {
-    yield put(loginFailure(err.response.data.msg));
+    if (err.message === 'Network Error') {
+      yield put(loginFailure('Erro ao conectar ao servidor.'));
+    } else if (err.response) {
+      yield put(loginFailure(err.response.data.msg));
+    } else {
+      yield put(loginFailure(err));
+    }
   }
 }
 

@@ -10,8 +10,6 @@ import NewForm from './pages/Forms/NewForm';
 import EditForm from './pages/Forms/EditForm';
 import ShowForm from './pages/Forms/ShowForm';
 import Map from './pages/Map';
-import Fills from './pages/Fills';
-import NewFill from './pages/Fills/NewFill';
 
 const Routes: React.FC = () => {
   return (
@@ -28,9 +26,6 @@ const Routes: React.FC = () => {
       <Route path="/forms" component={Forms} />
 
       <Route path="/map" component={Map} />
-
-      <Route path="/fills/add/:formId" component={NewFill} />
-      <Route path="/fills" component={Fills} />
     </Switch>
   );
 };
