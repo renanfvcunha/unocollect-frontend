@@ -3,7 +3,8 @@ import { AuthState, AuthTypes } from './types';
 
 const INITIAL_STATE: AuthState = {
   user: {},
-  token: undefined,
+  token: '',
+  invalidToken: false,
   logged: false,
   loading: false,
   error: false,
@@ -23,6 +24,7 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
         logged: true,
         user: action.payload.user,
         token: action.payload.token,
+        invalidToken: false,
         errorTitle: undefined,
         errorMsg: undefined,
       };
@@ -33,6 +35,30 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: true,
         errorTitle: 'Erro',
+        errorMsg: action.payload.errorMsg,
+      };
+
+    case AuthTypes.CHECK_TOKEN_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+      };
+
+    case AuthTypes.CHECK_TOKEN_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+      };
+
+    case AuthTypes.CHECK_TOKEN_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: true,
+        invalidToken: true,
+        errorTitle: 'Aviso',
         errorMsg: action.payload.errorMsg,
       };
 

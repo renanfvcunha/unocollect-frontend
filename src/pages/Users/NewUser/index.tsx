@@ -21,12 +21,17 @@ import {
   addUserRequest,
   setErrorFalse,
 } from '../../../store/modules/users/actions';
+import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import ModalAlert from '../../../components/ModalAlert';
 
 const NewUser: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const pageTitle = 'Usuários > Novo Usuário';
+
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
 
   const loading = useSelector((state: ApplicationState) => state.users.loading);
   const success = useSelector((state: ApplicationState) => state.users.success);
@@ -66,6 +71,14 @@ const NewUser: React.FC = () => {
 
     dispatch(addUserRequest(data));
   };
+
+  useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));

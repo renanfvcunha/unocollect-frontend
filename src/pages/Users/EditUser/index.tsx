@@ -22,13 +22,22 @@ import {
   updateUserRequest,
   setErrorFalse,
 } from '../../../store/modules/users/actions';
+import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import ModalAlert from '../../../components/ModalAlert';
+
+interface UserId {
+  id: string;
+}
 
 const EditUser: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { id } = useParams<UserId>();
   const pageTitle = 'Usuários > Editar Usuário';
+
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
 
   const loading = useSelector((state: ApplicationState) => state.users.loading);
   const success = useSelector((state: ApplicationState) => state.users.success);
@@ -86,12 +95,20 @@ const EditUser: React.FC = () => {
       };
     }
 
-    dispatch(updateUserRequest(id, data));
+    dispatch(updateUserRequest(Number(id), data));
   };
 
   useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
+
+  useEffect(() => {
     dispatch(setPageTitle(pageTitle));
-    dispatch(getUserRequest(id));
+    dispatch(getUserRequest(Number(id)));
   }, [dispatch, id]);
 
   useEffect(() => {

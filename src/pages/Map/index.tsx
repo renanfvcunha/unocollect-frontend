@@ -13,7 +13,7 @@ import {
   setErrorFalse as setErrorUsersFalse,
   getUsersFormsRequest,
 } from '../../store/modules/users/actions';
-
+import { checkTokenRequest, logout } from '../../store/modules/auth/actions';
 import useStyles from './styles';
 import ModalAlert from '../../components/ModalAlert';
 
@@ -21,6 +21,10 @@ const Map: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const title = 'Mapa';
+
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
 
   const forms = useSelector((state: ApplicationState) => state.forms.forms);
   const usersForms = useSelector(
@@ -56,6 +60,14 @@ const Map: React.FC = () => {
   const handleChangeForm = (e: ChangeEvent<HTMLSelectElement>) => {
     setFormState(Number(e.target.value));
   };
+
+  useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
 
   useEffect(() => {
     dispatch(setPageTitle(title));

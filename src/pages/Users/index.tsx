@@ -34,6 +34,7 @@ import {
   deleteUserRequest,
   setErrorFalse,
 } from '../../store/modules/users/actions';
+import { checkTokenRequest, logout } from '../../store/modules/auth/actions';
 import { useStyles, theme } from './styles';
 
 interface RowData {
@@ -50,6 +51,10 @@ const Users: React.FC = () => {
   const history = useHistory();
   const tableRef: RefObject<any> = createRef();
 
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
+
   const success = useSelector((state: ApplicationState) => state.users.success);
   const error = useSelector((state: ApplicationState) => state.users.error);
   const modalMsg = useSelector(
@@ -60,6 +65,8 @@ const Users: React.FC = () => {
   );
 
   const [modalConfirmation, setModalConfirmation] = useState(false);
+  const [modalRequestDataTitle, setModalRequestDataTitle] = useState('');
+  const [modalRequestDataMsg, setModalRequestDataMsg] = useState('');
   const [modalAlert, setModalAlert] = useState(false);
   const [userToRemove, setUserToRemove] = useState(0);
   const [name, setName] = useState('');
@@ -79,6 +86,20 @@ const Users: React.FC = () => {
     setModalConfirmation(false);
     setModalAlert(false);
   };
+
+  const dataRequestFailure = () => {
+    setModalAlert(true);
+    setModalRequestDataTitle('Erro');
+    setModalRequestDataMsg('Ocorreu um erro na requisição dos dados.');
+  };
+
+  useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
@@ -159,17 +180,22 @@ const Users: React.FC = () => {
               },
             ]}
             data={query =>
-              new Promise(resolve => {
+              new Promise((resolve, reject) => {
                 const url = `users?per_page=${
                   query.pageSize
                 }&page=${query.page + 1}&search=${query.search}`;
-                api.get(url).then(response => {
-                  resolve({
-                    data: response.data.users,
-                    page: response.data.page - 1,
-                    totalCount: response.data.total,
+                api
+                  .get(url)
+                  .then(response => {
+                    resolve({
+                      data: response.data.users,
+                      page: response.data.page - 1,
+                      totalCount: response.data.total,
+                    });
+                  })
+                  .catch(() => {
+                    reject(dataRequestFailure());
                   });
-                });
               })
             }
             actions={[
@@ -243,8 +269,8 @@ const Users: React.FC = () => {
         <ModalAlert
           open={modalAlert}
           close={handleModalClose}
-          title={modalTitle}
-          msg={modalMsg}
+          title={modalTitle || modalRequestDataTitle}
+          msg={modalMsg || modalRequestDataMsg}
         />
       </main>
     </ThemeProvider>

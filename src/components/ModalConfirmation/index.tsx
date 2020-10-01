@@ -90,7 +90,7 @@ ModalConfirmation.propTypes = {
   close: PropTypes.func.isRequired,
   confirmAction: PropTypes.func.isRequired,
   title: PropTypes.string,
-  msg: PropTypes.string.isRequired,
+  msg: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   cancel: PropTypes.string.isRequired,
   confirm: PropTypes.string.isRequired,
 };

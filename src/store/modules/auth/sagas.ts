@@ -6,7 +6,12 @@ import { AxiosResponse } from 'axios';
 
 import api from '../../../services/api';
 import { AuthTypes, User } from './types';
-import { loginSuccess, loginFailure } from './actions';
+import {
+  loginSuccess,
+  loginFailure,
+  checkTokenSuccess,
+  checkTokenFailure,
+} from './actions';
 
 interface Payload extends AnyAction {
   payload: {
@@ -45,11 +50,31 @@ export function* login({ payload }: Payload): SagaIterator {
     yield put(loginSuccess(token, user));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(loginFailure('Erro ao conectar ao servidor.'));
+      yield put(
+        loginFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
     } else if (err.response) {
       yield put(loginFailure(err.response.data.msg));
     } else {
       yield put(loginFailure(err));
+    }
+  }
+}
+
+export function* checkToken(): SagaIterator {
+  try {
+    yield call(api.get, 'checktoken');
+
+    yield put(checkTokenSuccess());
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(checkTokenSuccess());
+    } else if (err.response) {
+      yield put(checkTokenFailure(err.response.data.msg));
+    } else {
+      yield put(checkTokenFailure(err));
     }
   }
 }
@@ -71,5 +96,6 @@ export function setToken({ payload }: AnyAction): void {
 export default all([
   takeLatest('persist/REHYDRATE', setToken),
   takeLatest(AuthTypes.LOGIN_REQUEST, login),
+  takeLatest(AuthTypes.CHECK_TOKEN_REQUEST, checkToken),
   takeLatest(AuthTypes.LOGOUT, logout),
 ]);

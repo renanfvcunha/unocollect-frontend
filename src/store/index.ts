@@ -28,7 +28,7 @@ export interface ApplicationState {
  * Criando configuração do Redux Persist.
  */
 const persistConfig = {
-  key: 'datacollector',
+  key: 'unocollect',
   storage,
   whitelist: ['auth'],
 };

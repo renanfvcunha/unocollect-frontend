@@ -38,15 +38,24 @@ import {
   setErrorFalse as setErrorFormFalse,
 } from '../../../store/modules/forms/actions';
 import { Field } from '../../../store/modules/forms/types';
+import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import { useStyles, BtnStyle, Tooltips } from './styles';
 import ModalAlert from '../../../components/ModalAlert';
+
+interface FormId {
+  id: string;
+}
 
 const EditForm: React.FC = () => {
   const classes = useStyles();
   const pageTitle = 'Formulários > Editar Formulário';
   const dispatch = useDispatch();
   const history = useHistory();
-  const { id } = useParams();
+  const { id } = useParams<FormId>();
+
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
 
   const categories = useSelector(
     (state: ApplicationState) => state.categories.categories,
@@ -268,11 +277,19 @@ const EditForm: React.FC = () => {
       fields,
     };
 
-    dispatch(updateFormRequest(id, FormData));
+    dispatch(updateFormRequest(Number(id), FormData));
   };
 
   useEffect(() => {
-    dispatch(getFormRequest(id));
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
+
+  useEffect(() => {
+    dispatch(getFormRequest(Number(id)));
     dispatch(setPageTitle(pageTitle));
     dispatch(getCategoriesRequest());
   }, [id, dispatch]);

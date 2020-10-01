@@ -37,6 +37,7 @@ import {
   setErrorFalse as setErrorFormFalse,
 } from '../../../store/modules/forms/actions';
 import { Field } from '../../../store/modules/forms/types';
+import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import { useStyles, BtnStyle, Tooltips } from './styles';
 import ModalAlert from '../../../components/ModalAlert';
 
@@ -45,6 +46,10 @@ const NewForm: React.FC = () => {
   const pageTitle = 'Formulários > Novo Formulário';
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
 
   const categories = useSelector(
     (state: ApplicationState) => state.categories.categories,
@@ -266,6 +271,14 @@ const NewForm: React.FC = () => {
 
     dispatch(addFormRequest(FormData));
   };
+
+  useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));

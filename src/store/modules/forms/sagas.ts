@@ -41,7 +41,11 @@ export function* addForm({ payload }: IForm): SagaIterator {
     yield put(addFormSuccess(response.data.msg));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(addFormFailure('Erro ao conectar ao servidor.'));
+      yield put(
+        addFormFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
     } else if (err.response) {
       yield put(addFormFailure(err.response.data.msg));
     } else {
@@ -62,7 +66,7 @@ export function* getForms(): SagaIterator {
     if (err.message === 'Network Error') {
       yield put(
         getFormsFailure(
-          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte',
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
     } else if (err.response) {
@@ -82,8 +86,17 @@ export function* getForm({ payload }: AnyAction): SagaIterator {
 
     yield put(getFormSuccess(response.data));
   } catch (err) {
-    alert(err.response.data.msg);
-    yield put(getFormFailure(err.response.data.msg));
+    if (err.message === 'Network Error') {
+      yield put(
+        getFormsFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
+    } else if (err.response) {
+      yield put(getFormFailure(err.response.data.msg));
+    } else {
+      yield put(getFormFailure(err));
+    }
   }
 }
 
@@ -101,7 +114,11 @@ export function* editForm({ payload }: IForm): SagaIterator {
     yield put(updateFormSuccess(response.data.msg));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(updateFormFailure('Erro ao conectar ao servidor.'));
+      yield put(
+        updateFormFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
     } else if (err.response) {
       yield put(updateFormFailure(err.response.data.msg));
     } else {

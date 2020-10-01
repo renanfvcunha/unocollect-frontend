@@ -25,7 +25,6 @@ import {
   Assignment,
   ExitToApp,
   Room,
-  Edit,
 } from '@material-ui/icons';
 
 import { ApplicationState } from '../../store';

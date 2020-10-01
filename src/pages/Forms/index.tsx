@@ -38,6 +38,7 @@ import {
 import ModalConfirmation from '../../components/ModalConfirmation';
 import ModalAlert from '../../components/ModalAlert';
 import { useStyles, theme } from './styles';
+import { checkTokenRequest, logout } from '../../store/modules/auth/actions';
 
 interface RowData {
   id: number;
@@ -55,6 +56,10 @@ const Forms: React.FC = () => {
   const pageTitle = 'Formulários';
   const tableRef: RefObject<any> = createRef();
 
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
+
   const success = useSelector((state: ApplicationState) => state.forms.success);
   const error = useSelector((state: ApplicationState) => state.forms.error);
   const modalMsg = useSelector(
@@ -66,6 +71,8 @@ const Forms: React.FC = () => {
 
   const [modalConfirmation, setModalConfirmation] = useState(false);
   const [modalAlert, setModalAlert] = useState(false);
+  const [modalRequestDataTitle, setModalRequestDataTitle] = useState('');
+  const [modalRequestDataMsg, setModalRequestDataMsg] = useState('');
   const [modalConfTitle, setModalConfTitle] = useState('');
   const [modalConfMsg, setModalConfMsg] = useState<JSX.Element>();
   const [modalConfActTxt, setModalConfActTxt] = useState('');
@@ -95,6 +102,12 @@ const Forms: React.FC = () => {
     }
   };
 
+  const dataRequestFailure = () => {
+    setModalAlert(true);
+    setModalRequestDataTitle('Erro');
+    setModalRequestDataMsg('Ocorreu um erro na requisição dos dados.');
+  };
+
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
     LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
@@ -108,6 +121,14 @@ const Forms: React.FC = () => {
       <ArrowDownward {...props} ref={ref} />
     )),
   };
+
+  useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
@@ -209,17 +230,22 @@ const Forms: React.FC = () => {
                 },
               ]}
               data={query =>
-                new Promise(resolve => {
+                new Promise((resolve, reject) => {
                   const url = `forms?per_page=${
                     query.pageSize
                   }&page=${query.page + 1}&search=${query.search}`;
-                  api.get(url).then(response => {
-                    resolve({
-                      data: response.data.forms,
-                      page: response.data.page - 1,
-                      totalCount: response.data.total,
+                  api
+                    .get(url)
+                    .then(response => {
+                      resolve({
+                        data: response.data.forms,
+                        page: response.data.page - 1,
+                        totalCount: response.data.total,
+                      });
+                    })
+                    .catch(() => {
+                      reject(dataRequestFailure());
                     });
-                  });
                 })
               }
               icons={tableIcons}
@@ -342,8 +368,8 @@ const Forms: React.FC = () => {
         <ModalAlert
           open={modalAlert}
           close={handleModalClose}
-          title={modalTitle}
-          msg={modalMsg}
+          title={modalTitle || modalRequestDataTitle}
+          msg={modalMsg || modalRequestDataMsg}
         />
       </main>
     </ThemeProvider>

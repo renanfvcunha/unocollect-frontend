@@ -33,9 +33,18 @@ import ModalImage from 'react-modal-image';
 import api from '../../../services/api';
 import { ApplicationState } from '../../../store';
 import setPageTitle from '../../../store/modules/pageTitle/actions';
-import { getFormRequest } from '../../../store/modules/forms/actions';
+import {
+  getFormRequest,
+  setErrorFalse,
+} from '../../../store/modules/forms/actions';
 import { getUsersImagesRequest } from '../../../store/modules/images/actions';
+import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import { useStyles, theme } from './styles';
+import ModalAlert from '../../../components/ModalAlert';
+
+interface FormId {
+  id: string;
+}
 
 interface TableColumns {
   title?: string;
@@ -43,12 +52,24 @@ interface TableColumns {
 }
 
 const ShowForm: React.FC = () => {
-  const { id } = useParams();
+  const { id } = useParams<FormId>();
   const classes = useStyles();
   const pageTitle = 'Formulários > Visualizar Formulário';
   const dispatch = useDispatch();
   const tableRef: RefObject<any> = createRef();
 
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
+
+  const success = useSelector((state: ApplicationState) => state.forms.success);
+  const error = useSelector((state: ApplicationState) => state.forms.error);
+  const modalMsg = useSelector(
+    (state: ApplicationState) => state.forms.modalMsg,
+  );
+  const modalTitle = useSelector(
+    (state: ApplicationState) => state.forms.modalTitle,
+  );
   const formTitle = useSelector(
     (state: ApplicationState) => state.forms.form.title,
   );
@@ -60,13 +81,42 @@ const ShowForm: React.FC = () => {
   );
 
   const [tableColumns, setTableColumns] = useState<TableColumns[]>([]);
+  const [modalAlert, setModalAlert] = useState(false);
+  const [modalRequestDataTitle, setModalRequestDataTitle] = useState('');
+  const [modalRequestDataMsg, setModalRequestDataMsg] = useState('');
   const [csvData, setCsvData] = useState<[string[]]>([['']]);
+
+  const handleModalClose = () => {
+    setModalAlert(false);
+  };
+
+  const dataRequestFailure = () => {
+    setModalAlert(true);
+    setModalRequestDataTitle('Erro');
+    setModalRequestDataMsg('Ocorreu um erro na requisição dos dados.');
+  };
+
+  useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
 
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
-    dispatch(getFormRequest(id));
-    dispatch(getUsersImagesRequest(id));
+    dispatch(getFormRequest(Number(id)));
+    dispatch(getUsersImagesRequest(Number(id)));
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (error || success) {
+      setModalAlert(true);
+
+      dispatch(setErrorFalse());
+    }
+  }, [error, success, dispatch]);
 
   useEffect(() => {
     if (fields) {
@@ -146,7 +196,7 @@ const ShowForm: React.FC = () => {
             columns={tableColumns}
             tableRef={tableRef}
             data={query =>
-              new Promise(resolve => {
+              new Promise((resolve, reject) => {
                 api
                   .get(
                     `fills/${id}/?per_page=${query.pageSize}&page=${query.page +
@@ -158,6 +208,9 @@ const ShowForm: React.FC = () => {
                       page: response.data.page - 1,
                       totalCount: response.data.totalCount,
                     });
+                  })
+                  .catch(() => {
+                    reject(dataRequestFailure());
                   });
               })
             }
@@ -189,7 +242,7 @@ const ShowForm: React.FC = () => {
                 isFreeAction: true,
                 onClick: () => {
                   tableRef.current.onQueryChange();
-                  dispatch(getUsersImagesRequest(id));
+                  dispatch(getUsersImagesRequest(Number(id)));
                 },
               },
             ]}
@@ -252,6 +305,13 @@ const ShowForm: React.FC = () => {
             </Typography>
           )}
         </div>
+
+        <ModalAlert
+          open={modalAlert}
+          close={handleModalClose}
+          title={modalTitle || modalRequestDataTitle}
+          msg={modalMsg || modalRequestDataMsg}
+        />
       </main>
     </ThemeProvider>
   );

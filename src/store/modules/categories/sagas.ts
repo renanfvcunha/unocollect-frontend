@@ -11,7 +11,6 @@ import {
   addCategorySuccess,
   addCategoryFailure,
 } from './actions';
-import tron from '../../../config/ReactotronConfig';
 
 interface Msg {
   msg: string;
@@ -29,9 +28,6 @@ export function* getCategories(): SagaIterator {
 
 export function* addCategory({ payload }: AnyAction): SagaIterator {
   try {
-    if (tron.log) {
-      tron.log(payload);
-    }
     const response: AxiosResponse<Msg> = yield call(
       api.post,
       'categories',

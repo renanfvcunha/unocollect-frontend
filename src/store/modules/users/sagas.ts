@@ -36,7 +36,11 @@ export function* addUser({ payload }: Payload): SagaIterator {
     yield put(addUserSuccess(response.data.msg));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(addUserFailure('Erro ao conectar ao servidor.'));
+      yield put(
+        addUserFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
     } else if (err.response) {
       yield put(addUserFailure(err.response.data.msg));
     } else {
@@ -52,7 +56,11 @@ export function* getUser({ payload }: AnyAction): SagaIterator {
     yield put(getUserSuccess(response.data));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(getUserFailure('Erro ao conectar ao servidor.'));
+      yield put(
+        getUserFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
     } else if (err.response) {
       yield put(getUserFailure(err.response.data.msg));
     } else {
@@ -72,7 +80,11 @@ export function* updateUser({ payload }: AnyAction): SagaIterator {
     yield put(updateUserSuccess(response.data.msg));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(updateUserFailure('Erro ao conectar ao servidor.'));
+      yield put(
+        updateUserFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
     } else if (err.response) {
       yield put(updateUserFailure(err.response.data.msg));
     } else {
@@ -88,7 +100,11 @@ export function* deleteUser({ payload }: AnyAction): SagaIterator {
     yield put(deleteUserSuccess(response.data.msg));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(deleteUserFailure('Erro ao conectar ao servidor.'));
+      yield put(
+        deleteUserFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
     } else if (err.response) {
       yield put(deleteUserFailure(err.response.data.msg));
     } else {
@@ -104,7 +120,11 @@ export function* getUsersForms({ payload }: AnyAction): SagaIterator {
     yield put(getUsersFormsSuccess(response.data));
   } catch (err) {
     if (err.message === 'Network Error') {
-      yield put(getUsersFormsFailure('Erro ao conectar ao servidor.'));
+      yield put(
+        getUsersFormsFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
     } else if (err.response) {
       yield put(getUsersFormsFailure(err.response.data.msg));
     } else {
