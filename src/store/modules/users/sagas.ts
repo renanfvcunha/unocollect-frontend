@@ -17,8 +17,9 @@ import {
   getUsersFormsFailure,
 } from './actions';
 
-interface Payload extends AnyAction {
+interface UserPayload extends AnyAction {
   payload: {
+    id?: number;
     data: User;
   };
 }
@@ -29,7 +30,7 @@ interface Response {
   };
 }
 
-export function* addUser({ payload }: Payload): SagaIterator {
+export function* addUser({ payload }: UserPayload): SagaIterator {
   try {
     const response: Response = yield call(api.post, 'users', payload.data);
 
@@ -69,7 +70,7 @@ export function* getUser({ payload }: AnyAction): SagaIterator {
   }
 }
 
-export function* updateUser({ payload }: AnyAction): SagaIterator {
+export function* updateUser({ payload }: UserPayload): SagaIterator {
   try {
     const response: Response = yield call(
       api.put,

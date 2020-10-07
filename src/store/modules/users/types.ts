@@ -29,6 +29,7 @@ export interface User {
   id?: number;
   name?: string;
   username?: string;
+  groups?: number[];
   admin?: boolean;
   password?: string;
   passwordConf?: string;

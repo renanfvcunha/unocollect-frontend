@@ -40,6 +40,11 @@ export const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     width: '40%',
   },
+  radioButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   margin: {
     margin: theme.spacing(1),
   },

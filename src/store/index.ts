@@ -10,6 +10,7 @@ import { FormsState } from './modules/forms/types';
 import { FillsState } from './modules/fills/types';
 import { CategoriesState } from './modules/categories/types';
 import { ImagesState } from './modules/images/types';
+import { GroupsState } from './modules/groups/types';
 import tron from '../config/ReactotronConfig';
 import rootReducer from './modules/rootReducer';
 import rootSaga from './modules/rootSaga';
@@ -22,6 +23,7 @@ export interface ApplicationState {
   fills: FillsState;
   categories: CategoriesState;
   images: ImagesState;
+  groups: GroupsState;
 }
 
 /**

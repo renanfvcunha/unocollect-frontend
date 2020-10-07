@@ -1,5 +1,11 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  ChangeEvent,
+  FormEvent,
+} from 'react';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Button,
@@ -7,9 +13,12 @@ import {
   Typography,
   FormControl,
   TextField,
-  Select,
-  MenuItem,
-  InputLabel,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormGroup,
+  Checkbox,
   CircularProgress,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
@@ -22,11 +31,17 @@ import {
   updateUserRequest,
   setErrorFalse,
 } from '../../../store/modules/users/actions';
+import { getGroupsRequest } from '../../../store/modules/groups/actions';
 import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import ModalAlert from '../../../components/ModalAlert';
+import tron from '../../../config/ReactotronConfig';
 
 interface UserId {
   id: string;
+}
+
+interface UserGroupsChecked {
+  checked: boolean;
 }
 
 const EditUser: React.FC = () => {
@@ -34,6 +49,7 @@ const EditUser: React.FC = () => {
   const dispatch = useDispatch();
   const { id } = useParams<UserId>();
   const pageTitle = 'Usuários > Editar Usuário';
+  const history = useHistory();
 
   const invalidToken = useSelector(
     (state: ApplicationState) => state.auth.invalidToken,
@@ -42,6 +58,7 @@ const EditUser: React.FC = () => {
   const loading = useSelector((state: ApplicationState) => state.users.loading);
   const success = useSelector((state: ApplicationState) => state.users.success);
   const error = useSelector((state: ApplicationState) => state.users.error);
+  const groups = useSelector((state: ApplicationState) => state.groups.groups);
   const modalMsg = useSelector(
     (state: ApplicationState) => state.users.modalMsg,
   );
@@ -59,20 +76,64 @@ const EditUser: React.FC = () => {
   const storedAdmin = useSelector(
     (state: ApplicationState) => state.users.user.admin,
   );
+  const storedGroups = useSelector(
+    (state: ApplicationState) => state.users.user.groups,
+  );
 
   const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [admin, setAdmin] = useState('0');
+  const [userGroups, setUserGroups] = useState<number[]>([]);
+  const [userGroupsChecked, setUserGroupsChecked] = useState<
+    UserGroupsChecked[]
+  >([]);
   const [password, setPassword] = useState('');
   const [passwordConf, setPasswordConf] = useState('');
+
+  const navBack = useCallback(() => {
+    if (success && !modalOpen) {
+      history.push('/users');
+    }
+  }, [success, modalOpen, history]);
 
   const handleModalClose = () => {
     setModalOpen(false);
   };
 
-  const handleSelectAdmin = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeAdmin = (e: ChangeEvent<HTMLInputElement>) => {
     setAdmin(e.target.value);
+  };
+
+  const handleCheckGroup = (
+    e: ChangeEvent<HTMLInputElement>,
+    groupId: number,
+    i: number,
+  ) => {
+    const userGroupsAux = userGroups;
+    const userGroupsToCheck = [...userGroupsChecked];
+
+    const groupExists = userGroupsAux.find(group => group === groupId);
+
+    if (groupExists) {
+      const groupToRemove = userGroupsAux.findIndex(group => group === groupId);
+      userGroupsAux.splice(groupToRemove, 1);
+    } else {
+      userGroupsAux.push(groupId);
+    }
+
+    const newCheck = {
+      checked: e.target.checked,
+    };
+
+    userGroupsToCheck[i] = newCheck;
+
+    setUserGroups(userGroupsAux);
+    setUserGroupsChecked(userGroupsToCheck);
+
+    if (tron.log) {
+      tron.log(userGroups);
+    }
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -84,6 +145,7 @@ const EditUser: React.FC = () => {
         name,
         username,
         admin: admin === '1',
+        groups: userGroups,
         password,
         passwordConf,
       };
@@ -92,6 +154,7 @@ const EditUser: React.FC = () => {
         name,
         username,
         admin: admin === '1',
+        groups: userGroups,
       };
     }
 
@@ -109,23 +172,46 @@ const EditUser: React.FC = () => {
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
     dispatch(getUserRequest(Number(id)));
+    dispatch(getGroupsRequest());
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (error || success) {
+    const userGroupsToSet = groups.map(group => {
+      const userGrouped = storedGroups?.find(
+        storedGroup => storedGroup === group.id,
+      );
+
+      if (userGrouped) {
+        return {
+          checked: true,
+        };
+      }
+
+      return {
+        checked: false,
+      };
+    });
+    setUserGroupsChecked(userGroupsToSet);
+  }, [groups, storedGroups]);
+
+  useEffect(() => {
+    if (storedName && storedUsername && storedGroups) {
+      setName(storedName);
+      setUsername(storedUsername);
+      setAdmin(storedAdmin ? '1' : '0');
+      setUserGroups(storedGroups);
+    }
+  }, [storedName, storedUsername, storedAdmin, storedGroups]);
+
+  useEffect(() => {
+    navBack();
+
+    if (error) {
       setModalOpen(true);
 
       dispatch(setErrorFalse());
     }
-  }, [error, success, dispatch]);
-
-  useEffect(() => {
-    if (storedName && storedUsername) {
-      setName(storedName);
-      setUsername(storedUsername);
-      setAdmin(storedAdmin ? '1' : '0');
-    }
-  }, [storedName, storedUsername, storedAdmin]);
+  }, [navBack, error, success, dispatch]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -161,24 +247,60 @@ const EditUser: React.FC = () => {
                 onChange={e => setUsername(e.target.value)}
               />
 
-              <FormControl className={classes.field}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  Admin
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  value={admin}
-                  onChange={handleSelectAdmin}
-                >
-                  <MenuItem value="1">Sim</MenuItem>
-                  <MenuItem value="0">Não</MenuItem>
-                </Select>
+              <FormControl component="fieldset" className={classes.field}>
+                <FormLabel component="legend">Admin</FormLabel>
+                <RadioGroup value={admin} onChange={handleChangeAdmin}>
+                  <div className={classes.radioButtons}>
+                    <FormControlLabel
+                      value="0"
+                      control={<Radio color="primary" />}
+                      label="Não"
+                    />
+                    <FormControlLabel
+                      value="1"
+                      control={<Radio color="primary" />}
+                      label="Sim"
+                    />
+                  </div>
+                </RadioGroup>
+              </FormControl>
+
+              <FormControl
+                component="fieldset"
+                className={classes.field}
+                style={{ marginBottom: 0 }}
+              >
+                <FormLabel component="legend">Grupos</FormLabel>
+                {groups ? (
+                  <FormGroup>
+                    {groups.map((group, i) => (
+                      <FormControlLabel
+                        key={group.id}
+                        control={
+                          <Checkbox
+                            name={String(group.id)}
+                            color="primary"
+                            checked={
+                              userGroupsChecked[i]
+                                ? userGroupsChecked[i].checked
+                                : false
+                            }
+                            onChange={e => handleCheckGroup(e, group.id, i)}
+                          />
+                        }
+                        label={group.name}
+                      />
+                    ))}
+                  </FormGroup>
+                ) : (
+                  <Typography>Não há grupos para exibir.</Typography>
+                )}
               </FormControl>
 
               <TextField
                 label="Nova Senha"
                 className={classes.field}
+                style={{ marginTop: 0 }}
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
