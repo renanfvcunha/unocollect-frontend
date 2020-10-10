@@ -34,11 +34,6 @@ import {
 import { getGroupsRequest } from '../../../store/modules/groups/actions';
 import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import ModalAlert from '../../../components/ModalAlert';
-import tron from '../../../config/ReactotronConfig';
-
-interface UserId {
-  id: string;
-}
 
 interface UserGroupsChecked {
   checked: boolean;
@@ -47,7 +42,7 @@ interface UserGroupsChecked {
 const EditUser: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { id } = useParams<UserId>();
+  const { id } = useParams<{ id: string }>();
   const pageTitle = 'Usuários > Editar Usuário';
   const history = useHistory();
 
@@ -67,18 +62,7 @@ const EditUser: React.FC = () => {
   );
 
   // Getting User Data
-  const storedName = useSelector(
-    (state: ApplicationState) => state.users.user.name,
-  );
-  const storedUsername = useSelector(
-    (state: ApplicationState) => state.users.user.username,
-  );
-  const storedAdmin = useSelector(
-    (state: ApplicationState) => state.users.user.admin,
-  );
-  const storedGroups = useSelector(
-    (state: ApplicationState) => state.users.user.groups,
-  );
+  const user = useSelector((state: ApplicationState) => state.users.user);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState('');
@@ -130,10 +114,6 @@ const EditUser: React.FC = () => {
 
     setUserGroups(userGroupsAux);
     setUserGroupsChecked(userGroupsToCheck);
-
-    if (tron.log) {
-      tron.log(userGroups);
-    }
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -177,7 +157,7 @@ const EditUser: React.FC = () => {
 
   useEffect(() => {
     const userGroupsToSet = groups.map(group => {
-      const userGrouped = storedGroups?.find(
+      const userGrouped = user.groups?.find(
         storedGroup => storedGroup === group.id,
       );
 
@@ -192,16 +172,16 @@ const EditUser: React.FC = () => {
       };
     });
     setUserGroupsChecked(userGroupsToSet);
-  }, [groups, storedGroups]);
+  }, [groups, user.groups]);
 
   useEffect(() => {
-    if (storedName && storedUsername && storedGroups) {
-      setName(storedName);
-      setUsername(storedUsername);
-      setAdmin(storedAdmin ? '1' : '0');
-      setUserGroups(storedGroups);
+    if (user.name && user.username && user.groups) {
+      setName(user.name);
+      setUsername(user.username);
+      setAdmin(user.admin ? '1' : '0');
+      setUserGroups(user.groups);
     }
-  }, [storedName, storedUsername, storedAdmin, storedGroups]);
+  }, [user.name, user.username, user.admin, user.groups]);
 
   useEffect(() => {
     navBack();

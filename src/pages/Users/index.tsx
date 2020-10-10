@@ -178,6 +178,12 @@ const Users: React.FC = () => {
                 type: 'string',
                 align: 'left',
               },
+              {
+                title: 'Grupos',
+                field: 'groups',
+                type: 'string',
+                align: 'left',
+              },
             ]}
             data={query =>
               new Promise((resolve, reject) => {

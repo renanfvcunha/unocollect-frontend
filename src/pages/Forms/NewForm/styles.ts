@@ -47,6 +47,10 @@ export const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
+  groupsBox: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
   btnAdd: {
     position: 'absolute',
     left: '25%',

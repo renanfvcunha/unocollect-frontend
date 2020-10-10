@@ -42,17 +42,13 @@ import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import { useStyles, theme } from './styles';
 import ModalAlert from '../../../components/ModalAlert';
 
-interface FormId {
-  id: string;
-}
-
 interface TableColumns {
   title?: string;
   field?: string;
 }
 
 const ShowForm: React.FC = () => {
-  const { id } = useParams<FormId>();
+  const { id } = useParams<{ id: string }>();
   const classes = useStyles();
   const pageTitle = 'Formulários > Visualizar Formulário';
   const dispatch = useDispatch();

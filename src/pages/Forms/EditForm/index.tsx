@@ -22,6 +22,8 @@ import {
   CircularProgress,
   Checkbox,
   FormControlLabel,
+  FormLabel,
+  FormGroup,
 } from '@material-ui/core';
 import { ArrowBack, Add, Remove, Close } from '@material-ui/icons';
 
@@ -32,6 +34,7 @@ import {
   addCategoryRequest,
   setErrorFalse as setErrorCatFalse,
 } from '../../../store/modules/categories/actions';
+import { getGroupsRequest } from '../../../store/modules/groups/actions';
 import {
   getFormRequest,
   updateFormRequest,
@@ -42,8 +45,8 @@ import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import { useStyles, BtnStyle, Tooltips } from './styles';
 import ModalAlert from '../../../components/ModalAlert';
 
-interface FormId {
-  id: string;
+interface UserGroupsChecked {
+  checked: boolean;
 }
 
 const EditForm: React.FC = () => {
@@ -51,7 +54,7 @@ const EditForm: React.FC = () => {
   const pageTitle = 'Formulários > Editar Formulário';
   const dispatch = useDispatch();
   const history = useHistory();
-  const { id } = useParams<FormId>();
+  const { id } = useParams<{ id: string }>();
 
   const invalidToken = useSelector(
     (state: ApplicationState) => state.auth.invalidToken,
@@ -60,6 +63,7 @@ const EditForm: React.FC = () => {
   const categories = useSelector(
     (state: ApplicationState) => state.categories.categories,
   );
+  const groups = useSelector((state: ApplicationState) => state.groups.groups);
   const form = useSelector((state: ApplicationState) => state.forms.form);
 
   const loadingCat = useSelector(
@@ -97,6 +101,10 @@ const EditForm: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState(0);
+  const [formGroups, setFormGroups] = useState<number[]>([]);
+  const [formGroupsChecked, setFormGroupsChecked] = useState<
+    UserGroupsChecked[]
+  >([]);
   const [fields, setFields] = useState<Field[]>([
     {
       name: '',
@@ -130,6 +138,33 @@ const EditForm: React.FC = () => {
     dispatch(addCategoryRequest(catName));
     setShowAddCat(false);
     setCatName('');
+  };
+
+  const handleCheckGroup = (
+    e: ChangeEvent<HTMLInputElement>,
+    groupId: number,
+    i: number,
+  ) => {
+    const formGroupsAux = formGroups;
+    const formGroupsToCheck = [...formGroupsChecked];
+
+    const groupExists = formGroupsAux.find(group => group === groupId);
+
+    if (groupExists) {
+      const groupToRemove = formGroupsAux.findIndex(group => group === groupId);
+      formGroupsAux.splice(groupToRemove, 1);
+    } else {
+      formGroupsAux.push(groupId);
+    }
+
+    const newCheck = {
+      checked: e.target.checked,
+    };
+
+    formGroupsToCheck[i] = newCheck;
+
+    setFormGroups(formGroupsAux);
+    setFormGroupsChecked(formGroupsToCheck);
   };
 
   const handleAddField = () => {
@@ -268,16 +303,17 @@ const EditForm: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    const FormData = {
+    const formData = {
       title,
       description,
       category: {
         id: category === 0 ? null : category,
       },
+      groups: formGroups,
       fields,
     };
 
-    dispatch(updateFormRequest(Number(id), FormData));
+    dispatch(updateFormRequest(Number(id), formData));
   };
 
   useEffect(() => {
@@ -292,7 +328,27 @@ const EditForm: React.FC = () => {
     dispatch(getFormRequest(Number(id)));
     dispatch(setPageTitle(pageTitle));
     dispatch(getCategoriesRequest());
+    dispatch(getGroupsRequest());
   }, [id, dispatch]);
+
+  useEffect(() => {
+    const userGroupsToSet = groups.map(group => {
+      const formGrouped = form.groups?.find(
+        storedGroup => storedGroup === group.id,
+      );
+
+      if (formGrouped) {
+        return {
+          checked: true,
+        };
+      }
+
+      return {
+        checked: false,
+      };
+    });
+    setFormGroupsChecked(userGroupsToSet);
+  }, [groups, form.groups]);
 
   useEffect(() => {
     navBack();
@@ -310,6 +366,7 @@ const EditForm: React.FC = () => {
     if (form.title) {
       setTitle(form.title);
       setDescription(form.description || '');
+      setFormGroups(form.groups || []);
     }
 
     if (form.category) {
@@ -450,6 +507,38 @@ const EditForm: React.FC = () => {
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                 />
+
+                <FormControl
+                  component="fieldset"
+                  className={classes.margin}
+                  style={{ marginBottom: 0 }}
+                >
+                  <FormLabel component="legend">Grupos</FormLabel>
+                  {groups ? (
+                    <FormGroup className={classes.groupsBox}>
+                      {groups.map((group, i) => (
+                        <FormControlLabel
+                          key={group.id}
+                          control={
+                            <Checkbox
+                              name={String(group.id)}
+                              color="primary"
+                              checked={
+                                formGroupsChecked[i]
+                                  ? formGroupsChecked[i].checked
+                                  : false
+                              }
+                              onChange={e => handleCheckGroup(e, group.id, i)}
+                            />
+                          }
+                          label={group.name}
+                        />
+                      ))}
+                    </FormGroup>
+                  ) : (
+                    <Typography>Não há grupos para exibir.</Typography>
+                  )}
+                </FormControl>
               </div>
 
               <Divider style={{ marginTop: 24 }} />

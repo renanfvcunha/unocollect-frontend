@@ -184,12 +184,12 @@ const Forms: React.FC = () => {
                   type: 'string',
                   align: 'left',
                   headerStyle: {
-                    width: '30%',
-                    maxWidth: '30%',
+                    width: '20%',
+                    maxWidth: '20%',
                   },
                   cellStyle: {
-                    width: '30%',
-                    maxWidth: '30%',
+                    width: '20%',
+                    maxWidth: '20%',
                   },
                 },
                 {
@@ -208,6 +208,18 @@ const Forms: React.FC = () => {
                   },
                   cellStyle: {
                     maxWidth: '10%',
+                  },
+                },
+                {
+                  title: 'Grupos',
+                  field: 'groups',
+                  type: 'string',
+                  align: 'left',
+                  headerStyle: {
+                    maxWidth: '20%',
+                  },
+                  cellStyle: {
+                    maxWidth: '20%',
                   },
                 },
                 {

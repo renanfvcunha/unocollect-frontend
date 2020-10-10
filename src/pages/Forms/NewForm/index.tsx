@@ -22,6 +22,8 @@ import {
   CircularProgress,
   Checkbox,
   FormControlLabel,
+  FormLabel,
+  FormGroup,
 } from '@material-ui/core';
 import { ArrowBack, Add, Remove, Close } from '@material-ui/icons';
 
@@ -32,6 +34,7 @@ import {
   addCategoryRequest,
   setErrorFalse as setErrorCatFalse,
 } from '../../../store/modules/categories/actions';
+import { getGroupsRequest } from '../../../store/modules/groups/actions';
 import {
   addFormRequest,
   setErrorFalse as setErrorFormFalse,
@@ -40,6 +43,10 @@ import { Field } from '../../../store/modules/forms/types';
 import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import { useStyles, BtnStyle, Tooltips } from './styles';
 import ModalAlert from '../../../components/ModalAlert';
+
+interface UserGroupsChecked {
+  checked: boolean;
+}
 
 const NewForm: React.FC = () => {
   const classes = useStyles();
@@ -54,6 +61,7 @@ const NewForm: React.FC = () => {
   const categories = useSelector(
     (state: ApplicationState) => state.categories.categories,
   );
+  const groups = useSelector((state: ApplicationState) => state.groups.groups);
   const loadingCat = useSelector(
     (state: ApplicationState) => state.categories.loading,
   );
@@ -89,6 +97,10 @@ const NewForm: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState(0);
+  const [formGroups, setFormGroups] = useState<number[]>([]);
+  const [formGroupsChecked, setFormGroupsChecked] = useState<
+    UserGroupsChecked[]
+  >([]);
   const [fields, setFields] = useState<Field[]>([
     {
       name: '',
@@ -122,6 +134,33 @@ const NewForm: React.FC = () => {
     dispatch(addCategoryRequest(catName));
     setShowAddCat(false);
     setCatName('');
+  };
+
+  const handleCheckGroup = (
+    e: ChangeEvent<HTMLInputElement>,
+    groupId: number,
+    i: number,
+  ) => {
+    const formGroupsAux = formGroups;
+    const formGroupsToCheck = [...formGroupsChecked];
+
+    const groupExists = formGroupsAux.find(group => group === groupId);
+
+    if (groupExists) {
+      const groupToRemove = formGroupsAux.findIndex(group => group === groupId);
+      formGroupsAux.splice(groupToRemove, 1);
+    } else {
+      formGroupsAux.push(groupId);
+    }
+
+    const newCheck = {
+      checked: e.target.checked,
+    };
+
+    formGroupsToCheck[i] = newCheck;
+
+    setFormGroups(formGroupsAux);
+    setFormGroupsChecked(formGroupsToCheck);
   };
 
   const handleAddField = () => {
@@ -260,16 +299,17 @@ const NewForm: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    const FormData = {
+    const formData = {
       title,
       description,
       category: {
         id: category === 0 ? null : category,
       },
+      groups: formGroups,
       fields,
     };
 
-    dispatch(addFormRequest(FormData));
+    dispatch(addFormRequest(formData));
   };
 
   useEffect(() => {
@@ -283,7 +323,15 @@ const NewForm: React.FC = () => {
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
     dispatch(getCategoriesRequest());
+    dispatch(getGroupsRequest());
   }, [dispatch]);
+
+  useEffect(() => {
+    const formGroupsToSet = groups.map(() => ({
+      checked: false,
+    }));
+    setFormGroupsChecked(formGroupsToSet);
+  }, [groups]);
 
   useEffect(() => {
     navBack();
@@ -413,6 +461,38 @@ const NewForm: React.FC = () => {
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                 />
+
+                <FormControl
+                  component="fieldset"
+                  className={classes.margin}
+                  style={{ marginBottom: 0 }}
+                >
+                  <FormLabel component="legend">Grupos</FormLabel>
+                  {groups ? (
+                    <FormGroup className={classes.groupsBox}>
+                      {groups.map((group, i) => (
+                        <FormControlLabel
+                          key={group.id}
+                          control={
+                            <Checkbox
+                              name={String(group.id)}
+                              color="primary"
+                              checked={
+                                formGroupsChecked[i]
+                                  ? formGroupsChecked[i].checked
+                                  : false
+                              }
+                              onChange={e => handleCheckGroup(e, group.id, i)}
+                            />
+                          }
+                          label={group.name}
+                        />
+                      ))}
+                    </FormGroup>
+                  ) : (
+                    <Typography>Não há grupos para exibir.</Typography>
+                  )}
+                </FormControl>
               </div>
 
               <Divider style={{ marginTop: 24 }} />

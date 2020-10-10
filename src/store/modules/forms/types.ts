@@ -35,6 +35,7 @@ export interface Form {
   title?: string;
   description?: string;
   category?: Category;
+  groups?: number[];
   created_at?: Date;
   fields?: Field[];
 }
