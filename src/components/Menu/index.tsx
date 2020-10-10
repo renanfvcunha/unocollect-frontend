@@ -22,6 +22,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Group,
+  GroupOutlined,
   Assignment,
   ExitToApp,
   Room,
@@ -141,6 +142,17 @@ const Header: React.FC = () => {
                   <Assignment className={classes.icon} />
                 </ListItemIcon>
                 <ListItemText primary="Formulários" />
+              </ListItem>
+            </List>
+          </Link>
+
+          <Link to="/groups" className={classes.link}>
+            <List>
+              <ListItem button>
+                <ListItemIcon>
+                  <GroupOutlined className={classes.icon} />
+                </ListItemIcon>
+                <ListItemText primary="Grupos" />
               </ListItem>
             </List>
           </Link>

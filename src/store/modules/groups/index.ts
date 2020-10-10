@@ -61,6 +61,34 @@ const reducer: Reducer<GroupsState> = (state = INITIAL_STATE, action) => {
         modalMsg: action.payload.errorMsg,
       };
 
+    case GroupsTypes.DELETE_GROUP_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+
+    case GroupsTypes.DELETE_GROUP_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
+      };
+
+    case GroupsTypes.DELETE_GROUP_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
+      };
+
     case GroupsTypes.SET_ERROR_FALSE:
       return {
         ...state,
