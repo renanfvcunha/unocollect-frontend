@@ -10,6 +10,8 @@ import {
   getGroupsFailure,
   addGroupSuccess,
   addGroupFailure,
+  updateGroupSuccess,
+  updateGroupFailure,
   deleteGroupSuccess,
   deleteGroupFailure,
 } from './actions';
@@ -31,7 +33,17 @@ export function* getGroups(): SagaIterator {
 
     yield put(getGroupsSuccess(response.data));
   } catch (err) {
-    yield put(getGroupsFailure(err.response.data.msg));
+    if (err.message === 'Network Error') {
+      yield put(
+        getGroupsFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
+    } else if (err.response) {
+      yield put(getGroupsFailure(err.response.data.msg));
+    } else {
+      yield put(getGroupsFailure(err));
+    }
   }
 }
 
@@ -43,7 +55,43 @@ export function* addGroup({ payload }: IGroup): SagaIterator {
 
     yield put(addGroupSuccess(response.data.msg));
   } catch (err) {
-    yield put(addGroupFailure(err.response.data.msg));
+    if (err.message === 'Network Error') {
+      yield put(
+        addGroupFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
+    } else if (err.response) {
+      yield put(addGroupFailure(err.response.data.msg));
+    } else {
+      yield put(addGroupFailure(err));
+    }
+  }
+}
+
+export function* updateGroup({ payload }: IGroup): SagaIterator {
+  try {
+    const response: AxiosResponse<Msg> = yield call(
+      api.put,
+      `groups/${payload.id}`,
+      {
+        name: payload.name,
+      },
+    );
+
+    yield put(updateGroupSuccess(response.data.msg));
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(
+        updateGroupFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
+    } else if (err.response) {
+      yield put(updateGroupFailure(err.response.data.msg));
+    } else {
+      yield put(updateGroupFailure(err));
+    }
   }
 }
 
@@ -56,12 +104,23 @@ export function* deleteGroup({ payload }: IGroup): SagaIterator {
 
     yield put(deleteGroupSuccess(response.data.msg));
   } catch (err) {
-    yield put(deleteGroupFailure(err.response.data.msg));
+    if (err.message === 'Network Error') {
+      yield put(
+        deleteGroupFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
+    } else if (err.response) {
+      yield put(deleteGroupFailure(err.response.data.msg));
+    } else {
+      yield put(deleteGroupFailure(err));
+    }
   }
 }
 
 export default all([
   takeLatest(GroupsTypes.GET_GROUPS_REQUEST, getGroups),
   takeLatest(GroupsTypes.ADD_GROUP_REQUEST, addGroup),
+  takeLatest(GroupsTypes.UPDATE_GROUP_REQUEST, updateGroup),
   takeLatest(GroupsTypes.DELETE_GROUP_REQUEST, deleteGroup),
 ]);

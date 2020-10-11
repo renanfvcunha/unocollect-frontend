@@ -89,7 +89,7 @@ const Forms: React.FC = () => {
     setModalAlert(false);
   };
 
-  const handleConfirmAction = async () => {
+  const handleConfirmAction = () => {
     if (modalConfActTxt === 'Ativar') {
       setModalConfirmation(false);
       dispatch(alterFormStatusRequest(formId, '1'));

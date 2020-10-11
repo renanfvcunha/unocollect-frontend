@@ -17,10 +17,13 @@ import { checkTokenRequest, logout } from '../../store/modules/auth/actions';
 import {
   getGroupsRequest,
   addGroupRequest,
+  updateGroupRequest,
   deleteGroupRequest,
+  setErrorFalse,
 } from '../../store/modules/groups/actions';
-import { useStyles, theme, btnActions, btnAddGroup } from './styles';
-import tron from '../../config/ReactotronConfig';
+import { useStyles, theme, btnActions, btnAction } from './styles';
+import ModalConfirmation from '../../components/ModalConfirmation';
+import ModalAlert from '../../components/ModalAlert';
 
 const Groups: React.FC = () => {
   const classes = useStyles();
@@ -36,19 +39,42 @@ const Groups: React.FC = () => {
     (state: ApplicationState) => state.groups.success,
   );
   const error = useSelector((state: ApplicationState) => state.groups.error);
+  const modalTitle = useSelector(
+    (state: ApplicationState) => state.groups.modalTitle,
+  );
+  const modalMsg = useSelector(
+    (state: ApplicationState) => state.groups.modalMsg,
+  );
   const loading = useSelector(
     (state: ApplicationState) => state.groups.loading,
   );
 
   const [showAddGroup, setShowAddGroup] = useState(false);
-  const [groupToAdd, setGroupToAdd] = useState('');
+  const [groupNameToAdd, setGroupNameToAdd] = useState('');
+  const [showEditGroup, setShowEditGroup] = useState(false);
+  const [groupToEdit, setGroupToEdit] = useState(0);
+  const [groupNameToEdit, setGroupNameToEdit] = useState('');
+  const [groupToRemove, setGroupToRemove] = useState(0);
+  const [groupNameToRemove, setGroupNameToRemove] = useState('');
+  const [modalConfirmation, setModalConfirmation] = useState(false);
+  const [modalAlert, setModalAlert] = useState(false);
 
-  const handleAddGroup = () => {
-    dispatch(addGroupRequest(groupToAdd));
+  const handleModalClose = () => {
+    setModalConfirmation(false);
+    setModalAlert(false);
   };
 
-  const handleDeleteGroup = (id: number) => {
-    dispatch(deleteGroupRequest(id));
+  const handleConfirmAction = () => {
+    setModalConfirmation(false);
+    dispatch(deleteGroupRequest(groupToRemove));
+  };
+
+  const handleAddGroup = () => {
+    dispatch(addGroupRequest(groupNameToAdd));
+  };
+
+  const handleEditGroup = () => {
+    dispatch(updateGroupRequest(groupToEdit, groupNameToEdit));
   };
 
   useEffect(() => {
@@ -68,8 +94,14 @@ const Groups: React.FC = () => {
     if (success) {
       dispatch(getGroupsRequest());
       setShowAddGroup(false);
+      setShowEditGroup(false);
     }
-  }, [success, dispatch]);
+
+    if (error) {
+      setModalAlert(true);
+      dispatch(setErrorFalse());
+    }
+  }, [success, error, dispatch]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -86,12 +118,17 @@ const Groups: React.FC = () => {
               className={classes.title}
             >
               Grupos
-              <ThemeProvider theme={btnAddGroup}>
+              <ThemeProvider theme={btnAction}>
                 <Tooltip
                   title="Adicionar Grupo"
                   aria-label="addGroup"
                   className={classes.addGroupBtn}
-                  onClick={() => setShowAddGroup(true)}
+                  onClick={() => {
+                    setShowAddGroup(true);
+                    if (showEditGroup) {
+                      setShowEditGroup(false);
+                    }
+                  }}
                 >
                   <Fab color="primary" size="small">
                     <Add />
@@ -105,7 +142,18 @@ const Groups: React.FC = () => {
                 groups.map(group => (
                   <Box key={group.id} className={classes.groupNameWithActions}>
                     <ThemeProvider theme={btnActions}>
-                      <Tooltip title="Editar Grupo" aria-label="edit">
+                      <Tooltip
+                        title="Editar Grupo"
+                        aria-label="edit"
+                        onClick={() => {
+                          setGroupToEdit(group.id);
+                          setGroupNameToEdit(group.name);
+                          setShowEditGroup(true);
+                          if (showAddGroup) {
+                            setShowAddGroup(false);
+                          }
+                        }}
+                      >
                         <Fab color="primary" size="small">
                           <Edit />
                         </Fab>
@@ -116,7 +164,11 @@ const Groups: React.FC = () => {
                       <Tooltip
                         title="Remover Grupo"
                         aria-label="remove"
-                        onClick={() => handleDeleteGroup(group.id)}
+                        onClick={() => {
+                          setModalConfirmation(true);
+                          setGroupToRemove(group.id);
+                          setGroupNameToRemove(group.name);
+                        }}
                       >
                         <Fab color="secondary" size="small">
                           <Delete />
@@ -128,9 +180,10 @@ const Groups: React.FC = () => {
               ) : (
                 <Typography>Ainda não há grupos cadastrados.</Typography>
               )}
+
               {showAddGroup ? (
                 <Box className={classes.addGroup}>
-                  <ThemeProvider theme={btnAddGroup}>
+                  <ThemeProvider theme={btnAction}>
                     <Tooltip
                       title="Cancelar"
                       aria-label="cancel"
@@ -144,12 +197,12 @@ const Groups: React.FC = () => {
                   <TextField
                     type="text"
                     name="name"
-                    label="Nome do Grupo"
+                    label="Adicionar Grupo"
                     className={classes.margin}
-                    value={groupToAdd}
-                    onChange={e => setGroupToAdd(e.target.value)}
+                    value={groupNameToAdd}
+                    onChange={e => setGroupNameToAdd(e.target.value)}
                   />
-                  <ThemeProvider theme={btnAddGroup}>
+                  <ThemeProvider theme={btnAction}>
                     <Tooltip
                       title="Adicionar"
                       aria-label="add"
@@ -164,10 +217,65 @@ const Groups: React.FC = () => {
               ) : (
                 <Box />
               )}
+
+              {showEditGroup ? (
+                <Box className={classes.addGroup}>
+                  <ThemeProvider theme={btnAction}>
+                    <Tooltip
+                      title="Cancelar"
+                      aria-label="cancel"
+                      onClick={() => setShowEditGroup(false)}
+                    >
+                      <Fab color="secondary" size="small">
+                        <Close />
+                      </Fab>
+                    </Tooltip>
+                  </ThemeProvider>
+                  <TextField
+                    type="text"
+                    name="name"
+                    label="Editar Grupo"
+                    className={classes.margin}
+                    value={groupNameToEdit}
+                    onChange={e => setGroupNameToEdit(e.target.value)}
+                  />
+                  <ThemeProvider theme={btnAction}>
+                    <Tooltip
+                      title="Salvar"
+                      aria-label="add"
+                      onClick={() => handleEditGroup()}
+                    >
+                      <Fab color="primary" size="small">
+                        <Done />
+                      </Fab>
+                    </Tooltip>
+                  </ThemeProvider>
+                </Box>
+              ) : (
+                <Box />
+              )}
+
               {loading ? <CircularProgress size={32} /> : <Box />}
             </Box>
           </Box>
         </Box>
+
+        <ModalConfirmation
+          open={modalConfirmation}
+          close={handleModalClose}
+          confirmAction={handleConfirmAction}
+          title="Alerta de Exclusão"
+          msg={`Deseja remover o grupo "${groupNameToRemove}"?`}
+          cancel="Cancelar"
+          confirm="Remover"
+        />
+
+        <ModalAlert
+          open={modalAlert}
+          close={handleModalClose}
+          title={modalTitle}
+          msg={modalMsg}
+        />
       </main>
     </ThemeProvider>
   );

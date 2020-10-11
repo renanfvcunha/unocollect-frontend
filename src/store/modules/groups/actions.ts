@@ -23,6 +23,16 @@ export const addGroupFailure = (errorMsg: string): Action =>
   action(GroupsTypes.ADD_GROUP_FAILURE, { errorMsg });
 
 // Delete Group
+export const updateGroupRequest = (id: number, name: string): Action =>
+  action(GroupsTypes.UPDATE_GROUP_REQUEST, { id, name });
+
+export const updateGroupSuccess = (successMsg: string): Action =>
+  action(GroupsTypes.UPDATE_GROUP_SUCCESS, { successMsg });
+
+export const updateGroupFailure = (errorMsg: string): Action =>
+  action(GroupsTypes.UPDATE_GROUP_FAILURE, { errorMsg });
+
+// Delete Group
 export const deleteGroupRequest = (id: number): Action =>
   action(GroupsTypes.DELETE_GROUP_REQUEST, { id });
 

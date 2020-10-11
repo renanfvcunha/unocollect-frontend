@@ -85,7 +85,7 @@ export const btnActions = createMuiTheme({
   },
 });
 
-export const btnAddGroup = createMuiTheme({
+export const btnAction = createMuiTheme({
   palette: {
     primary: {
       main: blue['800'],
