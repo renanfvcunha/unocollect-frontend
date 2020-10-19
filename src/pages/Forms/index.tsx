@@ -12,6 +12,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { ThemeProvider, Button } from '@material-ui/core';
 import {
   Assignment,
+  Category,
   Clear,
   ChevronRight,
   FirstPage,
@@ -37,8 +38,8 @@ import {
 } from '../../store/modules/forms/actions';
 import ModalConfirmation from '../../components/ModalConfirmation';
 import ModalAlert from '../../components/ModalAlert';
-import { useStyles, theme } from './styles';
 import { checkTokenRequest, logout } from '../../store/modules/auth/actions';
+import { useStyles, theme, catBtn } from './styles';
 
 interface RowData {
   id: number;
@@ -149,222 +150,233 @@ const Forms: React.FC = () => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
 
-        <div className="button">
-          <Link to="/forms/new">
+        <Link to="/forms/new">
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginBottom: 24 }}
+          >
+            <Assignment style={{ marginRight: 8 }} />
+            Novo Formulário
+          </Button>
+        </Link>
+
+        <Link to="/forms/categories">
+          <ThemeProvider theme={catBtn}>
             <Button
               variant="contained"
               color="primary"
-              style={{ marginBottom: 24 }}
+              style={{ marginBottom: 24, marginLeft: 16 }}
             >
-              <Assignment style={{ marginRight: 8 }} />
-              Novo Formulário
+              <Category style={{ marginRight: 8 }} />
+              Categorias
             </Button>
-          </Link>
+          </ThemeProvider>
+        </Link>
 
-          <div className={classes.table}>
-            <MaterialTable
-              title="Lista de Formulários"
-              tableRef={tableRef}
-              columns={[
-                {
-                  title: 'Id',
-                  field: 'id',
-                  type: 'numeric',
-                  align: 'left',
-                  headerStyle: {
-                    maxWidth: '5%',
-                  },
-                  cellStyle: {
-                    maxWidth: '5%',
-                  },
+        <div className={classes.table}>
+          <MaterialTable
+            title="Lista de Formulários"
+            tableRef={tableRef}
+            columns={[
+              {
+                title: 'Id',
+                field: 'id',
+                type: 'numeric',
+                align: 'left',
+                headerStyle: {
+                  maxWidth: '5%',
                 },
-                {
-                  title: 'Título do Formulário',
-                  field: 'title',
-                  type: 'string',
-                  align: 'left',
-                  headerStyle: {
-                    width: '20%',
-                    maxWidth: '20%',
-                  },
-                  cellStyle: {
-                    width: '20%',
-                    maxWidth: '20%',
-                  },
+                cellStyle: {
+                  maxWidth: '5%',
                 },
-                {
-                  title: 'Categoria',
-                  field: 'category',
-                  type: 'string',
-                  align: 'left',
+              },
+              {
+                title: 'Título do Formulário',
+                field: 'title',
+                type: 'string',
+                align: 'left',
+                headerStyle: {
+                  width: '20%',
+                  maxWidth: '20%',
                 },
-                {
-                  title: 'Preenchimentos',
-                  field: 'fills',
-                  type: 'string',
-                  align: 'left',
-                  headerStyle: {
-                    maxWidth: '10%',
-                  },
-                  cellStyle: {
-                    maxWidth: '10%',
-                  },
+                cellStyle: {
+                  width: '20%',
+                  maxWidth: '20%',
                 },
-                {
-                  title: 'Grupos',
-                  field: 'groups',
-                  type: 'string',
-                  align: 'left',
-                  headerStyle: {
-                    maxWidth: '20%',
-                  },
-                  cellStyle: {
-                    maxWidth: '20%',
-                  },
+              },
+              {
+                title: 'Categoria',
+                field: 'category',
+                type: 'string',
+                align: 'left',
+              },
+              {
+                title: 'Preenchimentos',
+                field: 'fills',
+                type: 'string',
+                align: 'left',
+                headerStyle: {
+                  maxWidth: '10%',
                 },
-                {
-                  title: 'Status',
-                  field: 'status',
-                  type: 'string',
-                  align: 'left',
-                  headerStyle: {
-                    maxWidth: '5%',
-                  },
-                  cellStyle: {
-                    maxWidth: '5%',
-                  },
+                cellStyle: {
+                  maxWidth: '10%',
                 },
-                {
-                  title: 'Criado Em',
-                  field: 'created_at',
-                  type: 'datetime',
-                  align: 'left',
+              },
+              {
+                title: 'Grupos',
+                field: 'groups',
+                type: 'string',
+                align: 'left',
+                headerStyle: {
+                  maxWidth: '20%',
                 },
-              ]}
-              data={query =>
-                new Promise((resolve, reject) => {
-                  const url = `forms?per_page=${
-                    query.pageSize
-                  }&page=${query.page + 1}&search=${query.search}`;
-                  api
-                    .get(url)
-                    .then(response => {
-                      resolve({
-                        data: response.data.forms,
-                        page: response.data.page - 1,
-                        totalCount: response.data.total,
-                      });
-                    })
-                    .catch(() => {
-                      reject(dataRequestFailure());
+                cellStyle: {
+                  maxWidth: '20%',
+                },
+              },
+              {
+                title: 'Status',
+                field: 'status',
+                type: 'string',
+                align: 'left',
+                headerStyle: {
+                  maxWidth: '5%',
+                },
+                cellStyle: {
+                  maxWidth: '5%',
+                },
+              },
+              {
+                title: 'Criado Em',
+                field: 'created_at',
+                type: 'datetime',
+                align: 'left',
+              },
+            ]}
+            data={query =>
+              new Promise((resolve, reject) => {
+                const url = `forms?per_page=${
+                  query.pageSize
+                }&page=${query.page + 1}&search=${query.search}`;
+                api
+                  .get(url)
+                  .then(response => {
+                    resolve({
+                      data: response.data.forms,
+                      page: response.data.page - 1,
+                      totalCount: response.data.total,
                     });
-                })
-              }
-              icons={tableIcons}
-              localization={{
-                toolbar: {
-                  searchPlaceholder: 'Procurar',
-                  searchTooltip: 'Procurar',
-                },
-                header: {
-                  actions: 'Ações',
-                },
-                body: {
-                  emptyDataSourceMessage: 'Busca não obteve resultados',
-                },
-                pagination: {
-                  firstTooltip: 'Primeira Página',
-                  lastTooltip: 'Última Página',
-                  previousTooltip: 'Página Anterior',
-                  nextTooltip: 'Próxima Página',
-                  labelDisplayedRows: '{from}-{to} de {count}',
-                  labelRowsSelect: 'linhas',
-                },
-              }}
-              actions={[
-                {
-                  icon: () => <Visibility />,
-                  tooltip: 'Visualizar Preenchimentos',
-                  onClick: (event, rowData: RowData) =>
-                    history.push(`/forms/${rowData.id}`),
-                },
-                {
-                  icon: () => <SettingsPower />,
-                  tooltip: 'Ativar / Desativar Formulário',
-                  onClick: (event, rowData: RowData) => {
-                    setModalConfirmation(true);
-                    setModalConfTitle('');
-                    if (rowData.status === 'Ativo') {
-                      setModalConfMsg(
-                        <span>
-                          Deseja desativar o formulário &quot;
-                          <span style={{ fontWeight: 'bold' }}>
-                            {rowData.title}
-                          </span>
-                          &quot;?
-                        </span>,
-                      );
-                      setModalConfActTxt('Desativar');
-                    } else {
-                      setModalConfMsg(
-                        <span>
-                          Deseja ativar o formulário &quot;
-                          <span style={{ fontWeight: 'bold' }}>
-                            {rowData.title}
-                          </span>
-                          &quot;?
-                        </span>,
-                      );
-                      setModalConfActTxt('Ativar');
-                    }
-                    setFormId(rowData.id);
-                  },
-                },
-                {
-                  icon: () => <Edit />,
-                  tooltip: 'Editar Formulário',
-                  onClick: (event, rowData: RowData) =>
-                    history.push(`/forms/edit/${rowData.id}`),
-                },
-                {
-                  icon: () => <Delete />,
-                  tooltip: 'Remover Formulário',
-                  onClick: (event, rowData: RowData) => {
-                    setModalConfirmation(true);
-                    setModalConfTitle('Alerta de Exclusão');
+                  })
+                  .catch(() => {
+                    reject(dataRequestFailure());
+                  });
+              })
+            }
+            icons={tableIcons}
+            localization={{
+              toolbar: {
+                searchPlaceholder: 'Procurar',
+                searchTooltip: 'Procurar',
+              },
+              header: {
+                actions: 'Ações',
+              },
+              body: {
+                emptyDataSourceMessage: 'Busca não obteve resultados',
+              },
+              pagination: {
+                firstTooltip: 'Primeira Página',
+                lastTooltip: 'Última Página',
+                previousTooltip: 'Página Anterior',
+                nextTooltip: 'Próxima Página',
+                labelDisplayedRows: '{from}-{to} de {count}',
+                labelRowsSelect: 'linhas',
+              },
+            }}
+            actions={[
+              {
+                icon: () => <Visibility />,
+                tooltip: 'Visualizar Preenchimentos',
+                onClick: (event, rowData: RowData) =>
+                  history.push(`/forms/${rowData.id}`),
+              },
+              {
+                icon: () => <SettingsPower />,
+                tooltip: 'Ativar / Desativar Formulário',
+                onClick: (event, rowData: RowData) => {
+                  setModalConfirmation(true);
+                  setModalConfTitle('');
+                  if (rowData.status === 'Ativo') {
                     setModalConfMsg(
                       <span>
-                        Deseja remover permanentemente o formulário &quot;
+                        Deseja desativar o formulário &quot;
                         <span style={{ fontWeight: 'bold' }}>
                           {rowData.title}
                         </span>
                         &quot;?
                       </span>,
                     );
-                    setModalConfActTxt('Remover');
-                    setFormId(rowData.id);
-                  },
+                    setModalConfActTxt('Desativar');
+                  } else {
+                    setModalConfMsg(
+                      <span>
+                        Deseja ativar o formulário &quot;
+                        <span style={{ fontWeight: 'bold' }}>
+                          {rowData.title}
+                        </span>
+                        &quot;?
+                      </span>,
+                    );
+                    setModalConfActTxt('Ativar');
+                  }
+                  setFormId(rowData.id);
                 },
-                {
-                  icon: () => <Refresh />,
-                  tooltip: 'Atualizar',
-                  isFreeAction: true,
-                  onClick: () => tableRef.current.onQueryChange(),
+              },
+              {
+                icon: () => <Edit />,
+                tooltip: 'Editar Formulário',
+                onClick: (event, rowData: RowData) =>
+                  history.push(`/forms/edit/${rowData.id}`),
+              },
+              {
+                icon: () => <Delete />,
+                tooltip: 'Remover Formulário',
+                onClick: (event, rowData: RowData) => {
+                  setModalConfirmation(true);
+                  setModalConfTitle('Alerta de Exclusão');
+                  setModalConfMsg(
+                    <span>
+                      Deseja remover permanentemente o formulário &quot;
+                      <span style={{ fontWeight: 'bold' }}>
+                        {rowData.title}
+                      </span>
+                      &quot;?
+                    </span>,
+                  );
+                  setModalConfActTxt('Remover');
+                  setFormId(rowData.id);
                 },
-              ]}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#42a5f5',
-                  color: '#fff',
-                },
-                actionsCellStyle: {
-                  width: '8%',
-                },
-                actionsColumnIndex: -1,
-                sorting: false,
-              }}
-            />
-          </div>
+              },
+              {
+                icon: () => <Refresh />,
+                tooltip: 'Atualizar',
+                isFreeAction: true,
+                onClick: () => tableRef.current.onQueryChange(),
+              },
+            ]}
+            options={{
+              headerStyle: {
+                backgroundColor: '#42a5f5',
+                color: '#fff',
+              },
+              actionsCellStyle: {
+                width: '8%',
+              },
+              actionsColumnIndex: -1,
+              sorting: false,
+            }}
+          />
         </div>
 
         <ModalConfirmation

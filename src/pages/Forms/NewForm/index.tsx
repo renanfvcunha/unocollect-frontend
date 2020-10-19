@@ -25,19 +25,15 @@ import {
   FormLabel,
   FormGroup,
 } from '@material-ui/core';
-import { ArrowBack, Add, Remove, Close } from '@material-ui/icons';
+import { ArrowBack, Add, Remove } from '@material-ui/icons';
 
 import { ApplicationState } from '../../../store';
 import setPageTitle from '../../../store/modules/pageTitle/actions';
-import {
-  getCategoriesRequest,
-  addCategoryRequest,
-  setErrorFalse as setErrorCatFalse,
-} from '../../../store/modules/categories/actions';
+import { getCategoriesRequest } from '../../../store/modules/categories/actions';
 import { getGroupsRequest } from '../../../store/modules/groups/actions';
 import {
   addFormRequest,
-  setErrorFalse as setErrorFormFalse,
+  setErrorFalse,
 } from '../../../store/modules/forms/actions';
 import { Field } from '../../../store/modules/forms/types';
 import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
@@ -62,33 +58,14 @@ const NewForm: React.FC = () => {
     (state: ApplicationState) => state.categories.categories,
   );
   const groups = useSelector((state: ApplicationState) => state.groups.groups);
-  const loadingCat = useSelector(
-    (state: ApplicationState) => state.categories.loading,
-  );
-  const successCat = useSelector(
-    (state: ApplicationState) => state.categories.success,
-  );
-  const errorCat = useSelector(
-    (state: ApplicationState) => state.categories.error,
-  );
-  const modalMsgCat = useSelector(
-    (state: ApplicationState) => state.categories.modalMsg,
-  );
-  const modalTitleCat = useSelector(
-    (state: ApplicationState) => state.categories.modalTitle,
-  );
 
-  const loadingForm = useSelector(
-    (state: ApplicationState) => state.forms.loading,
-  );
-  const successForm = useSelector(
-    (state: ApplicationState) => state.forms.success,
-  );
-  const errorForm = useSelector((state: ApplicationState) => state.forms.error);
-  const modalMsgForm = useSelector(
+  const loading = useSelector((state: ApplicationState) => state.forms.loading);
+  const success = useSelector((state: ApplicationState) => state.forms.success);
+  const error = useSelector((state: ApplicationState) => state.forms.error);
+  const modalMsg = useSelector(
     (state: ApplicationState) => state.forms.modalMsg,
   );
-  const modalTitleForm = useSelector(
+  const modalTitle = useSelector(
     (state: ApplicationState) => state.forms.modalTitle,
   );
 
@@ -111,14 +88,11 @@ const NewForm: React.FC = () => {
     },
   ]);
 
-  const [showAddCat, setShowAddCat] = useState(false);
-  const [catName, setCatName] = useState('');
-
   const navBack = useCallback(() => {
-    if (successForm && !modalOpen) {
+    if (success && !modalOpen) {
       history.push('/forms');
     }
-  }, [successForm, modalOpen, history]);
+  }, [success, modalOpen, history]);
 
   const handleModalClose = () => {
     setModalOpen(false);
@@ -126,14 +100,6 @@ const NewForm: React.FC = () => {
 
   const handleChangeCategory = (e: ChangeEvent<HTMLSelectElement>) => {
     setCategory(Number(e.target.value));
-  };
-
-  const handleAddCategory = (e: FormEvent) => {
-    e.preventDefault();
-
-    dispatch(addCategoryRequest(catName));
-    setShowAddCat(false);
-    setCatName('');
   };
 
   const handleCheckGroup = (
@@ -336,14 +302,11 @@ const NewForm: React.FC = () => {
   useEffect(() => {
     navBack();
 
-    if (errorCat || successCat || errorForm) {
+    if (error) {
       setModalOpen(true);
-
-      dispatch(getCategoriesRequest());
-      dispatch(setErrorCatFalse());
-      dispatch(setErrorFormFalse());
+      dispatch(setErrorFalse());
     }
-  }, [navBack, errorCat, successCat, errorForm, dispatch]);
+  }, [navBack, error, dispatch]);
 
   return (
     <ThemeProvider theme={BtnStyle}>
@@ -361,33 +324,6 @@ const NewForm: React.FC = () => {
             <Typography variant="h5" className={classes.title} align="center">
               Novo Formulário
             </Typography>
-
-            {showAddCat ? (
-              <form className={classes.addCatForm} onSubmit={handleAddCategory}>
-                <TextField
-                  type="text"
-                  name="name"
-                  label="Nome da Categoria"
-                  style={{ width: '20%' }}
-                  required
-                  className={classes.margin}
-                  value={catName}
-                  onChange={e => setCatName(e.target.value)}
-                />
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="primary"
-                  className={classes.btnAddCat}
-                  type="submit"
-                >
-                  Adicionar
-                </Button>
-                {loadingCat ? <CircularProgress /> : ''}
-              </form>
-            ) : (
-              <div />
-            )}
 
             <form onSubmit={handleSubmit}>
               <div className={classes.mainForm}>
@@ -422,34 +358,6 @@ const NewForm: React.FC = () => {
                     })}
                   </Select>
                 </FormControl>
-
-                {showAddCat ? (
-                  <ThemeProvider theme={Tooltips}>
-                    <Tooltip
-                      title="Cancelar"
-                      aria-label="cancel"
-                      style={{ marginRight: '2.5%' }}
-                      onClick={() => setShowAddCat(false)}
-                    >
-                      <Fab color="secondary" size="small">
-                        <Close />
-                      </Fab>
-                    </Tooltip>
-                  </ThemeProvider>
-                ) : (
-                  <ThemeProvider theme={Tooltips}>
-                    <Tooltip
-                      title="Adicionar Categoria"
-                      aria-label="addCat"
-                      style={{ marginRight: '2.5%' }}
-                      onClick={() => setShowAddCat(true)}
-                    >
-                      <Fab color="primary" size="small">
-                        <Add />
-                      </Fab>
-                    </Tooltip>
-                  </ThemeProvider>
-                )}
 
                 <TextField
                   type="text"
@@ -717,7 +625,7 @@ const NewForm: React.FC = () => {
                 </div>
               ))}
 
-              {loadingForm ? (
+              {loading ? (
                 <div className={classes.progress}>
                   <CircularProgress />
                 </div>
@@ -743,8 +651,8 @@ const NewForm: React.FC = () => {
         <ModalAlert
           open={modalOpen}
           close={handleModalClose}
-          title={modalTitleCat || modalTitleForm}
-          msg={modalMsgCat || modalMsgForm}
+          title={modalTitle}
+          msg={modalMsg}
         />
       </main>
     </ThemeProvider>

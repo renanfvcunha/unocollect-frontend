@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -8,56 +9,61 @@ import {
   Fab,
   TextField,
   CircularProgress,
+  Button,
 } from '@material-ui/core';
-import { Add, Edit, Delete, Close, Done } from '@material-ui/icons';
+import { Add, Edit, Delete, Close, Done, ArrowBack } from '@material-ui/icons';
 
-import setPageTitle from '../../store/modules/pageTitle/actions';
-import { ApplicationState } from '../../store';
-import { checkTokenRequest, logout } from '../../store/modules/auth/actions';
+import setPageTitle from '../../../store/modules/pageTitle/actions';
+import { ApplicationState } from '../../../store';
+import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import {
-  getGroupsRequest,
-  addGroupRequest,
-  updateGroupRequest,
-  deleteGroupRequest,
+  getCategoriesRequest,
+  addCategoryRequest,
+  updateCategoryRequest,
+  deleteCategoryRequest,
   setErrorFalse,
-} from '../../store/modules/groups/actions';
+} from '../../../store/modules/categories/actions';
 import { useStyles, theme, btnActions, btnAction } from './styles';
-import ModalConfirmation from '../../components/ModalConfirmation';
-import ModalAlert from '../../components/ModalAlert';
+import ModalConfirmation from '../../../components/ModalConfirmation';
+import ModalAlert from '../../../components/ModalAlert';
 
-const Groups: React.FC = () => {
+const Categories: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const addGroupRef = useRef<HTMLInputElement>(null);
-  const editGroupRef = useRef<HTMLInputElement>(null);
-  const title = 'Grupos';
+  const addCatRef = useRef<HTMLInputElement>(null);
+  const editCatRef = useRef<HTMLInputElement>(null);
+  const title = 'Formulários > Categorias';
 
   const invalidToken = useSelector(
     (state: ApplicationState) => state.auth.invalidToken,
   );
 
-  const groups = useSelector((state: ApplicationState) => state.groups.groups);
-  const success = useSelector(
-    (state: ApplicationState) => state.groups.success,
+  const categories = useSelector(
+    (state: ApplicationState) => state.categories.categories,
   );
-  const error = useSelector((state: ApplicationState) => state.groups.error);
+  const success = useSelector(
+    (state: ApplicationState) => state.categories.success,
+  );
+  const error = useSelector(
+    (state: ApplicationState) => state.categories.error,
+  );
   const modalTitle = useSelector(
-    (state: ApplicationState) => state.groups.modalTitle,
+    (state: ApplicationState) => state.categories.modalTitle,
   );
   const modalMsg = useSelector(
-    (state: ApplicationState) => state.groups.modalMsg,
+    (state: ApplicationState) => state.categories.modalMsg,
   );
   const loading = useSelector(
-    (state: ApplicationState) => state.groups.loading,
+    (state: ApplicationState) => state.categories.loading,
   );
 
-  const [showAddGroup, setShowAddGroup] = useState(false);
-  const [groupNameToAdd, setGroupNameToAdd] = useState('');
-  const [showEditGroup, setShowEditGroup] = useState(false);
-  const [groupToEdit, setGroupToEdit] = useState(0);
-  const [groupNameToEdit, setGroupNameToEdit] = useState('');
-  const [groupToRemove, setGroupToRemove] = useState(0);
-  const [groupNameToRemove, setGroupNameToRemove] = useState('');
+  const [showAddCat, setShowAddCat] = useState(false);
+  const [catNameToAdd, setCatNameToAdd] = useState('');
+  const [showEditCat, setShowEditCat] = useState(false);
+  const [catToEdit, setCatToEdit] = useState(0);
+  const [catNameToEdit, setCatNameToEdit] = useState('');
+  const [catToRemove, setCatToRemove] = useState(0);
+  const [catNameToRemove, setCatNameToRemove] = useState('');
   const [modalConfirmation, setModalConfirmation] = useState(false);
   const [modalAlert, setModalAlert] = useState(false);
 
@@ -68,26 +74,26 @@ const Groups: React.FC = () => {
 
   const handleConfirmAction = () => {
     setModalConfirmation(false);
-    dispatch(deleteGroupRequest(groupToRemove));
+    dispatch(deleteCategoryRequest(catToRemove));
   };
 
   const handleAddGroup = () => {
-    dispatch(addGroupRequest(groupNameToAdd));
+    dispatch(addCategoryRequest(catNameToAdd));
   };
 
   const handleEditGroup = () => {
-    dispatch(updateGroupRequest(groupToEdit, groupNameToEdit));
+    dispatch(updateCategoryRequest(catToEdit, catNameToEdit));
   };
 
   useLayoutEffect(() => {
-    if (showAddGroup && addGroupRef.current !== null) {
-      addGroupRef.current.focus();
+    if (showAddCat && addCatRef.current !== null) {
+      addCatRef.current.focus();
     }
 
-    if (showEditGroup && editGroupRef.current !== null) {
-      editGroupRef.current.focus();
+    if (showEditCat && editCatRef.current !== null) {
+      editCatRef.current.focus();
     }
-  }, [showAddGroup, showEditGroup]);
+  }, [showAddCat, showEditCat]);
 
   useEffect(() => {
     dispatch(checkTokenRequest());
@@ -99,14 +105,14 @@ const Groups: React.FC = () => {
 
   useEffect(() => {
     dispatch(setPageTitle(title));
-    dispatch(getGroupsRequest());
+    dispatch(getCategoriesRequest());
   }, [dispatch]);
 
   useEffect(() => {
     if (success) {
-      dispatch(getGroupsRequest());
-      setShowAddGroup(false);
-      setShowEditGroup(false);
+      dispatch(getCategoriesRequest());
+      setShowAddCat(false);
+      setShowEditCat(false);
     }
 
     if (error) {
@@ -120,6 +126,13 @@ const Groups: React.FC = () => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
 
+        <Link to="/forms" style={{ position: 'absolute' }}>
+          <Button variant="contained" color="primary">
+            <ArrowBack style={{ marginRight: 8 }} />
+            Voltar
+          </Button>
+        </Link>
+
         <Box className={classes.group}>
           <Box className={classes.groupBox}>
             <Typography
@@ -129,16 +142,16 @@ const Groups: React.FC = () => {
               color="primary"
               className={classes.title}
             >
-              Grupos
+              Categorias
               <ThemeProvider theme={btnAction}>
                 <Tooltip
                   title="Adicionar Grupo"
                   aria-label="addGroup"
                   className={classes.addGroupBtn}
                   onClick={() => {
-                    setShowAddGroup(true);
-                    if (showEditGroup) {
-                      setShowEditGroup(false);
+                    setShowAddCat(true);
+                    if (showEditCat) {
+                      setShowEditCat(false);
                     }
                   }}
                 >
@@ -150,19 +163,22 @@ const Groups: React.FC = () => {
             </Typography>
 
             <Box className={classes.groups}>
-              {groups.length !== 0 ? (
-                groups.map(group => (
-                  <Box key={group.id} className={classes.groupNameWithActions}>
+              {categories.length !== 0 ? (
+                categories.map(cat => (
+                  <Box
+                    key={Number(cat.id)}
+                    className={classes.groupNameWithActions}
+                  >
                     <ThemeProvider theme={btnActions}>
                       <Tooltip
                         title="Editar Grupo"
                         aria-label="edit"
                         onClick={() => {
-                          setGroupToEdit(group.id);
-                          setGroupNameToEdit(group.name);
-                          setShowEditGroup(true);
-                          if (showAddGroup) {
-                            setShowAddGroup(false);
+                          setCatToEdit(Number(cat.id));
+                          setCatNameToEdit(String(cat.name));
+                          setShowEditCat(true);
+                          if (showAddCat) {
+                            setShowAddCat(false);
                           }
                         }}
                       >
@@ -171,15 +187,15 @@ const Groups: React.FC = () => {
                         </Fab>
                       </Tooltip>
                       <Typography className={classes.groupName}>
-                        {group.name}
+                        {cat.name}
                       </Typography>
                       <Tooltip
                         title="Remover Grupo"
                         aria-label="remove"
                         onClick={() => {
                           setModalConfirmation(true);
-                          setGroupToRemove(group.id);
-                          setGroupNameToRemove(group.name);
+                          setCatToRemove(Number(cat.id));
+                          setCatNameToRemove(String(cat.name));
                         }}
                       >
                         <Fab color="secondary" size="small">
@@ -193,13 +209,13 @@ const Groups: React.FC = () => {
                 <Typography>Ainda não há grupos cadastrados.</Typography>
               )}
 
-              {showAddGroup ? (
+              {showAddCat ? (
                 <Box className={classes.addGroup}>
                   <ThemeProvider theme={btnAction}>
                     <Tooltip
                       title="Cancelar"
                       aria-label="cancel"
-                      onClick={() => setShowAddGroup(false)}
+                      onClick={() => setShowAddCat(false)}
                     >
                       <Fab color="secondary" size="small">
                         <Close />
@@ -207,13 +223,13 @@ const Groups: React.FC = () => {
                     </Tooltip>
                   </ThemeProvider>
                   <TextField
-                    inputRef={addGroupRef}
+                    inputRef={addCatRef}
                     type="text"
                     name="name"
                     label="Adicionar Grupo"
                     className={classes.margin}
-                    value={groupNameToAdd}
-                    onChange={e => setGroupNameToAdd(e.target.value)}
+                    value={catNameToAdd}
+                    onChange={e => setCatNameToAdd(e.target.value)}
                   />
                   <ThemeProvider theme={btnAction}>
                     <Tooltip
@@ -231,13 +247,13 @@ const Groups: React.FC = () => {
                 <Box />
               )}
 
-              {showEditGroup ? (
+              {showEditCat ? (
                 <Box className={classes.addGroup}>
                   <ThemeProvider theme={btnAction}>
                     <Tooltip
                       title="Cancelar"
                       aria-label="cancel"
-                      onClick={() => setShowEditGroup(false)}
+                      onClick={() => setShowEditCat(false)}
                     >
                       <Fab color="secondary" size="small">
                         <Close />
@@ -245,13 +261,13 @@ const Groups: React.FC = () => {
                     </Tooltip>
                   </ThemeProvider>
                   <TextField
-                    inputRef={editGroupRef}
+                    inputRef={editCatRef}
                     type="text"
                     name="name"
                     label="Editar Grupo"
                     className={classes.margin}
-                    value={groupNameToEdit}
-                    onChange={e => setGroupNameToEdit(e.target.value)}
+                    value={catNameToEdit}
+                    onChange={e => setCatNameToEdit(e.target.value)}
                   />
                   <ThemeProvider theme={btnAction}>
                     <Tooltip
@@ -279,7 +295,7 @@ const Groups: React.FC = () => {
           close={handleModalClose}
           confirmAction={handleConfirmAction}
           title="Alerta de Exclusão"
-          msg={`Deseja remover o grupo "${groupNameToRemove}"?`}
+          msg={`Deseja remover a categoria "${catNameToRemove}"?`}
           cancel="Cancelar"
           confirm="Remover"
         />
@@ -295,4 +311,4 @@ const Groups: React.FC = () => {
   );
 };
 
-export default Groups;
+export default Categories;

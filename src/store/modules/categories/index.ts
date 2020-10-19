@@ -61,6 +61,62 @@ const reducer: Reducer<CategoriesState> = (state = INITIAL_STATE, action) => {
         modalMsg: action.payload.errorMsg,
       };
 
+    case CategoriesTypes.UPDATE_CATEGORY_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+
+    case CategoriesTypes.UPDATE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
+      };
+
+    case CategoriesTypes.UPDATE_CATEGORY_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
+      };
+
+    case CategoriesTypes.DELETE_CATEGORY_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+
+    case CategoriesTypes.DELETE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        modalTitle: '',
+        modalMsg: action.payload.successMsg,
+      };
+
+    case CategoriesTypes.DELETE_CATEGORY_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        modalTitle: 'Erro',
+        modalMsg: action.payload.errorMsg,
+      };
+
     case CategoriesTypes.SET_ERROR_FALSE:
       return {
         ...state,

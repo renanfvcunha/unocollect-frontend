@@ -22,7 +22,7 @@ export const addGroupSuccess = (successMsg: string): Action =>
 export const addGroupFailure = (errorMsg: string): Action =>
   action(GroupsTypes.ADD_GROUP_FAILURE, { errorMsg });
 
-// Delete Group
+// Update Group
 export const updateGroupRequest = (id: number, name: string): Action =>
   action(GroupsTypes.UPDATE_GROUP_REQUEST, { id, name });
 

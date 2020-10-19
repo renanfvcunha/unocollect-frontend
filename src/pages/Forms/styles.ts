@@ -1,5 +1,5 @@
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { blue } from '@material-ui/core/colors';
+import { blue, pink } from '@material-ui/core/colors';
 
 export const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -42,6 +42,14 @@ export const theme = createMuiTheme({
   palette: {
     primary: {
       main: blue[400],
+    },
+  },
+});
+
+export const catBtn = createMuiTheme({
+  palette: {
+    primary: {
+      main: pink[400],
     },
   },
 });

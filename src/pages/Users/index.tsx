@@ -134,14 +134,12 @@ const Users: React.FC = () => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
 
-        <div className="button">
-          <Link to="/users/new">
-            <Button variant="contained" color="primary">
-              <PersonAdd className={classes.iconAdd} />
-              Novo Usuário
-            </Button>
-          </Link>
-        </div>
+        <Link to="/users/new">
+          <Button variant="contained" color="primary">
+            <PersonAdd className={classes.iconAdd} />
+            Novo Usuário
+          </Button>
+        </Link>
 
         <div className={classes.table}>
           <MaterialTable

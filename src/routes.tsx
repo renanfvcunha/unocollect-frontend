@@ -6,6 +6,7 @@ import Forms from './pages/Forms';
 import NewForm from './pages/Forms/NewForm';
 import EditForm from './pages/Forms/EditForm';
 import ShowForm from './pages/Forms/ShowForm';
+import Categories from './pages/Forms/Categories';
 import Groups from './pages/Groups';
 import Map from './pages/Map';
 import Users from './pages/Users';
@@ -17,6 +18,7 @@ const Routes: React.FC = () => {
     <Switch>
       <Route exact path="/" component={Dashboard} />
 
+      <Route path="/forms/categories" component={Categories} />
       <Route path="/forms/new" component={NewForm} />
       <Route path="/forms/edit/:id" component={EditForm} />
       <Route path="/forms/:id" component={ShowForm} />

@@ -9,6 +9,12 @@ export enum CategoriesTypes {
   ADD_CATEGORY_REQUEST = '@categories/ADD_CATEGORY_REQUEST',
   ADD_CATEGORY_SUCCESS = '@categories/ADD_CATEGORY_SUCCESS',
   ADD_CATEGORY_FAILURE = '@categories/ADD_CATEGORY_FAILURE',
+  UPDATE_CATEGORY_REQUEST = '@categories/UPDATE_CATEGORY_REQUEST',
+  UPDATE_CATEGORY_SUCCESS = '@categories/UPDATE_CATEGORY_SUCCESS',
+  UPDATE_CATEGORY_FAILURE = '@categories/UPDATE_CATEGORY_FAILURE',
+  DELETE_CATEGORY_REQUEST = '@categories/DELETE_CATEGORY_REQUEST',
+  DELETE_CATEGORY_SUCCESS = '@categories/DELETE_CATEGORY_SUCCESS',
+  DELETE_CATEGORY_FAILURE = '@categories/DELETE_CATEGORY_FAILURE',
   SET_ERROR_FALSE = '@categories/SET_ERROR_FALSE',
 }
 
@@ -17,7 +23,7 @@ export enum CategoriesTypes {
  */
 
 export interface Category {
-  id?: number | null;
+  id: number | null;
   name?: string;
 }
 
