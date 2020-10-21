@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import { useTheme, ThemeProvider } from '@material-ui/core/styles';
 import {
-  Dashboard as MdDashboard,
+  Home,
   Menu,
   ChevronLeft,
   ChevronRight,
@@ -126,18 +126,21 @@ const Header: React.FC = () => {
 
           <Link to="/" className={classes.link}>
             <List>
-              <ListItem button>
+              <ListItem button selected={window.location.pathname === '/'}>
                 <ListItemIcon>
-                  <MdDashboard className={classes.icon} />
+                  <Home className={classes.icon} />
                 </ListItemIcon>
-                <ListItemText primary="Painel de Controle" />
+                <ListItemText primary="Início" />
               </ListItem>
             </List>
           </Link>
 
           <Link to="/forms" className={classes.link}>
             <List>
-              <ListItem button>
+              <ListItem
+                button
+                selected={window.location.pathname.split('/')[1] === 'forms'}
+              >
                 <ListItemIcon>
                   <Assignment className={classes.icon} />
                 </ListItemIcon>
@@ -148,7 +151,10 @@ const Header: React.FC = () => {
 
           <Link to="/groups" className={classes.link}>
             <List>
-              <ListItem button>
+              <ListItem
+                button
+                selected={window.location.pathname.split('/')[1] === 'groups'}
+              >
                 <ListItemIcon>
                   <GroupOutlined className={classes.icon} />
                 </ListItemIcon>
@@ -159,7 +165,10 @@ const Header: React.FC = () => {
 
           <Link to="/map" className={classes.link}>
             <List>
-              <ListItem button>
+              <ListItem
+                button
+                selected={window.location.pathname.split('/')[1] === 'map'}
+              >
                 <ListItemIcon>
                   <Room className={classes.icon} />
                 </ListItemIcon>
@@ -170,7 +179,10 @@ const Header: React.FC = () => {
 
           <Link to="/users" className={classes.link}>
             <List>
-              <ListItem button>
+              <ListItem
+                button
+                selected={window.location.pathname.split('/')[1] === 'users'}
+              >
                 <ListItemIcon>
                   <Group className={classes.icon} />
                 </ListItemIcon>
@@ -182,11 +194,11 @@ const Header: React.FC = () => {
           <Divider />
 
           <List>
-            <ListItem button>
-              <ListItemIcon onClick={handleLogout}>
+            <ListItem button onClick={handleLogout}>
+              <ListItemIcon>
                 <ExitToApp className={classes.icon} />
               </ListItemIcon>
-              <ListItemText primary="Sair" onClick={handleLogout} />
+              <ListItemText primary="Sair" />
             </ListItem>
           </List>
         </Drawer>

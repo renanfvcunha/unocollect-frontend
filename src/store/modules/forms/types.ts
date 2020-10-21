@@ -35,9 +35,11 @@ export interface Form {
   title?: string;
   description?: string;
   category?: Category;
+  status?: string;
   groups?: number[];
   created_at?: Date;
   fields?: Field[];
+  fills?: number;
 }
 
 export interface Field {

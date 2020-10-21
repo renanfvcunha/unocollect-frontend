@@ -8,7 +8,7 @@ import React, {
   RefObject,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Button, ThemeProvider } from '@material-ui/core';
 import {
   PersonAdd,
@@ -134,12 +134,14 @@ const Users: React.FC = () => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
 
-        <Link to="/users/new">
-          <Button variant="contained" color="primary">
-            <PersonAdd className={classes.iconAdd} />
-            Novo Usuário
-          </Button>
-        </Link>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => history.push('/users/new')}
+        >
+          <PersonAdd className={classes.iconAdd} />
+          Novo Usuário
+        </Button>
 
         <div className={classes.table}>
           <MaterialTable
@@ -253,6 +255,7 @@ const Users: React.FC = () => {
                 backgroundColor: '#66bb6a',
                 color: '#fff',
               },
+              sorting: false,
             }}
           />
         </div>
@@ -261,6 +264,7 @@ const Users: React.FC = () => {
           open={modalConfirmation}
           close={handleModalClose}
           confirmAction={handleRemoveUser}
+          title="Alerta de Exclusão"
           msg={
             <span>
               Deseja remover permanentemente{' '}

@@ -5,7 +5,7 @@ import React, {
   createRef,
   RefObject,
 } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   ThemeProvider,
@@ -53,6 +53,7 @@ const ShowForm: React.FC = () => {
   const pageTitle = 'Formulários > Visualizar Formulário';
   const dispatch = useDispatch();
   const tableRef: RefObject<any> = createRef();
+  const history = useHistory();
 
   const invalidToken = useSelector(
     (state: ApplicationState) => state.auth.invalidToken,
@@ -179,12 +180,14 @@ const ShowForm: React.FC = () => {
     <ThemeProvider theme={theme}>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Link to="/forms">
-          <Button variant="contained" color="primary">
-            <ArrowBack className={classes.iconBack} />
-            Voltar
-          </Button>
-        </Link>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => history.go(-1)}
+        >
+          <ArrowBack className={classes.iconBack} />
+          Voltar
+        </Button>
 
         <div className={classes.table}>
           <MaterialTable

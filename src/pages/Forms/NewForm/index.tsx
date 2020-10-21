@@ -5,7 +5,7 @@ import React, {
   FormEvent,
   ChangeEvent,
 } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   ThemeProvider,
@@ -90,7 +90,7 @@ const NewForm: React.FC = () => {
 
   const navBack = useCallback(() => {
     if (success && !modalOpen) {
-      history.push('/forms');
+      history.go(-1);
     }
   }, [success, modalOpen, history]);
 
@@ -312,12 +312,15 @@ const NewForm: React.FC = () => {
     <ThemeProvider theme={BtnStyle}>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Link to="/forms" style={{ position: 'absolute' }}>
-          <Button variant="contained" color="primary">
-            <ArrowBack className={classes.iconBack} />
-            Voltar
-          </Button>
-        </Link>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ position: 'absolute' }}
+          onClick={() => history.go(-1)}
+        >
+          <ArrowBack className={classes.iconBack} />
+          Voltar
+        </Button>
 
         <div className={classes.form}>
           <div className={classes.formBox}>

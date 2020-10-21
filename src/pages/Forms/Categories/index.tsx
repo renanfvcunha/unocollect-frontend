@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -33,6 +33,7 @@ const Categories: React.FC = () => {
   const addCatRef = useRef<HTMLInputElement>(null);
   const editCatRef = useRef<HTMLInputElement>(null);
   const title = 'Formulários > Categorias';
+  const history = useHistory();
 
   const invalidToken = useSelector(
     (state: ApplicationState) => state.auth.invalidToken,
@@ -126,12 +127,15 @@ const Categories: React.FC = () => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
 
-        <Link to="/forms" style={{ position: 'absolute' }}>
-          <Button variant="contained" color="primary">
-            <ArrowBack style={{ marginRight: 8 }} />
-            Voltar
-          </Button>
-        </Link>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ position: 'absolute' }}
+          onClick={() => history.go(-1)}
+        >
+          <ArrowBack style={{ marginRight: 8 }} />
+          Voltar
+        </Button>
 
         <Box className={classes.group}>
           <Box className={classes.groupBox}>

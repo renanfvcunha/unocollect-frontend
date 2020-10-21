@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import Dashboard from './pages/Dashboard';
+import Home from './pages/Home';
 import Forms from './pages/Forms';
 import NewForm from './pages/Forms/NewForm';
 import EditForm from './pages/Forms/EditForm';
@@ -16,7 +16,7 @@ import EditUser from './pages/Users/EditUser';
 const Routes: React.FC = () => {
   return (
     <Switch>
-      <Route exact path="/" component={Dashboard} />
+      <Route exact path="/" component={Home} />
 
       <Route path="/forms/categories" component={Categories} />
       <Route path="/forms/new" component={NewForm} />

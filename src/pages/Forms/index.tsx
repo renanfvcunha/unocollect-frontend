@@ -8,7 +8,7 @@ import React, {
   RefObject,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { ThemeProvider, Button } from '@material-ui/core';
 import {
   Assignment,
@@ -150,29 +150,27 @@ const Forms: React.FC = () => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
 
-        <Link to="/forms/new">
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginBottom: 24 }}
+          onClick={() => history.push('/forms/new')}
+        >
+          <Assignment style={{ marginRight: 8 }} />
+          Novo Formulário
+        </Button>
+
+        <ThemeProvider theme={catBtn}>
           <Button
             variant="contained"
             color="primary"
-            style={{ marginBottom: 24 }}
+            style={{ marginBottom: 24, marginLeft: 16 }}
+            onClick={() => history.push('/forms/categories')}
           >
-            <Assignment style={{ marginRight: 8 }} />
-            Novo Formulário
+            <Category style={{ marginRight: 8 }} />
+            Categorias
           </Button>
-        </Link>
-
-        <Link to="/forms/categories">
-          <ThemeProvider theme={catBtn}>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ marginBottom: 24, marginLeft: 16 }}
-            >
-              <Category style={{ marginRight: 8 }} />
-              Categorias
-            </Button>
-          </ThemeProvider>
-        </Link>
+        </ThemeProvider>
 
         <div className={classes.table}>
           <MaterialTable

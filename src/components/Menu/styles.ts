@@ -49,7 +49,7 @@ export const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     color: '#fff',
-    backgroundColor: '#37474f',
+    backgroundColor: blueGrey[800],
   },
   drawerClose: {
     transition: theme.transitions.create('width', {
@@ -62,7 +62,7 @@ export const useStyles = makeStyles(theme => ({
       width: theme.spacing(9) + 1,
     },
     color: '#fff',
-    backgroundColor: '#37474f',
+    backgroundColor: blueGrey[800],
   },
   welcome: {
     fontSize: 20,
