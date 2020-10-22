@@ -12,6 +12,7 @@ import {
   Button,
   Typography,
   CircularProgress,
+  Box,
 } from '@material-ui/core';
 import {
   ArrowBack,
@@ -29,6 +30,7 @@ import MaterialTable, { Icons } from 'material-table';
 import { AxiosResponse } from 'axios';
 import { CSVLink } from 'react-csv';
 import ModalImage from 'react-modal-image';
+import { createPdf } from 'pdfmake/build/pdfmake';
 
 import api from '../../../services/api';
 import { ApplicationState } from '../../../store';
@@ -41,6 +43,7 @@ import { getUsersImagesRequest } from '../../../store/modules/images/actions';
 import { checkTokenRequest, logout } from '../../../store/modules/auth/actions';
 import { useStyles, theme } from './styles';
 import ModalAlert from '../../../components/ModalAlert';
+import docDefinitions from '../../../services/fillpdf';
 
 interface TableColumns {
   title?: string;
@@ -81,7 +84,7 @@ const ShowForm: React.FC = () => {
   const [modalAlert, setModalAlert] = useState(false);
   const [modalRequestDataTitle, setModalRequestDataTitle] = useState('');
   const [modalRequestDataMsg, setModalRequestDataMsg] = useState('');
-  const [csvData, setCsvData] = useState<[string[]]>([['']]);
+  const [fillData, setFillData] = useState<string[][]>();
 
   const handleModalClose = () => {
     setModalAlert(false);
@@ -156,8 +159,8 @@ const ShowForm: React.FC = () => {
   useEffect(() => {
     api
       .get(`/fills/export/${id}`)
-      .then((response: AxiosResponse<[string[]]>) => {
-        setCsvData(response.data);
+      .then((response: AxiosResponse<string[][]>) => {
+        setFillData(response.data);
       });
   }, [id]);
 
@@ -256,54 +259,73 @@ const ShowForm: React.FC = () => {
           />
         </div>
 
-        <div>
-          {csvData !== [['']] ? (
-            <CSVLink data={csvData} style={{ float: 'right' }}>
+        <Box className={classes.buttons}>
+          {fillData ? (
+            <CSVLink
+              data={fillData}
+              filename={`${formTitle}.csv`}
+              style={{ marginRight: 8 }}
+            >
               <Button color="primary" variant="contained">
                 <SaveAlt style={{ marginRight: 8 }} />
                 Baixar CSV
               </Button>
             </CSVLink>
           ) : (
-            <div style={{ float: 'right' }}>
-              <CircularProgress />
-            </div>
+            <CircularProgress style={{ marginRight: 8 }} />
           )}
 
-          <Typography component="h1" variant="h4">
-            Imagens
-          </Typography>
-
-          {usersImages.length !== 0 ? (
-            usersImages.map(userImage =>
-              userImage.images.length !== 0 ? (
-                <div className={classes.imagesBox}>
-                  <Typography component="h2" variant="h6">
-                    {userImage.name} no preenchimento {userImage.id_user_form}
-                  </Typography>
-
-                  <div className={classes.images}>
-                    {userImage.images.map(image => (
-                      <div className={classes.imageThumb}>
-                        <ModalImage
-                          small={image}
-                          large={image}
-                          alt={image.split('/').pop()}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div />
-              ),
-            )
+          {fillData && formTitle ? (
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() =>
+                createPdf(docDefinitions(formTitle, fillData)).download(
+                  `${formTitle}.pdf`,
+                )
+              }
+            >
+              <SaveAlt style={{ marginRight: 8 }} />
+              Baixar PDF
+            </Button>
           ) : (
-            <Typography component="h2" variant="subtitle1">
-              Não há imagens enviadas neste formulário.
-            </Typography>
+            <CircularProgress />
           )}
-        </div>
+        </Box>
+
+        <Typography component="h1" variant="h4">
+          Imagens
+        </Typography>
+
+        {usersImages.length !== 0 ? (
+          usersImages.map(userImage =>
+            userImage.images.length !== 0 ? (
+              <div className={classes.imagesBox}>
+                <Typography component="h2" variant="h6">
+                  {userImage.name} no preenchimento {userImage.id_user_form}
+                </Typography>
+
+                <div className={classes.images}>
+                  {userImage.images.map(image => (
+                    <div className={classes.imageThumb}>
+                      <ModalImage
+                        small={image}
+                        large={image}
+                        alt={image.split('/').pop()}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div />
+            ),
+          )
+        ) : (
+          <Typography component="h2" variant="subtitle1">
+            Não há imagens enviadas neste formulário.
+          </Typography>
+        )}
 
         <ModalAlert
           open={modalAlert}

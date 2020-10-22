@@ -210,7 +210,7 @@ const Categories: React.FC = () => {
                   </Box>
                 ))
               ) : (
-                <Typography>Ainda não há grupos cadastrados.</Typography>
+                <Typography>Ainda não há categorias cadastradas.</Typography>
               )}
 
               {showAddCat ? (

@@ -48,5 +48,13 @@ module.exports = {
     'import/no-mutable-exports': 'off',
     'react/jsx-wrap-multilines': 'off',
     'react/no-array-index-key': 'off',
+    'import/no-unresolved': [
+      'error',
+      {
+        ignore: [
+          'pdfmake'
+        ]
+      }
+    ]
   },
 };

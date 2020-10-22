@@ -18,6 +18,10 @@ export const useStyles = makeStyles(theme => ({
     marginTop: 24,
     marginBottom: 36,
   },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
   imagesBox: {
     marginBottom: 32,
   },
