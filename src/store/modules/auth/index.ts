@@ -5,6 +5,7 @@ const INITIAL_STATE: AuthState = {
   user: {},
   token: '',
   invalidToken: false,
+  hasUser: true,
   logged: false,
   loading: false,
   error: false,
@@ -25,6 +26,7 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
         user: action.payload.user,
         token: action.payload.token,
         invalidToken: false,
+        hasUser: true,
         errorTitle: undefined,
         errorMsg: undefined,
       };
@@ -59,6 +61,55 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
         error: true,
         invalidToken: true,
         errorTitle: 'Aviso',
+        errorMsg: action.payload.errorMsg,
+      };
+
+    case AuthTypes.CHECK_HAS_USER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+      };
+
+    case AuthTypes.CHECK_HAS_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        hasUser: true,
+      };
+
+    case AuthTypes.CHECK_HAS_USER_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        hasUser: false,
+      };
+
+    case AuthTypes.ADD_FIRST_USER_REQUEST:
+      return { ...state, loading: true };
+
+    case AuthTypes.ADD_FIRST_USER_SUCCESS:
+      return {
+        loading: false,
+        error: false,
+        logged: true,
+        user: action.payload.user,
+        token: action.payload.token,
+        invalidToken: false,
+        hasUser: true,
+        errorTitle: undefined,
+        errorMsg: undefined,
+      };
+
+    case AuthTypes.ADD_FIRST_USER_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: true,
+        hasUser: false,
+        errorTitle: 'Erro',
         errorMsg: action.payload.errorMsg,
       };
 

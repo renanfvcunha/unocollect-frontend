@@ -11,12 +11,18 @@ import {
   loginFailure,
   checkTokenSuccess,
   checkTokenFailure,
+  checkHasUserSuccess,
+  checkHasUserFailure,
+  addFisrtUserSuccess,
+  addFisrtUserFailure,
 } from './actions';
 
 interface Payload extends AnyAction {
   payload: {
+    name?: string;
     username: string;
     password: string;
+    passwordConf?: string;
   };
 }
 
@@ -79,6 +85,57 @@ export function* checkToken(): SagaIterator {
   }
 }
 
+export function* checkHasUser(): SagaIterator {
+  try {
+    yield call(api.get, 'checkhasuser');
+
+    yield put(checkHasUserSuccess());
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(checkHasUserSuccess());
+    } else if (err.response) {
+      yield put(checkHasUserFailure());
+    } else {
+      yield put(checkHasUserSuccess());
+    }
+  }
+}
+
+export function* addFirstUser({ payload }: Payload): SagaIterator {
+  try {
+    const { name, username, password, passwordConf } = payload;
+
+    const response: AxiosResponse<Response> = yield call(
+      api.post,
+      'firstuser',
+      {
+        name,
+        username,
+        password,
+        passwordConf,
+      },
+    );
+
+    const { token, user } = response.data;
+
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+
+    yield put(addFisrtUserSuccess(token, user));
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(
+        addFisrtUserFailure(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        ),
+      );
+    } else if (err.response) {
+      yield put(addFisrtUserFailure(err.response.data.msg));
+    } else {
+      yield put(addFisrtUserFailure(err));
+    }
+  }
+}
+
 export function logout(): void {
   history.push('/');
 }
@@ -97,5 +154,7 @@ export default all([
   takeLatest('persist/REHYDRATE', setToken),
   takeLatest(AuthTypes.LOGIN_REQUEST, login),
   takeLatest(AuthTypes.CHECK_TOKEN_REQUEST, checkToken),
+  takeLatest(AuthTypes.CHECK_HAS_USER_REQUEST, checkHasUser),
+  takeLatest(AuthTypes.ADD_FIRST_USER_REQUEST, addFirstUser),
   takeLatest(AuthTypes.LOGOUT, logout),
 ]);

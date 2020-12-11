@@ -78,11 +78,11 @@ const Categories: React.FC = () => {
     dispatch(deleteCategoryRequest(catToRemove));
   };
 
-  const handleAddGroup = () => {
+  const handleAddCategory = () => {
     dispatch(addCategoryRequest(catNameToAdd));
   };
 
-  const handleEditGroup = () => {
+  const handleEditCategory = () => {
     dispatch(updateCategoryRequest(catToEdit, catNameToEdit));
   };
 
@@ -149,8 +149,8 @@ const Categories: React.FC = () => {
               Categorias
               <ThemeProvider theme={btnAction}>
                 <Tooltip
-                  title="Adicionar Grupo"
-                  aria-label="addGroup"
+                  title="Adicionar Categoria"
+                  aria-label="addCategory"
                   className={classes.addGroupBtn}
                   onClick={() => {
                     setShowAddCat(true);
@@ -175,7 +175,7 @@ const Categories: React.FC = () => {
                   >
                     <ThemeProvider theme={btnActions}>
                       <Tooltip
-                        title="Editar Grupo"
+                        title="Editar Categoria"
                         aria-label="edit"
                         onClick={() => {
                           setCatToEdit(Number(cat.id));
@@ -194,7 +194,7 @@ const Categories: React.FC = () => {
                         {cat.name}
                       </Typography>
                       <Tooltip
-                        title="Remover Grupo"
+                        title="Remover Categoria"
                         aria-label="remove"
                         onClick={() => {
                           setModalConfirmation(true);
@@ -230,7 +230,7 @@ const Categories: React.FC = () => {
                     inputRef={addCatRef}
                     type="text"
                     name="name"
-                    label="Adicionar Grupo"
+                    label="Adicionar Categoria"
                     className={classes.margin}
                     value={catNameToAdd}
                     onChange={e => setCatNameToAdd(e.target.value)}
@@ -239,7 +239,7 @@ const Categories: React.FC = () => {
                     <Tooltip
                       title="Adicionar"
                       aria-label="add"
-                      onClick={() => handleAddGroup()}
+                      onClick={() => handleAddCategory()}
                     >
                       <Fab color="primary" size="small">
                         <Done />
@@ -268,7 +268,7 @@ const Categories: React.FC = () => {
                     inputRef={editCatRef}
                     type="text"
                     name="name"
-                    label="Editar Grupo"
+                    label="Editar Categoria"
                     className={classes.margin}
                     value={catNameToEdit}
                     onChange={e => setCatNameToEdit(e.target.value)}
@@ -277,7 +277,7 @@ const Categories: React.FC = () => {
                     <Tooltip
                       title="Salvar"
                       aria-label="add"
-                      onClick={() => handleEditGroup()}
+                      onClick={() => handleEditCategory()}
                     >
                       <Fab color="primary" size="small">
                         <Done />
