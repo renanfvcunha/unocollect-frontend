@@ -31,6 +31,10 @@ interface Response {
   user: User;
 }
 
+type Err = Error & {
+  response: AxiosResponse;
+}
+
 const history = createBrowserHistory();
 
 export function* login({ payload }: Payload): SagaIterator {
@@ -55,16 +59,16 @@ export function* login({ payload }: Payload): SagaIterator {
 
     yield put(loginSuccess(token, user));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         loginFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(loginFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(loginFailure((err as Err).response.data.msg));
     } else {
-      yield put(loginFailure(err));
+      yield put(loginFailure((err as Err).message));
     }
   }
 }
@@ -75,12 +79,12 @@ export function* checkToken(): SagaIterator {
 
     yield put(checkTokenSuccess());
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(checkTokenSuccess());
-    } else if (err.response) {
-      yield put(checkTokenFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(checkTokenFailure((err as Err).response.data.msg));
     } else {
-      yield put(checkTokenFailure(err));
+      yield put(checkTokenFailure((err as Err).message));
     }
   }
 }
@@ -91,9 +95,9 @@ export function* checkHasUser(): SagaIterator {
 
     yield put(checkHasUserSuccess());
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(checkHasUserSuccess());
-    } else if (err.response) {
+    } else if ((err as Err).response) {
       yield put(checkHasUserFailure());
     } else {
       yield put(checkHasUserSuccess());
@@ -122,16 +126,16 @@ export function* addFirstUser({ payload }: Payload): SagaIterator {
 
     yield put(addFisrtUserSuccess(token, user));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         addFisrtUserFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(addFisrtUserFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(addFisrtUserFailure((err as Err).response.data.msg));
     } else {
-      yield put(addFisrtUserFailure(err));
+      yield put(addFisrtUserFailure((err as Err).message));
     }
   }
 }

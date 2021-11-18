@@ -28,7 +28,7 @@ interface Values {
 }
 
 const NewFill: React.FC = () => {
-  const { formId } = useParams();
+  const { formId } = useParams<{ formId: string | undefined }>();
   const classes = useStyles();
   const pageTitle = 'Preenchimentos > Novo Preenchimento';
   const dispatch = useDispatch();
@@ -91,7 +91,7 @@ const NewFill: React.FC = () => {
       tron.log(fill);
     }
 
-    dispatch(addFillRequest(fill, String(formId)));
+    dispatch(addFillRequest(fill, formId as string));
   }
 
   if (formFields) {
@@ -108,7 +108,7 @@ const NewFill: React.FC = () => {
   useEffect(() => {
     dispatch(setPageTitle(pageTitle));
 
-    dispatch(getFormRequest(formId));
+    dispatch(getFormRequest(parseInt(formId as string)));
   }, [dispatch, formId]);
 
   return (

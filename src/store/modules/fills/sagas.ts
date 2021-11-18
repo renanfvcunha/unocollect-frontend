@@ -16,16 +16,20 @@ interface Msg {
   msg: string;
 }
 
+type Err = Error & {
+  response: AxiosResponse;
+}
+
 export function* getForms(): SagaIterator {
   try {
     const response = yield call(api.get, 'fills');
 
     yield put(getFormsSuccess(response.data));
   } catch (err) {
-    if (err.response) {
-      alert(err.response.data.msg);
+    if ((err as Err).response) {
+      alert((err as Err).response.data.msg);
       yield put(getFormsFailure());
-    } else if (err.message === 'Network Error') {
+    } else if ((err as Err).message === 'Network Error') {
       yield put(getFormsFailure());
     } else {
       alert(err);
@@ -50,11 +54,11 @@ export function* addFill({ payload }: AnyAction): SagaIterator {
     alert(response.data.msg);
     yield put(addFillSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(addFillFailure());
       alert('Não foi possível conectar ao servidor.');
-    } else if (err.response) {
-      alert(err.response.data.msg);
+    } else if ((err as Err).response) {
+      alert((err as Err).response.data.msg);
       yield put(addFillFailure());
     } else {
       alert(err);

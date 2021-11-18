@@ -27,22 +27,26 @@ interface IGroup extends AnyAction {
   };
 }
 
+type Err = Error & {
+  response: AxiosResponse;
+}
+
 export function* getGroups(): SagaIterator {
   try {
     const response: AxiosResponse<Group> = yield call(api.get, 'groups');
 
     yield put(getGroupsSuccess(response.data));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         getGroupsFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(getGroupsFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(getGroupsFailure((err as Err).response.data.msg));
     } else {
-      yield put(getGroupsFailure(err));
+      yield put(getGroupsFailure((err as Err).message));
     }
   }
 }
@@ -55,16 +59,16 @@ export function* addGroup({ payload }: IGroup): SagaIterator {
 
     yield put(addGroupSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         addGroupFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(addGroupFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(addGroupFailure((err as Err).response.data.msg));
     } else {
-      yield put(addGroupFailure(err));
+      yield put(addGroupFailure((err as Err).message));
     }
   }
 }
@@ -81,16 +85,16 @@ export function* updateGroup({ payload }: IGroup): SagaIterator {
 
     yield put(updateGroupSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         updateGroupFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(updateGroupFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(updateGroupFailure((err as Err).response.data.msg));
     } else {
-      yield put(updateGroupFailure(err));
+      yield put(updateGroupFailure((err as Err).message));
     }
   }
 }
@@ -104,16 +108,16 @@ export function* deleteGroup({ payload }: IGroup): SagaIterator {
 
     yield put(deleteGroupSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         deleteGroupFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(deleteGroupFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(deleteGroupFailure((err as Err).response.data.msg));
     } else {
-      yield put(deleteGroupFailure(err));
+      yield put(deleteGroupFailure((err as Err).message));
     }
   }
 }

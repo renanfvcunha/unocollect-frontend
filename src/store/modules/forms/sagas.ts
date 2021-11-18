@@ -31,6 +31,10 @@ interface Msg {
   msg: string;
 }
 
+type Err = Error & {
+  response: AxiosResponse
+}
+
 export function* addForm({ payload }: IForm): SagaIterator {
   try {
     const response: AxiosResponse<Msg> = yield call(api.post, 'forms', {
@@ -40,16 +44,16 @@ export function* addForm({ payload }: IForm): SagaIterator {
 
     yield put(addFormSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         addFormFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(addFormFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(addFormFailure((err as Err).response.data.msg));
     } else {
-      yield put(addFormFailure(err));
+      yield put(addFormFailure((err as Err).message));
     }
   }
 }
@@ -63,16 +67,16 @@ export function* getForms(): SagaIterator {
 
     yield put(getFormsSuccess(response.data.forms));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         getFormsFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(getFormsFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(getFormsFailure((err as Err).response.data.msg));
     } else {
-      yield put(getFormsFailure(err));
+      yield put(getFormsFailure((err as Err).message));
     }
   }
 }
@@ -86,16 +90,16 @@ export function* getForm({ payload }: AnyAction): SagaIterator {
 
     yield put(getFormSuccess(response.data));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         getFormsFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(getFormFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(getFormFailure((err as Err).response.data.msg));
     } else {
-      yield put(getFormFailure(err));
+      yield put(getFormFailure((err as Err).message));
     }
   }
 }
@@ -113,16 +117,16 @@ export function* editForm({ payload }: IForm): SagaIterator {
 
     yield put(updateFormSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         updateFormFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(updateFormFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(updateFormFailure((err as Err).response.data.msg));
     } else {
-      yield put(updateFormFailure(err));
+      yield put(updateFormFailure((err as Err).message));
     }
   }
 }
@@ -139,16 +143,16 @@ export function* alterFormStatus({ payload }: AnyAction): SagaIterator {
 
     yield put(alterFormStatusSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         alterFormStatusFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(alterFormStatusFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(alterFormStatusFailure((err as Err).response.data.msg));
     } else {
-      yield put(alterFormStatusFailure(err));
+      yield put(alterFormStatusFailure((err as Err).message));
     }
   }
 }
@@ -162,16 +166,16 @@ export function* deleteForm({ payload }: AnyAction): SagaIterator {
 
     yield put(deleteFormSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         deleteFormFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(deleteFormFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(deleteFormFailure((err as Err).response.data.msg));
     } else {
-      yield put(deleteFormFailure(err));
+      yield put(deleteFormFailure((err as Err).message));
     }
   }
 }

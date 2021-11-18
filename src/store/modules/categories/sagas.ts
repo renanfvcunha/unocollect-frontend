@@ -27,13 +27,17 @@ interface ICategory extends AnyAction {
   };
 }
 
+type Err = Error & {
+  response: AxiosResponse
+}
+
 export function* getCategories(): SagaIterator {
   try {
     const response: AxiosResponse<Category> = yield call(api.get, 'categories');
 
     yield put(getCategoriesSuccess(response.data));
   } catch (err) {
-    yield put(getCategoriesFailure(err.response.data.msg));
+    yield put(getCategoriesFailure((err as Err).response.data.msg));
   }
 }
 
@@ -45,7 +49,7 @@ export function* addCategory({ payload }: ICategory): SagaIterator {
 
     yield put(addCategorySuccess(response.data.msg));
   } catch (err) {
-    yield put(addCategoryFailure(err.response.data.msg));
+    yield put(addCategoryFailure((err as Err).response.data.msg));
   }
 }
 
@@ -61,16 +65,16 @@ export function* updateCategory({ payload }: ICategory): SagaIterator {
 
     yield put(updateCategorySuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         updateCategoryFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(updateCategoryFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(updateCategoryFailure((err as Err).response.data.msg));
     } else {
-      yield put(updateCategoryFailure(err));
+      yield put(updateCategoryFailure((err as Err).message));
     }
   }
 }
@@ -84,16 +88,16 @@ export function* deleteCategory({ payload }: ICategory): SagaIterator {
 
     yield put(deleteCategorySuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         deleteCategoryFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(deleteCategoryFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(deleteCategoryFailure((err as Err).response.data.msg));
     } else {
-      yield put(deleteCategoryFailure(err));
+      yield put(deleteCategoryFailure((err as Err).message));
     }
   }
 }

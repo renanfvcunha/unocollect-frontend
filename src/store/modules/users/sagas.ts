@@ -1,6 +1,7 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import { AnyAction } from 'redux';
+import { AxiosResponse } from 'axios';
 
 import api from '../../../services/api';
 import { UsersTypes, User } from './types';
@@ -30,22 +31,26 @@ interface Response {
   };
 }
 
+type Err = Error & {
+  response: AxiosResponse
+}
+
 export function* addUser({ payload }: UserPayload): SagaIterator {
   try {
     const response: Response = yield call(api.post, 'users', payload.data);
 
     yield put(addUserSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         addUserFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(addUserFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(addUserFailure((err as Err).response.data.msg));
     } else {
-      yield put(addUserFailure(err));
+      yield put(addUserFailure((err as Err).message));
     }
   }
 }
@@ -56,16 +61,16 @@ export function* getUser({ payload }: AnyAction): SagaIterator {
 
     yield put(getUserSuccess(response.data));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         getUserFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(getUserFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(getUserFailure((err as Err).response.data.msg));
     } else {
-      yield put(getUserFailure(err));
+      yield put(getUserFailure((err as Err).message));
     }
   }
 }
@@ -80,16 +85,16 @@ export function* updateUser({ payload }: UserPayload): SagaIterator {
 
     yield put(updateUserSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         updateUserFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(updateUserFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(updateUserFailure((err as Err).response.data.msg));
     } else {
-      yield put(updateUserFailure(err));
+      yield put(updateUserFailure((err as Err).message));
     }
   }
 }
@@ -100,16 +105,16 @@ export function* deleteUser({ payload }: AnyAction): SagaIterator {
 
     yield put(deleteUserSuccess(response.data.msg));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         deleteUserFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(deleteUserFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(deleteUserFailure((err as Err).response.data.msg));
     } else {
-      yield put(deleteUserFailure(err));
+      yield put(deleteUserFailure((err as Err).message));
     }
   }
 }
@@ -120,16 +125,16 @@ export function* getUsersForms({ payload }: AnyAction): SagaIterator {
 
     yield put(getUsersFormsSuccess(response.data));
   } catch (err) {
-    if (err.message === 'Network Error') {
+    if ((err as Err).message === 'Network Error') {
       yield put(
         getUsersFormsFailure(
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         ),
       );
-    } else if (err.response) {
-      yield put(getUsersFormsFailure(err.response.data.msg));
+    } else if ((err as Err).response) {
+      yield put(getUsersFormsFailure((err as Err).response.data.msg));
     } else {
-      yield put(getUsersFormsFailure(err));
+      yield put(getUsersFormsFailure((err as Err).message));
     }
   }
 }
