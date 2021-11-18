@@ -6,6 +6,7 @@ import { checkHasUserRequest } from './store/modules/auth/actions';
 import Menu from './components/Menu';
 import Login from './pages/Login';
 import FirstUser from './pages/FirstUser';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 const Auth: React.FC = () => {
   const logged = useSelector((state: ApplicationState) => state.auth.logged);
@@ -15,6 +16,10 @@ const Auth: React.FC = () => {
   useEffect(() => {
     dispatch(checkHasUserRequest());
   }, [dispatch]);
+
+  if (window.location.pathname === '/politica-de-privacidade') {
+    return <PrivacyPolicy />;
+  }
 
   if (!hasUser) {
     return <FirstUser />;
