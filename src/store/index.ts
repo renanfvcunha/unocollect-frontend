@@ -1,7 +1,7 @@
-import { createStore, Store, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
+import createSagaMiddleware from 'redux-saga';
 
 import { AuthState } from './modules/auth/types';
 import { PageTitleState } from './modules/pageTitle/types';
@@ -11,7 +11,6 @@ import { FillsState } from './modules/fills/types';
 import { CategoriesState } from './modules/categories/types';
 import { ImagesState } from './modules/images/types';
 import { GroupsState } from './modules/groups/types';
-import tron from '../config/ReactotronConfig';
 import rootReducer from './modules/rootReducer';
 import rootSaga from './modules/rootSaga';
 
@@ -36,16 +35,9 @@ const persistConfig = {
 };
 
 /**
- * Criando configuração do Saga Middleware utilizando
- * Reactotron Saga Monitor para desenvolvimento.
+ * Criando configuração do Saga Middleware.
  */
-let sagaMiddleware: SagaMiddleware;
-if (process.env.NODE_ENV === 'development' && tron.createSagaMonitor) {
-  const sagaMonitor = tron.createSagaMonitor();
-  sagaMiddleware = createSagaMiddleware({ sagaMonitor });
-} else {
-  sagaMiddleware = createSagaMiddleware();
-}
+const sagaMiddleware = createSagaMiddleware();
 
 /**
  * Mesclando configurações do Redux Persist com o Root Reducer
@@ -53,18 +45,9 @@ if (process.env.NODE_ENV === 'development' && tron.createSagaMonitor) {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 /**
- * Criando o store principal do Redux utilizando
- * Reactotron para desenvolvimento
+ * Criando o store principal do Redux
  */
-let store: Store;
-if (process.env.NODE_ENV === 'development' && tron.createEnhancer) {
-  store = createStore(
-    persistedReducer,
-    compose(applyMiddleware(sagaMiddleware), tron.createEnhancer()),
-  );
-} else {
-  store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
-}
+const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
 
 /**
  * Atribuindo variavel para o Persist Store do Redux Persist

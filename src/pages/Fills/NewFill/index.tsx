@@ -20,7 +20,6 @@ import setPageTitle from '../../../store/modules/pageTitle/actions';
 import { getFormRequest } from '../../../store/modules/forms/actions';
 import { addFillRequest } from '../../../store/modules/fills/actions';
 import { useStyles, Theme } from './styles';
-import tron from '../../../config/ReactotronConfig';
 
 interface Values {
   fieldId?: number;
@@ -85,10 +84,6 @@ const NewFill: React.FC = () => {
     fill.append('date', String(new Date()));
     for (let i = 0; i < formValues.length; i += 1) {
       fill.append(`values[${i}]`, values[i]);
-    }
-
-    if (tron.log) {
-      tron.log(fill);
     }
 
     dispatch(addFillRequest(fill, formId as string));
