@@ -8,8 +8,8 @@ import { ImagesTypes } from './types';
 import { getUsersImagesSuccess, getUsersImagesFailure } from './actions';
 
 type Err = Error & {
-  response: AxiosResponse
-}
+  response: AxiosResponse;
+};
 
 export function* getUsersImages({ payload }: AnyAction): SagaIterator {
   try {

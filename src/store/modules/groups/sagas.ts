@@ -29,7 +29,7 @@ interface IGroup extends AnyAction {
 
 type Err = Error & {
   response: AxiosResponse;
-}
+};
 
 export function* getGroups(): SagaIterator {
   try {

@@ -7,7 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import PropTypes from 'prop-types';
+import PropTypes, { any } from 'prop-types';
 
 interface IModal {
   open: boolean;
@@ -17,6 +17,7 @@ interface IModal {
 }
 
 const Transition = React.forwardRef(function Transition(
+  // eslint-disable-next-line react/require-default-props
   props: TransitionProps & { children?: ReactElement<any, any> },
   ref: Ref<unknown>,
 ) {

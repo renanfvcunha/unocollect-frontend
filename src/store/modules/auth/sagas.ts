@@ -33,7 +33,7 @@ interface Response {
 
 type Err = Error & {
   response: AxiosResponse;
-}
+};
 
 const history = createBrowserHistory();
 

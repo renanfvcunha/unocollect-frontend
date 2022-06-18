@@ -32,8 +32,8 @@ interface Response {
 }
 
 type Err = Error & {
-  response: AxiosResponse
-}
+  response: AxiosResponse;
+};
 
 export function* addUser({ payload }: UserPayload): SagaIterator {
   try {

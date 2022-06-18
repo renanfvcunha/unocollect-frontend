@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import { AnyAction } from 'redux';
@@ -18,7 +19,7 @@ interface Msg {
 
 type Err = Error & {
   response: AxiosResponse;
-}
+};
 
 export function* getForms(): SagaIterator {
   try {

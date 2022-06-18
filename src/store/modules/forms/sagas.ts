@@ -32,8 +32,8 @@ interface Msg {
 }
 
 type Err = Error & {
-  response: AxiosResponse
-}
+  response: AxiosResponse;
+};
 
 export function* addForm({ payload }: IForm): SagaIterator {
   try {

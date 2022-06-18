@@ -28,8 +28,8 @@ interface ICategory extends AnyAction {
 }
 
 type Err = Error & {
-  response: AxiosResponse
-}
+  response: AxiosResponse;
+};
 
 export function* getCategories(): SagaIterator {
   try {

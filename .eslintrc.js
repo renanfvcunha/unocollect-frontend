@@ -56,6 +56,7 @@ module.exports = {
         ]
       }
     ],
-    'radix': 'off'
+    'radix': 'off',
+    'react/jsx-no-bind': 'off',
   },
 };
